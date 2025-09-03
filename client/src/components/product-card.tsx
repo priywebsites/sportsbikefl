@@ -36,15 +36,15 @@ export function ProductCard({ product }: ProductCardProps) {
 
   const getStatusBadge = () => {
     if (product.stockStatus === "sold") {
-      return <Badge variant="destructive">Sold</Badge>;
+      return <Badge className="bg-red-500 text-white font-semibold">Sold</Badge>;
     }
     if (product.discount && parseFloat(product.discount) > 0) {
-      return <Badge className="bg-amber-500 text-black">Sale</Badge>;
+      return <Badge className="bg-gradient-to-r from-orange-400 to-red-500 text-white font-semibold">Sale</Badge>;
     }
     if (product.featured) {
-      return <Badge variant="default">Featured</Badge>;
+      return <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold">Featured</Badge>;
     }
-    return <Badge className="bg-green-500 text-black">In Stock</Badge>;
+    return <Badge className="bg-gradient-to-r from-green-400 to-blue-500 text-white font-semibold">In Stock</Badge>;
   };
 
   const hasDiscount = product.discount && parseFloat(product.discount) > 0;
@@ -52,60 +52,63 @@ export function ProductCard({ product }: ProductCardProps) {
   const discountedPrice = product.discountedPrice || originalPrice;
 
   return (
-    <Link href={`/product/${product.id}`}>
-      <Card className="bg-card rounded-lg overflow-hidden card-hover cursor-pointer" data-testid={`card-product-${product.id}`}>
-        <div className="relative">
+    <Card className="bg-white rounded-2xl overflow-hidden card-hover cursor-pointer shadow-lg border-0 group" data-testid={`card-product-${product.id}`}>
+      <div className="relative">
+        <Link href={`/product/${product.id}`}>
           <img 
             src={product.images[0] || "/placeholder-product.jpg"} 
             alt={product.title}
-            className="w-full h-48 object-cover"
+            className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
             data-testid={`img-product-${product.id}`}
           />
-          <div className="absolute top-2 right-2">
-            {getStatusBadge()}
-          </div>
+        </Link>
+        <div className="absolute top-3 right-3">
+          {getStatusBadge()}
         </div>
-        <CardContent className="p-4">
-          <div className="mb-2">
-            <h4 className="text-lg font-semibold line-clamp-1" data-testid={`text-title-${product.id}`}>
+      </div>
+      <CardContent className="p-6">
+        <Link href={`/product/${product.id}`}>
+          <div className="mb-4">
+            <h4 className="text-xl font-bold line-clamp-2 text-gray-800 hover:text-purple-600 transition-colors" data-testid={`text-title-${product.id}`}>
               {product.title}
             </h4>
           </div>
-          <p className="text-muted-foreground text-sm mb-3 line-clamp-2" data-testid={`text-description-${product.id}`}>
+          <p className="text-gray-600 text-sm mb-4 line-clamp-2" data-testid={`text-description-${product.id}`}>
             {product.description}
           </p>
-          <div className="flex justify-between items-center">
-            <div className="flex flex-col">
-              {hasDiscount ? (
-                <>
-                  <span className="text-sm text-muted-foreground line-through" data-testid={`text-original-price-${product.id}`}>
-                    ${originalPrice.toFixed(2)}
-                  </span>
-                  <span className="text-xl font-bold text-primary" data-testid={`text-discounted-price-${product.id}`}>
-                    ${discountedPrice.toFixed(2)}
-                  </span>
-                </>
-              ) : (
-                <span className="text-xl font-bold text-primary" data-testid={`text-price-${product.id}`}>
+        </Link>
+        <div className="space-y-4">
+          <div className="flex flex-col">
+            {hasDiscount ? (
+              <>
+                <span className="text-sm text-gray-400 line-through" data-testid={`text-original-price-${product.id}`}>
                   ${originalPrice.toFixed(2)}
                 </span>
-              )}
-              <span className="text-xs text-muted-foreground" data-testid={`text-stock-${product.id}`}>
-                {product.stockQuantity > 0 ? `${product.stockQuantity} in stock` : "Out of stock"}
+                <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-teal-600 bg-clip-text text-transparent" data-testid={`text-discounted-price-${product.id}`}>
+                  ${discountedPrice.toFixed(2)}
+                </span>
+              </>
+            ) : (
+              <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-teal-600 bg-clip-text text-transparent" data-testid={`text-price-${product.id}`}>
+                ${originalPrice.toFixed(2)}
               </span>
-            </div>
-            <Button
-              size="sm"
-              onClick={handleAddToCart}
-              disabled={isUpdating || product.stockStatus === "sold" || product.stockQuantity === 0}
-              data-testid={`button-add-to-cart-${product.id}`}
-            >
-              <ShoppingCart className="h-4 w-4 mr-1" />
-              Add to Cart
-            </Button>
+            )}
+            <span className="text-xs text-gray-500" data-testid={`text-stock-${product.id}`}>
+              {product.stockQuantity > 0 ? `${product.stockQuantity} in stock` : "Out of stock"}
+            </span>
           </div>
-        </CardContent>
-      </Card>
-    </Link>
+          <Button
+            className="w-full bg-gradient-to-r from-purple-600 to-teal-600 hover:from-purple-700 hover:to-teal-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+            onClick={handleAddToCart}
+            disabled={isUpdating || product.stockStatus === "sold" || product.stockQuantity === 0}
+            data-testid={`button-add-to-cart-${product.id}`}
+          >
+            <ShoppingCart className="h-5 w-5 mr-2" />
+            {product.stockStatus === "sold" ? "Sold Out" : 
+             product.stockQuantity === 0 ? "Out of Stock" : "Add to Cart"}
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
