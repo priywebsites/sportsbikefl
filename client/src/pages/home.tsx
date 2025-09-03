@@ -27,8 +27,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-[#a3bfa3d6]"></div>
         <div className="container mx-auto text-center relative z-10">
           <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight animate-fade-in text-[#000000]" data-testid="text-hero-title">
-            Premium <span className="text-[#b00000]">Sportbikes</span><br />
-            <span className="floating">Built for the Road</span>
+            Own It. Ride It. Love It.
           </h1>
           <p className="text-xl mb-12 max-w-3xl mx-auto animate-slide-up text-[#000000e6]" data-testid="text-hero-description">
             Discover our collection of high-performance motorcycles, genuine parts, and premium accessories. 
