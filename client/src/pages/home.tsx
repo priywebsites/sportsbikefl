@@ -49,7 +49,6 @@ export default function Home() {
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-50 to-transparent"></div>
       </section>
-
       {/* Customer Testimonials */}
       <section className="py-20 px-4 bg-white">
         <div className="container mx-auto">
@@ -216,7 +215,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Motorcycle Loan Services Section */}
       <section className="py-16 px-4 bg-gradient-to-br from-red-50 to-white">
         <div className="container mx-auto max-w-4xl text-center">
@@ -260,14 +258,13 @@ export default function Home() {
           </Link>
         </div>
       </section>
-
       {/* All-in-One Service Section */}
       <section className="py-20 px-4 bg-white">
         <div className="container mx-auto max-w-6xl">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-4xl md:text-5xl font-bold mb-8 text-gray-900">
-                YOUR <span className="text-green-400">ALL-IN-ONE DESTINATION</span> FOR <span className="text-green-400">MOTORCYCLES</span>, SERVICE & MAINTENANCE
+                YOUR <span className="text-green-400">ALL-IN-ONE DESTINATION</span> FOR <span className="text-[#000000]">MOTORCYCLES</span>, SERVICE & MAINTENANCE
               </h2>
               <div className="space-y-4 text-lg text-gray-700">
                 <div className="flex items-start space-x-3">
@@ -295,7 +292,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Trust & Credibility Section */}
       <section className="py-16 px-4 bg-white border-t border-gray-200">
         <div className="container mx-auto">
@@ -350,7 +346,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Visit Us Section */}
       <section className="py-16 px-4 bg-gray-100">
         <div className="container mx-auto">
