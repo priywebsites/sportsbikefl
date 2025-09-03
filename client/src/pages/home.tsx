@@ -24,13 +24,13 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="hero-gradient py-32 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[#5f8f94]"></div>
+        <div className="absolute inset-0 bg-[#c5e1f0d6]"></div>
         <div className="container mx-auto text-center relative z-10">
           <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight animate-fade-in text-[#000000]" data-testid="text-hero-title">
             Premium <span className="text-[#b00000]">Sportbikes</span><br />
             <span className="floating">Built for the Road</span>
           </h1>
-          <p className="text-xl text-white/90 mb-12 max-w-3xl mx-auto animate-slide-up" data-testid="text-hero-description">
+          <p className="text-xl mb-12 max-w-3xl mx-auto animate-slide-up text-[#000000e6]" data-testid="text-hero-description">
             Discover our collection of high-performance motorcycles, genuine parts, and premium accessories. 
             Your next adventure starts here with the best selection in Florida.
           </p>
