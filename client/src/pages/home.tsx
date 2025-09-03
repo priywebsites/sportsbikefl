@@ -315,7 +315,7 @@ export default function Home() {
             </div>
             
             <div className="text-center animate-slide-up" style={{animationDelay: '0.1s'}}>
-              <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <div className="rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 bg-[#ffd9d9]">
                 <CheckCircle className="text-gray-700 text-2xl" />
               </div>
               <h3 className="text-xl font-semibold mb-3 text-gray-900">Quality Guaranteed</h3>
