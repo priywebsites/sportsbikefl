@@ -304,7 +304,7 @@ export default function Home() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="text-center animate-slide-up">
-              <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <div className="rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 bg-[#d8edd1d6]">
                 <Award className="text-red-600 text-2xl" />
               </div>
               <h3 className="text-xl font-semibold mb-3 text-gray-900">Expert Knowledge</h3>
