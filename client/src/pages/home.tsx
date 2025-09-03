@@ -24,7 +24,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="hero-gradient py-32 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 bg-[#5f8f94]"></div>
         <div className="container mx-auto text-center relative z-10">
           <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight text-white animate-fade-in" data-testid="text-hero-title">
             Premium <span className="text-white">Sportbikes</span><br />
