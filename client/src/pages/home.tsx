@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ProductCard } from "@/components/product-card";
 import { ProductWithDiscount } from "@/lib/types";
 import { Link } from "wouter";
-import { Bike, Settings, Shield, Star, CheckCircle, Users, Award, MapPin, Clock } from "lucide-react";
+import { Bike, Settings, Shield, Star, CheckCircle, Users, Award, MapPin, Clock, CreditCard } from "lucide-react";
 import { BusinessHours } from "@/components/business-hours";
 
 export default function Home() {
@@ -177,6 +177,50 @@ export default function Home() {
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Motorcycle Loan Services Section */}
+      <section className="py-16 px-4 bg-gradient-to-br from-red-50 to-white">
+        <div className="container mx-auto max-w-4xl text-center">
+          <div className="mb-12">
+            <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+              <CreditCard className="text-red-600 text-2xl" />
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">MOTORCYCLE LOAN SERVICES</h2>
+            <p className="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
+              Get on the road faster with <span className="text-red-600 font-semibold">quick approval</span> and <span className="text-red-600 font-semibold">flexible financing options</span>. Whether it's your very first bike or an upgrade to a high-performance model, we make it simple.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+              <div className="bg-red-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="text-red-600 text-xl" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2 text-gray-900">Hassle-free application process</h3>
+            </div>
+            
+            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+              <div className="bg-red-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
+                <Star className="text-red-600 text-xl" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2 text-gray-900"><span className="text-red-600">Competitive low</span> interest rates</h3>
+            </div>
+            
+            <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+              <div className="bg-red-100 rounded-full w-12 h-12 flex items-center justify-center mx-auto mb-4">
+                <Users className="text-red-600 text-xl" />
+              </div>
+              <h3 className="text-lg font-semibold mb-2 text-gray-900"><span className="text-red-600">No credit history</span> required</h3>
+            </div>
+          </div>
+          
+          <Link href="/loan-application">
+            <Button size="lg" className="text-lg px-12 py-6 bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-full" data-testid="button-apply-now">
+              Apply Now
+            </Button>
+          </Link>
         </div>
       </section>
 

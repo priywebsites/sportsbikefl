@@ -31,8 +31,8 @@ export function Header() {
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-8">
               <Link href="/" className="flex items-center space-x-3 group" data-testid="link-home">
-                <div className="bg-white/10 backdrop-blur-sm rounded-full p-2 group-hover:scale-110 transition-transform duration-300 border border-white/20">
-                  <img src={logoImage} alt="SportbikeFL Logo" className="w-8 h-8 object-contain" />
+                <div className="bg-white rounded-full p-2 group-hover:scale-110 transition-transform duration-300 border-2 border-black">
+                  <img src={logoImage} alt="Sportbike Parts & Export Logo" className="w-8 h-8 object-contain" />
                 </div>
                 <span className="text-2xl font-bold text-white drop-shadow-lg">Sportbike Parts & Export</span>
               </Link>
@@ -107,7 +107,7 @@ export function Header() {
                 <SheetContent side="right" className="w-[300px] bg-white/95 backdrop-blur-md">
                   <div className="flex flex-col space-y-6 mt-8">
                     <div className="flex items-center space-x-3 pb-4 border-b border-gray-200">
-                      <img src={logoImage} alt="SportbikeFL Logo" className="w-8 h-8 object-contain" />
+                      <img src={logoImage} alt="Sportbike Parts & Export Logo" className="w-8 h-8 object-contain" />
                       <span className="text-xl font-bold text-gray-900">Sportbike Parts & Export</span>
                     </div>
                     
