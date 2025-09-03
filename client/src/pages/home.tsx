@@ -4,7 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ProductCard } from "@/components/product-card";
 import { ProductWithDiscount } from "@/lib/types";
 import { Link } from "wouter";
-import { Bike, Settings, Shield, Star } from "lucide-react";
+import { Bike, Settings, Shield, Star, CheckCircle, Users, Award } from "lucide-react";
 
 export default function Home() {
   const { data: featuredProducts = [], isLoading: isFeaturedLoading } = useQuery<ProductWithDiscount[]>({
@@ -122,6 +122,61 @@ export default function Home() {
                 </Card>
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Trust & Credibility Section */}
+      <section className="py-16 px-4 bg-white border-t border-gray-200">
+        <div className="container mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4 text-gray-900">Why Riders Trust SportbikeFL</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Serving Florida's motorcycle community with expertise, quality, and dedicated service
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center animate-slide-up">
+              <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Award className="text-red-600 text-2xl" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900">Expert Knowledge</h3>
+              <p className="text-gray-600">
+                Decades of combined experience in sportbike sales, service, and performance modifications. 
+                Our team knows these machines inside and out.
+              </p>
+            </div>
+            
+            <div className="text-center animate-slide-up" style={{animationDelay: '0.1s'}}>
+              <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="text-gray-700 text-2xl" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900">Quality Guaranteed</h3>
+              <p className="text-gray-600">
+                We stock only genuine OEM parts and premium aftermarket components from trusted manufacturers. 
+                Quality you can count on.
+              </p>
+            </div>
+            
+            <div className="text-center animate-slide-up" style={{animationDelay: '0.2s'}}>
+              <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Users className="text-red-600 text-2xl" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900">Community Focused</h3>
+              <p className="text-gray-600">
+                Part of Florida's riding community for years. Follow us on Facebook to connect with fellow riders 
+                and stay updated on events and new arrivals.
+              </p>
+            </div>
+          </div>
+          
+          <div className="text-center mt-12">
+            <Link href="/contact">
+              <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-3">
+                Visit Our Shop Today
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

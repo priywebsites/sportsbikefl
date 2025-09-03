@@ -216,9 +216,7 @@ export default function Cart() {
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping:</span>
-                  <span className="text-green-500" data-testid="text-shipping">
-                    {total > 500 ? "Free" : "$25.00"}
-                  </span>
+                  <span data-testid="text-shipping">$25.00</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Tax:</span>
@@ -230,7 +228,7 @@ export default function Cart() {
                 <div className="flex justify-between text-lg font-bold">
                   <span>Total:</span>
                   <span className="text-primary" data-testid="text-total">
-                    ${(total + (total > 500 ? 0 : 25) + (total * 0.08)).toFixed(2)}
+                    ${(total + 25 + (total * 0.08)).toFixed(2)}
                   </span>
                 </div>
 

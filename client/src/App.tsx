@@ -9,6 +9,7 @@ import Home from "@/pages/home";
 import Catalog from "@/pages/catalog";
 import ProductDetail from "@/pages/product-detail";
 import Cart from "@/pages/cart";
+import Contact from "@/pages/contact";
 import OwnerLogin from "@/pages/owner-login";
 import OwnerDashboard from "@/pages/owner-dashboard";
 import NotFound from "@/pages/not-found";
@@ -22,7 +23,7 @@ function Router() {
       <Route path="/cart" component={Cart} />
       <Route path="/owner/login" component={OwnerLogin} />
       <Route path="/owner" component={OwnerDashboard} />
-      <Route path="/contact" component={() => <div className="min-h-screen py-8 px-4"><div className="container mx-auto text-center"><h1 className="text-3xl font-bold mb-4">Contact Us</h1><p className="text-muted-foreground">Get in touch with SportbikeFL</p></div></div>} />
+      <Route path="/contact" component={Contact} />
       <Route component={NotFound} />
     </Switch>
   );

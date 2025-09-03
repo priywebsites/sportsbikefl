@@ -181,10 +181,6 @@ export default function ProductDetail() {
                 </span>
               </div>
               
-              <div className="flex items-center space-x-2">
-                <Truck className="h-5 w-5 text-muted-foreground" />
-                <span className="text-sm">Free shipping on orders over $500</span>
-              </div>
               
               {product.featured && (
                 <div className="flex items-center space-x-2">
