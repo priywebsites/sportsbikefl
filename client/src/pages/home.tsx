@@ -36,7 +36,7 @@ export default function Home() {
               </Button>
             </Link>
             <Link href="/catalog?category=parts">
-              <Button variant="outline" size="lg" className="text-lg px-10 py-6 border-white text-white hover:bg-white hover:text-red-600 shadow-lg transition-all duration-300" data-testid="button-browse-parts">
+              <Button variant="outline" size="lg" className="text-lg px-10 py-6 border-white bg-transparent text-white hover:bg-white hover:text-red-600 shadow-lg transition-all duration-300" data-testid="button-browse-parts">
                 Browse Parts
               </Button>
             </Link>
