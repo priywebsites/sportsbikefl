@@ -1,0 +1,81 @@
+Project Title: SportbikeFL Modern E-Commerce Redesign
+Overview:
+We’re replacing the existing website sportbikefl.com with a modern, dynamic, inventory-driven e-commerce platform.
+The project must include:
+A customer-facing e-commerce site (to browse motorcycles, parts, and accessories).
+An owner dashboard (for managing inventory, discounts, and product visibility).
+A direct owner login button in the header (with username/password: ronnie123).
+🔑 Core Requirements
+1. Customer-Facing Website
+Homepage:
+Large hero banner (with featured motorcycle + CTA).
+Section for Featured Bikes, New Arrivals, On Sale.
+Grid for quick navigation (Motorcycles, Parts, Accessories).
+Inventory Pages:
+Motorcycles and Parts listed with thumbnail, price, discount, and availability.
+Each product page includes: images (multiple angles), description, specifications, price, discount, and availability.
+“Add to Cart” button (mock checkout flow).
+Cart + Checkout:
+Simple cart sidebar/page.
+Checkout mockup (payment integration optional, placeholder for Stripe/PayPal).
+Filtering & Sorting:
+Filter products by category (Motorcycles / Parts / Accessories).
+Sort by newest, price (low-high), availability.
+Header & Footer:
+Header: Logo, Navigation (Home, Motorcycles, Parts, Contact), Cart Icon, Owner Login.
+Footer: Contact info, social links, copyright.
+2. Owner Dashboard (Inventory Management)
+Accessible via Owner Login (header → /owner).
+Login Credentials:
+Username: ronnie123
+Password: ronnie123
+Dashboard Features:
+Inventory Management:
+View all products in a table.
+Add new product (upload image, title, description, category, price, discount, stock).
+Edit product details.
+Mark as Sold (removes from customer site).
+Delete products.
+Discount Management:
+Apply discount (percentage or flat amount) to any product.
+Display discounted price on customer site.
+Status Indicators:
+Sold products should be hidden on customer site.
+Discounts should show crossed-out original price + new price.
+Security:
+Simple session-based login (cookies or JWT).
+3. Database & Schema
+Products Table:
+id (PK)
+title
+description
+price
+discount (nullable)
+stock_status (in stock / sold)
+category (motorcycles, parts, accessories)
+images[] (multiple)
+Owner Table (static):
+username
+password (hashed, but start with hardcoded ronnie123).
+4. Tech Stack
+Frontend: React + TailwindCSS (for sleek UI).
+Backend: Node.js (Express).
+Database: SQLite (lightweight for Replit) or PostgreSQL (if scaling).
+Auth: Session/JWT.
+Hosting: Replit deployment or Vercel (full-stack).
+5. Visual Style & Improvements vs Current Site
+Replace outdated theme with modern, minimal UI (dark accents + motorcycle brand vibe).
+Responsive design (mobile-first, since buyers often browse on phones).
+Replace static inventory with dynamic product listings.
+Replace contact-only sales model with proper e-commerce flow (cart + checkout).
+Add filtering/search, which is missing on current site.
+📝 Deliverables
+Replit-ready project with:
+/frontend → React + Tailwind app.
+/backend → Express API with SQLite/Postgres.
+/db → schema + seed file with sample motorcycles/parts.
+Owner dashboard (/owner) with login and management features.
+Customer-facing website with cart + checkout mockup.
+Deployment instructions + GitHub repo.
+⚡ Prompt Instruction for Replit:
+"Build a modern motorcycle e-commerce platform inspired by sportbikefl.com. Use React + Tailwind for frontend, Node.js + Express for backend, and SQLite for database. The site must have a customer-facing store (home, motorcycles, parts, accessories, cart/checkout) and an owner dashboard (login: ronnie123/ronnie123). Owner can add/edit/delete products, mark as sold, and apply discounts. Products must update dynamically from the database. Make the design sleek, responsive, and modern compared to the outdated current site."
