@@ -1,0 +1,250 @@
+import { useQuery } from "@tanstack/react-query";
+import { useRoute } from "wouter";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+import { ProductWithDiscount } from "@/lib/types";
+import { useCart } from "@/hooks/use-cart";
+import { useToast } from "@/hooks/use-toast";
+import { ArrowLeft, ShoppingCart, Star, Package, Truck } from "lucide-react";
+import { Link } from "wouter";
+
+export default function ProductDetail() {
+  const [, params] = useRoute("/product/:id");
+  const { addToCart, isUpdating } = useCart();
+  const { toast } = useToast();
+
+  const { data: product, isLoading, error } = useQuery<ProductWithDiscount>({
+    queryKey: ["/api/products", params?.id],
+    queryFn: async () => {
+      const response = await fetch(`/api/products/${params?.id}`);
+      if (!response.ok) {
+        throw new Error("Product not found");
+      }
+      return response.json();
+    },
+    enabled: !!params?.id,
+  });
+
+  const handleAddToCart = async () => {
+    if (!product) return;
+    
+    try {
+      await addToCart({ productId: product.id });
+      toast({
+        title: "Added to cart",
+        description: `${product.title} has been added to your cart.`,
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to add item to cart. Please try again.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen py-8 px-4">
+        <div className="container mx-auto">
+          <div className="animate-pulse">
+            <div className="h-8 bg-card rounded mb-8 w-32"></div>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              <div className="h-96 bg-card rounded"></div>
+              <div className="space-y-4">
+                <div className="h-8 bg-card rounded w-3/4"></div>
+                <div className="h-6 bg-card rounded w-1/2"></div>
+                <div className="h-16 bg-card rounded"></div>
+                <div className="h-12 bg-card rounded"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error || !product) {
+    return (
+      <div className="min-h-screen py-8 px-4">
+        <div className="container mx-auto text-center">
+          <h1 className="text-2xl font-bold mb-4" data-testid="text-product-not-found">Product Not Found</h1>
+          <p className="text-muted-foreground mb-8">The product you're looking for doesn't exist or has been removed.</p>
+          <Link href="/catalog">
+            <Button data-testid="button-back-to-catalog">Back to Catalog</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const hasDiscount = product.discount && parseFloat(product.discount) > 0;
+  const originalPrice = parseFloat(product.price);
+  const discountedPrice = product.discountedPrice || originalPrice;
+
+  const getStatusBadge = () => {
+    if (product.stockStatus === "sold") {
+      return <Badge variant="destructive">Sold</Badge>;
+    }
+    if (hasDiscount) {
+      return <Badge className="bg-amber-500 text-black">Sale</Badge>;
+    }
+    if (product.featured) {
+      return <Badge variant="default">Featured</Badge>;
+    }
+    return <Badge className="bg-green-500 text-black">In Stock</Badge>;
+  };
+
+  return (
+    <div className="min-h-screen py-8 px-4">
+      <div className="container mx-auto">
+        <Link href="/catalog">
+          <Button variant="ghost" className="mb-8" data-testid="button-back">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Catalog
+          </Button>
+        </Link>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Product Images */}
+          <div className="space-y-4">
+            <div className="relative">
+              <img
+                src={product.images[0] || "/placeholder-product.jpg"}
+                alt={product.title}
+                className="w-full h-96 object-cover rounded-lg"
+                data-testid="img-product-main"
+              />
+              <div className="absolute top-4 right-4">
+                {getStatusBadge()}
+              </div>
+            </div>
+            {product.images.length > 1 && (
+              <div className="grid grid-cols-4 gap-2">
+                {product.images.slice(1, 5).map((image, index) => (
+                  <img
+                    key={index}
+                    src={image}
+                    alt={`${product.title} ${index + 2}`}
+                    className="w-full h-20 object-cover rounded"
+                    data-testid={`img-product-thumb-${index}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Product Info */}
+          <div className="space-y-6">
+            <div>
+              <h1 className="text-3xl font-bold mb-2" data-testid="text-product-title">
+                {product.title}
+              </h1>
+              <p className="text-muted-foreground text-lg" data-testid="text-product-category">
+                {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
+              </p>
+            </div>
+
+            <div className="flex items-center space-x-4">
+              {hasDiscount ? (
+                <>
+                  <span className="text-2xl text-muted-foreground line-through" data-testid="text-original-price">
+                    ${originalPrice.toFixed(2)}
+                  </span>
+                  <span className="text-3xl font-bold text-primary" data-testid="text-discounted-price">
+                    ${discountedPrice.toFixed(2)}
+                  </span>
+                  <Badge className="bg-amber-500 text-black" data-testid="badge-discount">
+                    {product.discountType === "percentage" ? `${product.discount}% OFF` : `$${product.discount} OFF`}
+                  </Badge>
+                </>
+              ) : (
+                <span className="text-3xl font-bold text-primary" data-testid="text-price">
+                  ${originalPrice.toFixed(2)}
+                </span>
+              )}
+            </div>
+
+            <p className="text-foreground leading-relaxed" data-testid="text-product-description">
+              {product.description}
+            </p>
+
+            <Separator />
+
+            <div className="space-y-4">
+              <div className="flex items-center space-x-2">
+                <Package className="h-5 w-5 text-muted-foreground" />
+                <span className="text-sm" data-testid="text-stock-status">
+                  {product.stockQuantity > 0 ? `${product.stockQuantity} in stock` : "Out of stock"}
+                </span>
+              </div>
+              
+              <div className="flex items-center space-x-2">
+                <Truck className="h-5 w-5 text-muted-foreground" />
+                <span className="text-sm">Free shipping on orders over $500</span>
+              </div>
+              
+              {product.featured && (
+                <div className="flex items-center space-x-2">
+                  <Star className="h-5 w-5 text-primary" />
+                  <span className="text-sm">Featured Product</span>
+                </div>
+              )}
+            </div>
+
+            <Separator />
+
+            <div className="space-y-4">
+              <Button
+                size="lg"
+                className="w-full"
+                onClick={handleAddToCart}
+                disabled={isUpdating || product.stockStatus === "sold" || product.stockQuantity === 0}
+                data-testid="button-add-to-cart"
+              >
+                <ShoppingCart className="mr-2 h-5 w-5" />
+                {product.stockStatus === "sold" ? "Sold Out" : 
+                 product.stockQuantity === 0 ? "Out of Stock" : "Add to Cart"}
+              </Button>
+            </div>
+
+            {/* Product Specifications */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-lg font-semibold mb-4" data-testid="text-specifications-heading">Specifications</h3>
+                <div className="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <span className="text-muted-foreground">Category:</span>
+                    <span className="ml-2 font-medium" data-testid="text-spec-category">
+                      {product.category.charAt(0).toUpperCase() + product.category.slice(1)}
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Stock:</span>
+                    <span className="ml-2 font-medium" data-testid="text-spec-stock">
+                      {product.stockQuantity} available
+                    </span>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Status:</span>
+                    <span className="ml-2 font-medium" data-testid="text-spec-status">
+                      {product.stockStatus.replace('_', ' ').toUpperCase()}
+                    </span>
+                  </div>
+                  {product.featured && (
+                    <div>
+                      <span className="text-muted-foreground">Featured:</span>
+                      <span className="ml-2 font-medium text-primary">Yes</span>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
