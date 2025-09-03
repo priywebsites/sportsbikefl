@@ -269,15 +269,15 @@ export default function Home() {
               <div className="space-y-4 text-lg text-gray-700">
                 <div className="flex items-start space-x-3">
                   <CheckCircle className="text-green-400 text-xl mt-1 flex-shrink-0" />
-                  <span>From <span className="text-green-400 font-semibold">high-performance sport bikes</span> to timeless cruisers, touring machines, adventure bikes, and custom builds — we service them all.</span>
+                  <span>From <span className="font-semibold text-[#030303]">high-performance sport bikes</span> to timeless cruisers, touring machines, adventure bikes, and custom builds — we service them all.</span>
                 </div>
                 <div className="flex items-start space-x-3">
                   <CheckCircle className="text-green-400 text-xl mt-1 flex-shrink-0" />
-                  <span>Discover our extensive selection of <span className="text-green-400 font-semibold">premium motorcycle parts</span> and expert services designed to enhance not just speed, style, and reliability, but the entire riding experience.</span>
+                  <span>Discover our extensive selection of <span className="font-semibold text-[#000000]">premium motorcycle parts</span> and expert services designed to enhance not just speed, style, and reliability, but the entire riding experience.</span>
                 </div>
                 <div className="flex items-start space-x-3">
                   <CheckCircle className="text-green-400 text-xl mt-1 flex-shrink-0" />
-                  <span>Whether you're chasing <span className="text-green-400 font-semibold">pure adrenaline</span> or the refined joy of the open road, we've got everything you need to take your ride to the next level.</span>
+                  <span>Whether you're chasing <span className="font-semibold text-[#000000]">pure adrenaline</span> or the refined joy of the open road, we've got everything you need to take your ride to the next level.</span>
                 </div>
               </div>
             </div>
