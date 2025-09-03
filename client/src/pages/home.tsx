@@ -264,7 +264,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-4xl md:text-5xl font-bold mb-8 text-gray-900">
-                YOUR <span className="text-green-400">ALL-IN-ONE DESTINATION</span> FOR <span className="text-[#000000]">MOTORCYCLES</span>, SERVICE & MAINTENANCE
+                YOUR <span className="text-[#c74040]">ALL-IN-ONE DESTINATION</span> FOR <span className="text-[#000000]">MOTORCYCLES</span>, SERVICE & MAINTENANCE
               </h2>
               <div className="space-y-4 text-lg text-gray-700">
                 <div className="flex items-start space-x-3">
