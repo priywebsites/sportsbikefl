@@ -152,7 +152,7 @@ export default function Home() {
                       backgroundRepeat: 'no-repeat'
                     }}
                   >
-                    <div className="absolute inset-0 bg-red-600/85 group-hover:bg-red-600/75 transition-colors duration-300"></div>
+                    <div className="absolute inset-0 bg-red-600/90 group-hover:bg-red-600/80 transition-colors duration-300"></div>
                     <div className="relative z-10 h-full flex flex-col justify-center">
                       <div className="bg-white/20 backdrop-blur-sm rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
                         <Bike className="text-white text-3xl drop-shadow-lg" />
@@ -262,57 +262,35 @@ export default function Home() {
       </section>
 
       {/* All-in-One Service Section */}
-      <section 
-        className="py-20 px-4 relative overflow-hidden"
-        style={{
-          backgroundImage: `url(${serviceImage})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundRepeat: 'no-repeat'
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-green-400/90 via-green-500/90 to-lime-400/90"></div>
-        <div className="container mx-auto max-w-6xl relative z-10">
-          <div className="text-center mb-12">
-            <h2 className="text-4xl md:text-6xl font-bold mb-8 text-black drop-shadow-lg">
-              YOUR ALL-IN-ONE DESTINATION FOR MOTORCYCLES, SERVICE & MAINTENANCE
-            </h2>
-            <div className="max-w-4xl mx-auto space-y-6 text-lg md:text-xl text-black leading-relaxed">
-              <p className="drop-shadow-lg">
-                From high-performance sport bikes to timeless cruisers, touring machines, adventure bikes, and custom builds — we service them all.
-              </p>
-              <p className="drop-shadow-lg">
-                Discover our extensive selection of premium motorcycle parts and expert services designed to enhance not just speed, style, and reliability, but the entire riding experience.
-              </p>
-              <p className="drop-shadow-lg font-semibold">
-                Whether you're chasing pure adrenaline or the refined joy of the open road, we've got everything you need to take your ride to the next level.
-              </p>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-            <div className="bg-black/20 backdrop-blur-sm p-8 rounded-xl border border-green-300/30">
-              <div className="bg-black/30 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
-                <Bike className="text-green-300 text-2xl" />
+      <section className="py-20 px-4 bg-white">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-bold mb-8 text-gray-900">
+                YOUR <span className="text-green-400">ALL-IN-ONE DESTINATION</span> FOR <span className="text-green-400">MOTORCYCLES</span>, SERVICE & MAINTENANCE
+              </h2>
+              <div className="space-y-4 text-lg text-gray-700">
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="text-green-400 text-xl mt-1 flex-shrink-0" />
+                  <span>From <span className="text-green-400 font-semibold">high-performance sport bikes</span> to timeless cruisers, touring machines, adventure bikes, and custom builds — we service them all.</span>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="text-green-400 text-xl mt-1 flex-shrink-0" />
+                  <span>Discover our extensive selection of <span className="text-green-400 font-semibold">premium motorcycle parts</span> and expert services designed to enhance not just speed, style, and reliability, but the entire riding experience.</span>
+                </div>
+                <div className="flex items-start space-x-3">
+                  <CheckCircle className="text-green-400 text-xl mt-1 flex-shrink-0" />
+                  <span>Whether you're chasing <span className="text-green-400 font-semibold">pure adrenaline</span> or the refined joy of the open road, we've got everything you need to take your ride to the next level.</span>
+                </div>
               </div>
-              <h3 className="text-xl font-bold mb-4 text-black text-center drop-shadow-lg">Premium Motorcycles</h3>
-              <p className="text-black/90 text-center drop-shadow-lg">Sport bikes, cruisers, touring, adventure bikes & custom builds</p>
             </div>
             
-            <div className="bg-black/20 backdrop-blur-sm p-8 rounded-xl border border-green-300/30">
-              <div className="bg-black/30 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
-                <Settings className="text-green-300 text-2xl" />
-              </div>
-              <h3 className="text-xl font-bold mb-4 text-black text-center drop-shadow-lg">Expert Service</h3>
-              <p className="text-black/90 text-center drop-shadow-lg">Professional maintenance, repairs & performance upgrades</p>
-            </div>
-            
-            <div className="bg-black/20 backdrop-blur-sm p-8 rounded-xl border border-green-300/30">
-              <div className="bg-black/30 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
-                <Shield className="text-green-300 text-2xl" />
-              </div>
-              <h3 className="text-xl font-bold mb-4 text-black text-center drop-shadow-lg">Premium Parts</h3>
-              <p className="text-black/90 text-center drop-shadow-lg">Genuine OEM parts & high-performance aftermarket components</p>
+            <div className="flex justify-center">
+              <img 
+                src={serviceImage} 
+                alt="Green motorcycle service" 
+                className="w-full max-w-lg h-auto rounded-2xl shadow-2xl"
+              />
             </div>
           </div>
         </div>

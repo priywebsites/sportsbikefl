@@ -26,7 +26,7 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-gradient-to-r from-red-600/60 to-blue-900/60 backdrop-blur-md border-b border-white/20 shadow-lg before:absolute before:inset-0 before:bg-gradient-to-r before:from-white/10 before:to-transparent before:opacity-30 before:pointer-events-none">
+      <header className="sticky top-0 z-50 bg-black border-b border-white/20 shadow-lg">
         <nav className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-8">
