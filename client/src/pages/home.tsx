@@ -151,7 +151,7 @@ export default function Home() {
                       backgroundRepeat: 'no-repeat'
                     }}
                   >
-                    <div className="absolute inset-0 bg-red-600/90 group-hover:bg-red-600/80 transition-colors duration-300"></div>
+                    <div className="absolute inset-0 group-hover:bg-red-600/80 transition-colors duration-300 bg-[#4a4444e6]"></div>
                     <div className="relative z-10 h-full flex flex-col justify-center">
                       <div className="bg-white/20 backdrop-blur-sm rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
                         <Bike className="text-white text-3xl drop-shadow-lg" />
