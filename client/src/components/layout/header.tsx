@@ -34,7 +34,7 @@ export function Header() {
                 <div className="bg-white/10 backdrop-blur-sm rounded-full p-2 group-hover:scale-110 transition-transform duration-300 border border-white/20">
                   <img src={logoImage} alt="SportbikeFL Logo" className="w-8 h-8 object-contain" />
                 </div>
-                <span className="text-2xl font-bold text-white drop-shadow-lg">SportbikeFL</span>
+                <span className="text-2xl font-bold text-white drop-shadow-lg">Sportbike Parts & Export</span>
               </Link>
               <div className="hidden md:flex space-x-8">
                 {navigation.map((item) => (
@@ -108,7 +108,7 @@ export function Header() {
                   <div className="flex flex-col space-y-6 mt-8">
                     <div className="flex items-center space-x-3 pb-4 border-b border-gray-200">
                       <img src={logoImage} alt="SportbikeFL Logo" className="w-8 h-8 object-contain" />
-                      <span className="text-xl font-bold text-gray-900">SportbikeFL</span>
+                      <span className="text-xl font-bold text-gray-900">Sportbike Parts & Export</span>
                     </div>
                     
                     {/* Navigation Links */}

@@ -32,12 +32,12 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center animate-bounce-in">
             <Link href="/catalog?category=motorcycles">
-              <Button size="lg" className="text-lg px-10 py-6 bg-white text-red-600 hover:bg-gray-50 shadow-lg hover:shadow-xl transition-all duration-300" data-testid="button-shop-motorcycles">
+              <Button size="lg" className="text-lg px-10 py-6 bg-white text-red-600 hover:bg-gray-50 shadow-lg hover:shadow-xl transition-all duration-300 rounded-full" data-testid="button-shop-motorcycles">
                 Shop Motorcycles
               </Button>
             </Link>
             <Link href="/catalog?category=parts">
-              <Button variant="outline" size="lg" className="text-lg px-10 py-6 border-white bg-transparent text-white hover:bg-white hover:text-red-600 shadow-lg transition-all duration-300" data-testid="button-browse-parts">
+              <Button variant="outline" size="lg" className="text-lg px-10 py-6 border-white bg-transparent text-white hover:bg-white hover:text-red-600 shadow-lg transition-all duration-300 rounded-full" data-testid="button-browse-parts">
                 Browse Parts
               </Button>
             </Link>
@@ -52,7 +52,7 @@ export default function Home() {
           <div className="text-center mb-16 animate-slide-up">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900" data-testid="text-testimonials-heading">What Our Customers Say</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto" data-testid="text-testimonials-description">
-              Real reviews from satisfied customers who trust SportbikeFL for their motorcycle needs
+              Real reviews from satisfied customers who trust Sportbike Parts & Export for their motorcycle needs
             </p>
           </div>
           
@@ -124,17 +124,17 @@ export default function Home() {
                 <div className="text-sm text-gray-600">Average Rating</div>
               </div>
               <div className="text-center">
-                <div className="text-4xl font-bold text-red-600">44</div>
-                <div className="text-sm text-gray-600">Facebook Likes</div>
+                <div className="text-4xl font-bold text-red-600">4.8</div>
+                <div className="text-sm text-gray-600">Average Rating</div>
               </div>
             </div>
             <p className="text-gray-700 max-w-3xl mx-auto">
-              Join hundreds of satisfied customers who trust SportbikeFL for professional service, competitive pricing, and comprehensive motorcycle solutions. Our multilingual staff provides excellent customer service in English, Spanish, and Portuguese.
+              Join hundreds of satisfied customers who trust Sportbike Parts & Export for professional service, competitive pricing, and comprehensive motorcycle solutions. Our multilingual staff provides excellent customer service in English, Spanish, and Portuguese.
             </p>
           </div>
 
           {/* Quick Navigation Grid */}
-          <div className="mb-20 bg-gray-100 p-12 rounded-3xl">
+          <div className="mt-16 mb-20 bg-gray-100 p-12 rounded-3xl">
             <h3 className="text-3xl font-semibold mb-12 text-center text-gray-900 animate-fade-in" data-testid="text-categories-heading">Shop by Category</h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               <Link href="/catalog?category=motorcycles">
@@ -176,6 +176,61 @@ export default function Home() {
                 </Card>
               </Link>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Trust & Credibility Section */}
+      <section className="py-16 px-4 bg-white border-t border-gray-200">
+        <div className="container mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4 text-gray-900">Why Riders Trust Sportbike Parts & Export</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Serving Florida's motorcycle community with expertise, quality, and dedicated service
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="text-center animate-slide-up">
+              <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Award className="text-red-600 text-2xl" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900">Expert Knowledge</h3>
+              <p className="text-gray-600">
+                Decades of combined experience in sportbike sales, service, and performance modifications. 
+                Our team knows these machines inside and out.
+              </p>
+            </div>
+            
+            <div className="text-center animate-slide-up" style={{animationDelay: '0.1s'}}>
+              <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <CheckCircle className="text-gray-700 text-2xl" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900">Quality Guaranteed</h3>
+              <p className="text-gray-600">
+                We stock only genuine OEM parts and premium aftermarket components from trusted manufacturers. 
+                Quality you can count on.
+              </p>
+            </div>
+            
+            <div className="text-center animate-slide-up" style={{animationDelay: '0.2s'}}>
+              <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+                <Users className="text-red-600 text-2xl" />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900">Community Focused</h3>
+              <p className="text-gray-600">
+                Part of Florida's riding community for years. Follow us on Facebook to connect with fellow riders 
+                and stay updated on events and new arrivals.
+              </p>
+            </div>
+          </div>
+          
+          <div className="text-center mt-12">
+            <Link href="/contact">
+              <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-full">
+                Visit Our Shop Today
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
@@ -227,7 +282,7 @@ export default function Home() {
                         href="https://www.google.com/maps/place/Sportbike+Parts+%26+Export/@28.2798018,-81.429789,17z/data=!3m1!4b1!4m6!3m5!1s0x88dd847617b2b255:0x93caaf6aa9fbbf9b!8m2!3d28.2798018!4d-81.4272087!16s%2Fg%2F12lkd4ybj?entry=ttu&g_ep=EgoyMDI1MDgyNS4wIKXMDSoASAFQAw%3D%3D"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
+                        className="inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-full transition-colors"
                         data-testid="button-directions"
                       >
                         <MapPin className="h-4 w-4 mr-2" />
@@ -240,61 +295,6 @@ export default function Home() {
               
               <BusinessHours />
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Trust & Credibility Section */}
-      <section className="py-16 px-4 bg-white border-t border-gray-200">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-gray-900">Why Riders Trust SportbikeFL</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Serving Florida's motorcycle community with expertise, quality, and dedicated service
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="text-center animate-slide-up">
-              <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Award className="text-red-600 text-2xl" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">Expert Knowledge</h3>
-              <p className="text-gray-600">
-                Decades of combined experience in sportbike sales, service, and performance modifications. 
-                Our team knows these machines inside and out.
-              </p>
-            </div>
-            
-            <div className="text-center animate-slide-up" style={{animationDelay: '0.1s'}}>
-              <div className="bg-gray-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <CheckCircle className="text-gray-700 text-2xl" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">Quality Guaranteed</h3>
-              <p className="text-gray-600">
-                We stock only genuine OEM parts and premium aftermarket components from trusted manufacturers. 
-                Quality you can count on.
-              </p>
-            </div>
-            
-            <div className="text-center animate-slide-up" style={{animationDelay: '0.2s'}}>
-              <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
-                <Users className="text-red-600 text-2xl" />
-              </div>
-              <h3 className="text-xl font-semibold mb-3 text-gray-900">Community Focused</h3>
-              <p className="text-gray-600">
-                Part of Florida's riding community for years. Follow us on Facebook to connect with fellow riders 
-                and stay updated on events and new arrivals.
-              </p>
-            </div>
-          </div>
-          
-          <div className="text-center mt-12">
-            <Link href="/contact">
-              <Button size="lg" className="bg-red-600 hover:bg-red-700 text-white px-8 py-3">
-                Visit Our Shop Today
-              </Button>
-            </Link>
           </div>
         </div>
       </section>
