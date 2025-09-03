@@ -24,7 +24,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="hero-gradient py-32 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[#c5e1f0d6]"></div>
+        <div className="absolute inset-0 bg-[#a3bfa3d6]"></div>
         <div className="container mx-auto text-center relative z-10">
           <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight animate-fade-in text-[#000000]" data-testid="text-hero-title">
             Premium <span className="text-[#b00000]">Sportbikes</span><br />
@@ -315,7 +315,7 @@ export default function Home() {
             </div>
             
             <div className="text-center animate-slide-up" style={{animationDelay: '0.1s'}}>
-              <div className="rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 bg-[#ffd9d9]">
+              <div className="rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 bg-[#d8edd1d6]">
                 <CheckCircle className="text-gray-700 text-2xl" />
               </div>
               <h3 className="text-xl font-semibold mb-3 text-gray-900">Quality Guaranteed</h3>
