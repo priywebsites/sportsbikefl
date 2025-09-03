@@ -74,12 +74,12 @@ export default function Catalog() {
   };
 
   return (
-    <div className="min-h-screen py-8 px-4">
+    <div className="min-h-screen py-8 px-4 bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-100">
       <div className="container mx-auto">
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Filters Sidebar */}
           <div className="lg:w-1/4">
-            <Card className="bg-card">
+            <Card className="bg-gradient-to-br from-emerald-100 to-teal-100 border-0 shadow-lg">
               <CardContent className="p-6">
                 <h3 className="text-lg font-semibold mb-4 flex items-center" data-testid="text-filters-heading">
                   <Filter className="mr-2 h-5 w-5" />
