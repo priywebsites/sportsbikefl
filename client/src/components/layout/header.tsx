@@ -25,12 +25,12 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-gradient-to-r from-blue-500/95 via-purple-500/95 to-pink-500/95 backdrop-blur-md border-b border-white/20 shadow-lg">
+      <header className="sticky top-0 z-50 bg-gradient-to-r from-red-600/95 to-black/95 backdrop-blur-md border-b border-white/20 shadow-lg">
         <nav className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-8">
               <Link href="/" className="flex items-center space-x-3 group" data-testid="link-home">
-                <div className="bg-gradient-to-br from-orange-400 to-red-500 rounded-full p-2 group-hover:scale-110 transition-transform duration-300">
+                <div className="bg-gradient-to-br from-red-600 to-red-800 rounded-full p-2 group-hover:scale-110 transition-transform duration-300">
                   <Bike className="text-white text-2xl" />
                 </div>
                 <span className="text-2xl font-bold text-white drop-shadow-lg">SportbikeFL</span>
@@ -47,7 +47,7 @@ export function Header() {
                   >
                     {item.name}
                     {location === item.href && (
-                      <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-gradient-to-r from-yellow-400 to-orange-400"></div>
+                      <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-white"></div>
                     )}
                   </Link>
                 ))}
@@ -65,7 +65,7 @@ export function Header() {
                 <ShoppingCart className="h-5 w-5 text-white" />
                 {itemCount > 0 && (
                   <Badge 
-                    className="absolute -top-1 -right-1 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs bg-gradient-to-r from-orange-400 to-red-500 text-white font-bold animate-bounce" 
+                    className="absolute -top-1 -right-1 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs bg-red-600 text-white font-bold animate-bounce" 
                   >
                     {itemCount}
                   </Badge>
@@ -74,14 +74,14 @@ export function Header() {
               
               {isAuthenticated ? (
                 <Link href="/owner" data-testid="link-dashboard">
-                  <Button className="bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600 text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
+                  <Button className="bg-white text-red-600 hover:bg-gray-50 font-semibold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
                     <User className="h-4 w-4 mr-2" />
                     Dashboard
                   </Button>
                 </Link>
               ) : (
                 <Link href="/owner/login" data-testid="link-owner-login">
-                  <Button className="bg-gradient-to-r from-green-400 to-blue-500 hover:from-green-500 hover:to-blue-600 text-white font-semibold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
+                  <Button className="bg-white text-gray-800 hover:bg-gray-50 font-semibold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300">
                     <User className="h-4 w-4 mr-2" />
                     Owner Login
                   </Button>
