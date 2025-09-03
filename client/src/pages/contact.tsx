@@ -2,7 +2,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Phone, Mail, MapPin, Clock, Facebook } from "lucide-react";
+import { Phone, Mail, MapPin, Facebook } from "lucide-react";
+import { BusinessHours } from "@/components/business-hours";
 
 export default function Contact() {
   return (
@@ -22,51 +23,53 @@ export default function Contact() {
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <Phone className="mr-2 h-5 w-5 text-red-600" />
-                  Phone & Hours
+                  Contact Information
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center">
                   <Phone className="mr-3 h-4 w-4 text-gray-500" />
-                  <span data-testid="text-phone">(555) 123-4567</span>
+                  <span data-testid="text-phone">(407) 483-4884</span>
                 </div>
                 <div className="flex items-center">
-                  <Clock className="mr-3 h-4 w-4 text-gray-500" />
-                  <div>
-                    <div className="font-medium">Business Hours:</div>
-                    <div className="text-sm text-gray-600">
-                      Mon-Fri: 9:00 AM - 7:00 PM<br />
-                      Saturday: 9:00 AM - 6:00 PM<br />
-                      Sunday: 11:00 AM - 4:00 PM
-                    </div>
-                  </div>
+                  <Mail className="mr-3 h-4 w-4 text-gray-500" />
+                  <span data-testid="text-email">info@sportbikefl.com</span>
                 </div>
               </CardContent>
             </Card>
+            
+            <BusinessHours />
 
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center">
                   <MapPin className="mr-2 h-5 w-5 text-red-600" />
-                  Location
+                  Our Location
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex items-center">
                   <MapPin className="mr-3 h-4 w-4 text-gray-500" />
                   <div>
-                    <div data-testid="text-address">123 Speedway Blvd</div>
-                    <div className="text-gray-600">Miami, FL 33101</div>
+                    <div data-testid="text-address">2215 Clay St</div>
+                    <div className="text-gray-600">Kissimmee, FL 34741</div>
                   </div>
-                </div>
-                <div className="flex items-center">
-                  <Mail className="mr-3 h-4 w-4 text-gray-500" />
-                  <span data-testid="text-email">info@sportbikefl.com</span>
                 </div>
                 <div className="flex items-center">
                   <Facebook className="mr-3 h-4 w-4 text-gray-500" />
                   <a href="https://www.facebook.com/sportbikeparts/" target="_blank" rel="noopener noreferrer" className="text-red-600 hover:text-red-700" data-testid="link-facebook">
                     Follow us on Facebook
+                  </a>
+                </div>
+                <div className="mt-4">
+                  <a 
+                    href="https://www.google.com/maps/place/Sportbike+Parts+%26+Export/@28.2798018,-81.429789,17z/data=!3m1!4b1!4m6!3m5!1s0x88dd847617b2b255:0x93caaf6aa9fbbf9b!8m2!3d28.2798018!4d-81.4272087!16s%2Fg%2F12lkd4ybj?entry=ttu&g_ep=EgoyMDI1MDgyNS4wIKXMDSoASAFQAw%3D%3D"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
+                    data-testid="button-google-maps"
+                  >
+                    View on Google Maps
                   </a>
                 </div>
               </CardContent>

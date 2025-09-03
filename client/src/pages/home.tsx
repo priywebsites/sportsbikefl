@@ -4,7 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ProductCard } from "@/components/product-card";
 import { ProductWithDiscount } from "@/lib/types";
 import { Link } from "wouter";
-import { Bike, Settings, Shield, Star, CheckCircle, Users, Award } from "lucide-react";
+import { Bike, Settings, Shield, Star, CheckCircle, Users, Award, MapPin, Clock } from "lucide-react";
+import { BusinessHours } from "@/components/business-hours";
 
 export default function Home() {
   const { data: featuredProducts = [], isLoading: isFeaturedLoading } = useQuery<ProductWithDiscount[]>({
@@ -121,6 +122,70 @@ export default function Home() {
                   </CardContent>
                 </Card>
               </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Visit Us Section */}
+      <section className="py-16 px-4 bg-gray-100">
+        <div className="container mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4 text-gray-900">Visit Our Store</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Come see our selection of motorcycles and parts in person. Our Kissimmee location serves riders throughout Central Florida.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-6xl mx-auto">
+            {/* Google Maps Embed */}
+            <div className="bg-white rounded-xl overflow-hidden shadow-lg">
+              <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3509.4573833157887!2d-81.42978900000001!3d28.279801799999998!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x88dd847617b2b255%3A0x93caaf6aa9fbbf9b!2sSportbike%20Parts%20%26%20Export!5e0!3m2!1sen!2sus!4v1635000000000!5m2!1sen!2sus"
+                width="100%"
+                height="400"
+                style={{ border: 0 }}
+                allowFullScreen
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Sportbike Parts & Export Location"
+                data-testid="google-maps-embed"
+              />
+            </div>
+            
+            {/* Store Information */}
+            <div className="space-y-6">
+              <Card className="bg-white shadow-lg">
+                <CardContent className="p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-red-100 rounded-full p-3">
+                      <MapPin className="h-6 w-6 text-red-600" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold mb-2 text-gray-900">Our Location</h3>
+                      <p className="text-gray-600 mb-3">
+                        2215 Clay St<br />
+                        Kissimmee, FL 34741
+                      </p>
+                      <p className="text-gray-600 mb-4">
+                        Phone: <span className="font-medium">(407) 483-4884</span>
+                      </p>
+                      <a 
+                        href="https://www.google.com/maps/place/Sportbike+Parts+%26+Export/@28.2798018,-81.429789,17z/data=!3m1!4b1!4m6!3m5!1s0x88dd847617b2b255:0x93caaf6aa9fbbf9b!8m2!3d28.2798018!4d-81.4272087!16s%2Fg%2F12lkd4ybj?entry=ttu&g_ep=EgoyMDI1MDgyNS4wIKXMDSoASAFQAw%3D%3D"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition-colors"
+                        data-testid="button-directions"
+                      >
+                        <MapPin className="h-4 w-4 mr-2" />
+                        Get Directions
+                      </a>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              <BusinessHours />
             </div>
           </div>
         </div>

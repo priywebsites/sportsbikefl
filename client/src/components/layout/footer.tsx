@@ -35,7 +35,7 @@ export function Footer() {
                 <div className="bg-gray-600 rounded-full p-2 mr-3">
                   <Phone className="h-4 w-4 text-white" />
                 </div>
-                <span data-testid="text-phone">(555) 123-4567</span>
+                <span data-testid="text-phone">(407) 483-4884</span>
               </li>
               <li className="flex items-center">
                 <div className="bg-red-600 rounded-full p-2 mr-3">
@@ -47,7 +47,7 @@ export function Footer() {
                 <div className="bg-gray-700 rounded-full p-2 mr-3">
                   <MapPin className="h-4 w-4 text-white" />
                 </div>
-                <span data-testid="text-address">123 Speedway Blvd, Miami, FL</span>
+                <span data-testid="text-address">2215 Clay St, Kissimmee, FL 34741</span>
               </li>
             </ul>
           </div>
