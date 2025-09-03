@@ -56,39 +56,43 @@ export function Header() {
             </div>
             
             <div className="flex items-center space-x-4">
-              <Button
-                variant="ghost"
-                size="icon"
-                className="relative hover:bg-white/20 rounded-full transition-all duration-300 backdrop-blur-sm"
-                onClick={() => setIsCartOpen(true)}
-                data-testid="button-cart"
-              >
-                <ShoppingCart className="h-5 w-5 text-white" />
-                {itemCount > 0 && (
-                  <Badge 
-                    className="absolute -top-1 -right-1 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs bg-red-600 text-white font-bold animate-bounce border border-white/30" 
-                  >
-                    {itemCount}
-                  </Badge>
+              {/* Desktop Navigation */}
+              <div className="hidden md:flex items-center space-x-4">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="relative hover:bg-white/20 rounded-full transition-all duration-300 backdrop-blur-sm"
+                  onClick={() => setIsCartOpen(true)}
+                  data-testid="button-cart"
+                >
+                  <ShoppingCart className="h-5 w-5 text-white" />
+                  {itemCount > 0 && (
+                    <Badge 
+                      className="absolute -top-1 -right-1 h-6 w-6 rounded-full p-0 flex items-center justify-center text-xs bg-red-600 text-white font-bold animate-bounce border border-white/30" 
+                    >
+                      {itemCount}
+                    </Badge>
+                  )}
+                </Button>
+                
+                {isAuthenticated ? (
+                  <Link href="/owner" data-testid="link-dashboard">
+                    <Button className="bg-white/90 backdrop-blur-sm text-red-600 hover:bg-white font-semibold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border border-white/30">
+                      <User className="h-4 w-4 mr-2" />
+                      Dashboard
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href="/owner/login" data-testid="link-owner-login">
+                    <Button className="bg-white/90 backdrop-blur-sm text-gray-800 hover:bg-white font-semibold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border border-white/30">
+                      <User className="h-4 w-4 mr-2" />
+                      Owner Login
+                    </Button>
+                  </Link>
                 )}
-              </Button>
+              </div>
               
-              {isAuthenticated ? (
-                <Link href="/owner" data-testid="link-dashboard">
-                  <Button className="bg-white/90 backdrop-blur-sm text-red-600 hover:bg-white font-semibold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border border-white/30">
-                    <User className="h-4 w-4 mr-2" />
-                    Dashboard
-                  </Button>
-                </Link>
-              ) : (
-                <Link href="/owner/login" data-testid="link-owner-login">
-                  <Button className="bg-white/90 backdrop-blur-sm text-gray-800 hover:bg-white font-semibold px-6 py-2 rounded-full shadow-lg hover:shadow-xl transition-all duration-300 border border-white/30">
-                    <User className="h-4 w-4 mr-2" />
-                    Owner Login
-                  </Button>
-                </Link>
-              )}
-              
+              {/* Mobile Hamburger Menu */}
               <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
                 <SheetTrigger asChild>
                   <Button 
@@ -106,6 +110,8 @@ export function Header() {
                       <img src={logoImage} alt="SportbikeFL Logo" className="w-8 h-8 object-contain" />
                       <span className="text-xl font-bold text-gray-900">SportbikeFL</span>
                     </div>
+                    
+                    {/* Navigation Links */}
                     {navigation.map((item) => (
                       <Link
                         key={item.name}
@@ -119,6 +125,44 @@ export function Header() {
                         {item.name}
                       </Link>
                     ))}
+                    
+                    <div className="border-t border-gray-200 pt-6">
+                      {/* Cart Button */}
+                      <Button
+                        variant="outline"
+                        className="w-full mb-4 flex items-center justify-center space-x-2 text-gray-700 border-gray-300 hover:bg-red-50 hover:text-red-600 hover:border-red-600"
+                        onClick={() => {
+                          setIsCartOpen(true);
+                          setIsMobileMenuOpen(false);
+                        }}
+                        data-testid="mobile-button-cart"
+                      >
+                        <ShoppingCart className="h-4 w-4" />
+                        <span>Cart</span>
+                        {itemCount > 0 && (
+                          <Badge className="bg-red-600 text-white">
+                            {itemCount}
+                          </Badge>
+                        )}
+                      </Button>
+                      
+                      {/* Auth Button */}
+                      {isAuthenticated ? (
+                        <Link href="/owner" onClick={() => setIsMobileMenuOpen(false)}>
+                          <Button className="w-full bg-red-600 hover:bg-red-700 text-white">
+                            <User className="h-4 w-4 mr-2" />
+                            Dashboard
+                          </Button>
+                        </Link>
+                      ) : (
+                        <Link href="/owner/login" onClick={() => setIsMobileMenuOpen(false)}>
+                          <Button className="w-full bg-red-600 hover:bg-red-700 text-white">
+                            <User className="h-4 w-4 mr-2" />
+                            Owner Login
+                          </Button>
+                        </Link>
+                      )}
+                    </div>
                   </div>
                 </SheetContent>
               </Sheet>
