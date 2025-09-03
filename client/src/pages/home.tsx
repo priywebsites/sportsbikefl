@@ -326,7 +326,7 @@ export default function Home() {
             </div>
             
             <div className="text-center animate-slide-up" style={{animationDelay: '0.2s'}}>
-              <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <div className="rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-4 bg-[#d8edd1d6]">
                 <Users className="text-red-600 text-2xl" />
               </div>
               <h3 className="text-xl font-semibold mb-3 text-gray-900">Community Focused</h3>
