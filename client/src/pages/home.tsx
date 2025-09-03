@@ -46,38 +46,91 @@ export default function Home() {
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-50 to-transparent"></div>
       </section>
 
-      {/* Featured Products */}
+      {/* Customer Testimonials */}
       <section className="py-20 px-4 bg-white">
         <div className="container mx-auto">
           <div className="text-center mb-16 animate-slide-up">
-            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900" data-testid="text-featured-heading">Featured Collection</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto" data-testid="text-featured-description">
-              Hand-picked motorcycles and premium parts from the world's leading manufacturers
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900" data-testid="text-testimonials-heading">What Our Customers Say</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto" data-testid="text-testimonials-description">
+              Real reviews from satisfied customers who trust SportbikeFL for their motorcycle needs
             </p>
           </div>
           
-          {/* Featured Bikes */}
-          <div className="mb-20">
-            <h3 className="text-3xl font-semibold mb-12 flex items-center justify-center animate-fade-in" data-testid="text-featured-bikes-heading">
-              <Star className="text-red-600 mr-4 text-4xl" />
-              <span className="text-gray-900">Featured Bikes</span>
-            </h3>
-            
-            {isFeaturedLoading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {[...Array(3)].map((_, i) => (
-                  <div key={i} className="bg-white rounded-2xl h-96 animate-pulse shadow-lg" data-testid={`skeleton-featured-${i}`} />
-                ))}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
+            <Card className="bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-red-600 animate-slide-up" data-testid="testimonial-1">
+              <CardContent className="p-0">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-gray-700 mb-4 italic">
+                  "Excellent group of people running this shop. Recently purchased a new helmet and was offered a nice discount since I was making multiple purchases."
+                </p>
+                <div className="text-sm text-gray-600">
+                  <span className="font-semibold">Verified Customer</span>
+                  <div className="text-xs text-gray-500">Google Reviews</div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-red-600 animate-slide-up" data-testid="testimonial-2" style={{animationDelay: '0.2s'}}>
+              <CardContent className="p-0">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-gray-700 mb-4 italic">
+                  "Good place, family oriented. I took my bike to Rally - did great job and thanks Angela for the consultation."
+                </p>
+                <div className="text-sm text-gray-600">
+                  <span className="font-semibold">Verified Customer</span>
+                  <div className="text-xs text-gray-500">Google Reviews</div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-red-600 animate-slide-up" data-testid="testimonial-3" style={{animationDelay: '0.4s'}}>
+              <CardContent className="p-0">
+                <div className="flex items-center mb-4">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <p className="text-gray-700 mb-4 italic">
+                  "We have everything for your motorcycle in stock. Really great prices on motorcycle tires and services."
+                </p>
+                <div className="text-sm text-gray-600">
+                  <span className="font-semibold">Verified Customer</span>
+                  <div className="text-xs text-gray-500">Google Reviews</div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+          
+          <div className="text-center bg-gray-50 p-8 rounded-2xl">
+            <div className="flex items-center justify-center space-x-8 mb-6">
+              <div className="text-center">
+                <div className="text-4xl font-bold text-red-600">141</div>
+                <div className="text-sm text-gray-600">Customer Reviews</div>
               </div>
-            ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {featuredProducts.slice(0, 3).map((product, index) => (
-                  <div key={product.id} className="animate-slide-up" style={{animationDelay: `${index * 0.2}s`}}>
-                    <ProductCard product={product} />
-                  </div>
-                ))}
+              <div className="text-center">
+                <div className="flex items-center justify-center mb-2">
+                  {[...Array(5)].map((_, i) => (
+                    <Star key={i} className="h-6 w-6 text-yellow-400 fill-current" />
+                  ))}
+                </div>
+                <div className="text-sm text-gray-600">Average Rating</div>
               </div>
-            )}
+              <div className="text-center">
+                <div className="text-4xl font-bold text-red-600">44</div>
+                <div className="text-sm text-gray-600">Facebook Likes</div>
+              </div>
+            </div>
+            <p className="text-gray-700 max-w-3xl mx-auto">
+              Join hundreds of satisfied customers who trust SportbikeFL for professional service, competitive pricing, and comprehensive motorcycle solutions. Our multilingual staff provides excellent customer service in English, Spanish, and Portuguese.
+            </p>
           </div>
 
           {/* Quick Navigation Grid */}

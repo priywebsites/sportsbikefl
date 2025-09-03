@@ -1,5 +1,6 @@
-import { Bike, Phone, Mail, MapPin } from "lucide-react";
+import { Phone, Mail, MapPin } from "lucide-react";
 import { FaFacebook, FaInstagram, FaYoutube } from "react-icons/fa";
+import logoImage from "@assets/sl_1756939062038.png";
 
 export function Footer() {
   return (
@@ -8,8 +9,8 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
             <div className="flex items-center space-x-3 mb-6">
-              <div className="bg-gradient-to-br from-red-600 to-red-800 rounded-full p-2">
-                <Bike className="text-white text-2xl" />
+              <div className="bg-white/10 backdrop-blur-sm rounded-full p-2 border border-white/20">
+                <img src={logoImage} alt="SportbikeFL Logo" className="w-8 h-8 object-contain" />
               </div>
               <span className="text-2xl font-bold text-white">SportbikeFL</span>
             </div>
