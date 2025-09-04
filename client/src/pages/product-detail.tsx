@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useRoute } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ import { Link } from "wouter";
 
 export default function ProductDetail() {
   const [, params] = useRoute("/product/:id");
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { addToCart, isUpdating } = useCart();
   const { toast } = useToast();
 
@@ -112,7 +114,7 @@ export default function ProductDetail() {
           <div className="space-y-4">
             <div className="relative">
               <img
-                src={product.images[0] || "/placeholder-product.jpg"}
+                src={product.images[selectedImageIndex] || "/placeholder-product.jpg"}
                 alt={product.title}
                 className="w-full h-96 object-cover rounded-lg"
                 data-testid="img-product-main"
@@ -122,13 +124,18 @@ export default function ProductDetail() {
               </div>
             </div>
             {product.images.length > 1 && (
-              <div className="grid grid-cols-4 gap-2">
-                {product.images.slice(1, 5).map((image, index) => (
+              <div className="flex gap-2 overflow-x-auto pb-2">
+                {product.images.map((image, index) => (
                   <img
                     key={index}
                     src={image}
-                    alt={`${product.title} ${index + 2}`}
-                    className="w-full h-20 object-cover rounded"
+                    alt={`${product.title} ${index + 1}`}
+                    className={`flex-shrink-0 w-20 h-20 object-cover rounded cursor-pointer transition-all ${
+                      selectedImageIndex === index 
+                        ? 'ring-2 ring-red-500 opacity-100' 
+                        : 'opacity-70 hover:opacity-100'
+                    }`}
+                    onClick={() => setSelectedImageIndex(index)}
                     data-testid={`img-product-thumb-${index}`}
                   />
                 ))}

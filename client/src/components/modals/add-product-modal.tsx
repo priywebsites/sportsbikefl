@@ -108,6 +108,16 @@ DEPOSIT POLICY:
     setUploadedImages(prev => prev.filter((_, i) => i !== index));
   };
 
+  const moveImageToFirst = (index: number) => {
+    if (index === 0) return; // Already first
+    setUploadedImages(prev => {
+      const newImages = [...prev];
+      const [selectedImage] = newImages.splice(index, 1);
+      newImages.unshift(selectedImage);
+      return newImages;
+    });
+  };
+
   const onSubmit = (data: InsertProduct) => {
     // Format final description with all sections
     let finalDescription = "";
@@ -268,23 +278,39 @@ DEPOSIT POLICY:
                   
                   {/* Image Preview Grid */}
                   {uploadedImages.length > 0 && (
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      {uploadedImages.map((image, index) => (
-                        <div key={index} className="relative group">
-                          <img
-                            src={image}
-                            alt={`Upload ${index + 1}`}
-                            className="w-full h-24 object-cover rounded-lg border"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => removeImage(index)}
-                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
-                          >
-                            <X className="h-3 w-3" />
-                          </button>
-                        </div>
-                      ))}
+                    <div className="space-y-3">
+                      <label className="block text-sm font-medium text-red-600">Select Thumbnail (Main Image)</label>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {uploadedImages.map((image, index) => (
+                          <div key={index} className="relative group">
+                            <img
+                              src={image}
+                              alt={`Upload ${index + 1}`}
+                              className={`w-full h-24 object-cover rounded-lg border cursor-pointer transition-all ${
+                                index === 0 
+                                  ? 'ring-2 ring-red-500 border-red-500' 
+                                  : 'border-gray-300 hover:border-red-300'
+                              }`}
+                              onClick={() => moveImageToFirst(index)}
+                            />
+                            {index === 0 && (
+                              <div className="absolute top-1 left-1 bg-red-500 text-white text-xs px-1 rounded">
+                                Main
+                              </div>
+                            )}
+                            <button
+                              type="button"
+                              onClick={() => removeImage(index)}
+                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        Click on any image to set it as the main thumbnail. The main image will be shown first in the product gallery.
+                      </p>
                     </div>
                   )}
                 </div>
@@ -320,7 +346,7 @@ DEPOSIT POLICY:
             {/* Description Section */}
             <Card>
               <CardHeader className="pb-4">
-                <CardTitle className="text-lg">Product Description</CardTitle>
+                <CardTitle className="text-lg text-red-600">Description</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div>
@@ -341,7 +367,7 @@ DEPOSIT POLICY:
                 <Separator />
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Key Specifications</label>
+                  <label className="block text-sm font-medium mb-2 text-red-600">Key Specifications</label>
                   <Textarea
                     rows={6}
                     placeholder="Enter detailed specifications...&#10;&#10;Example:&#10;• Make: Honda&#10;• Model: CBR1000RR&#10;• Year: 2023&#10;• Engine: 999cc inline-4&#10;• Power: 189 HP&#10;• Transmission: 6-speed&#10;• Weight: 195kg"
