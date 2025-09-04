@@ -116,7 +116,7 @@ export default function ProductDetail() {
               <img
                 src={product.images[selectedImageIndex] || "/placeholder-product.jpg"}
                 alt={product.title}
-                className="w-full h-96 object-cover rounded-lg"
+                className="w-full max-h-96 object-contain bg-gray-50 rounded-lg"
                 data-testid="img-product-main"
               />
               <div className="absolute top-4 right-4">
@@ -130,7 +130,7 @@ export default function ProductDetail() {
                     key={index}
                     src={image}
                     alt={`${product.title} ${index + 1}`}
-                    className={`flex-shrink-0 w-20 h-20 object-cover rounded cursor-pointer transition-all ${
+                    className={`flex-shrink-0 w-20 h-20 object-contain bg-gray-50 rounded cursor-pointer transition-all ${
                       selectedImageIndex === index 
                         ? 'ring-2 ring-red-500 opacity-100' 
                         : 'opacity-70 hover:opacity-100'

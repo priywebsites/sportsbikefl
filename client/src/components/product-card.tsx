@@ -58,7 +58,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <img 
             src={product.images[0] || "/placeholder-product.jpg"} 
             alt={product.title}
-            className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-300"
+            className="w-full h-56 object-contain bg-gray-50 group-hover:scale-105 transition-transform duration-300"
             data-testid={`img-product-${product.id}`}
           />
         </Link>

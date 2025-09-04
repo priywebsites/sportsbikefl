@@ -87,18 +87,48 @@ DEPOSIT POLICY:
 • Applied toward the final purchase price
 • Ensures exclusive reservation of the bike`;
 
-  // Handle file upload
+  // Handle file upload with better quality
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const files = event.target.files;
     if (!files) return;
 
     Array.from(files).forEach((file) => {
+      // Create a canvas to maintain image quality
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      const img = new Image();
+      
+      img.onload = () => {
+        // Set canvas size to maintain original aspect ratio
+        const maxWidth = 1200; // Maximum width for good quality
+        const maxHeight = 800; // Maximum height for good quality
+        
+        let { width, height } = img;
+        
+        // Only resize if image is larger than max dimensions
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width *= ratio;
+          height *= ratio;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        
+        // Draw image with high quality
+        ctx!.imageSmoothingEnabled = true;
+        ctx!.imageSmoothingQuality = 'high';
+        ctx!.drawImage(img, 0, 0, width, height);
+        
+        // Convert to high quality JPEG
+        const result = canvas.toDataURL('image/jpeg', 0.9); // 90% quality
+        setUploadedImages(prev => [...prev, result]);
+      };
+      
+      // Read file as data URL
       const reader = new FileReader();
       reader.onload = (e) => {
-        const result = e.target?.result as string;
-        if (result) {
-          setUploadedImages(prev => [...prev, result]);
-        }
+        img.src = e.target?.result as string;
       };
       reader.readAsDataURL(file);
     });
@@ -286,7 +316,7 @@ DEPOSIT POLICY:
                             <img
                               src={image}
                               alt={`Upload ${index + 1}`}
-                              className={`w-full h-24 object-cover rounded-lg border cursor-pointer transition-all ${
+                              className={`w-full h-24 object-contain bg-gray-50 rounded-lg border cursor-pointer transition-all ${
                                 index === 0 
                                   ? 'ring-2 ring-red-500 border-red-500' 
                                   : 'border-gray-300 hover:border-red-300'
