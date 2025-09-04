@@ -121,6 +121,27 @@ export class MemStorage implements IStorage {
         images: ["https://images.unsplash.com/photo-1542362567-b07e54358753?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"],
         featured: false,
       },
+      {
+        title: "2021 Kawasaki Versys 650 – Used, 19,720 Miles",
+        description: "The 2021 Kawasaki Versys 650 is a versatile middleweight sport-touring motorcycle, available in standard and LT (Luxury Touring) trims. It features a 649cc liquid-cooled parallel-twin engine, 6-speed transmission, adjustable suspension, and a diamond frame design. The LT model includes 28L saddlebags and handguards for added touring convenience. With 19,720 miles, this bike is used but mechanically sound and ready to ride.\n\nKey Specs:\n• Make: Kawasaki\n• Model: Versys 650\n• Year: 2021\n• Mileage: 19,720\n• Condition: Used – no mechanical issues\n• Engine: 649cc, liquid-cooled, parallel-twin, 4-stroke, DOHC\n• Bore x Stroke: 83.0 x 60.0 mm\n• Compression Ratio: 10.8:1\n• Horsepower: 59.6 hp @ 8,070 rpm\n• Torque: 41.55 lb-ft @ 7,210 rpm\n• Fuel System: DFI with dual 38mm Keihin throttle bodies\n• Transmission: 6-speed with positive neutral finder\n• Final Drive: Chain\n\nDeposit Policy:\n• $500 deposit required to hold unit\n• Deposit locks in the motorcycle for up to 30 days\n• Applied toward the final purchase price\n• Ensures exclusive reservation of the bike",
+        price: "6500.00",
+        discount: "0",
+        discountType: "percentage",
+        category: "motorcycles",
+        stockQuantity: 1,
+        stockStatus: "in_stock",
+        images: [
+          "@assets/IMG_6210-300x300_1757018807660.jpeg",
+          "@assets/IMG_6211-300x300_1757018807660.jpeg",
+          "@assets/IMG_6214-300x300_1757018807660.jpeg",
+          "@assets/IMG_6215-300x300_1757018807660.jpeg",
+          "@assets/IMG_6222-e1754957191101_1757018807660.jpeg",
+          "@assets/IMG_6225-300x300_1757018807660.jpeg",
+          "@assets/IMG_6226-300x300_1757018807660.jpeg",
+          "@assets/IMG_6227-300x300_1757018807660.jpeg"
+        ],
+        featured: true,
+      },
     ];
 
     sampleProducts.forEach(product => {
