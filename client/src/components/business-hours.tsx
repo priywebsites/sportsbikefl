@@ -25,7 +25,7 @@ export function BusinessHours() {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      // Convert to Orlando/Eastern timezone
+      // Convert to Orlando/Eastern timezone (EST/EDT)
       const now = new Date();
       const orlandoTime = new Date(now.toLocaleString("en-US", { timeZone: "America/New_York" }));
       setCurrentTime(orlandoTime);
@@ -70,9 +70,10 @@ export function BusinessHours() {
             className={`${isOpen 
               ? 'bg-green-100 text-green-800 border-green-200' 
               : 'bg-red-100 text-red-800 border-red-200'
-            } font-semibold`}
+            } font-semibold flex items-center gap-2`}
             data-testid="status-badge"
           >
+            <div className={`w-2 h-2 rounded-full ${isOpen ? 'bg-green-400' : 'bg-red-400'}`}></div>
             {isOpen ? 'OPEN NOW' : 'CLOSED'}
           </Badge>
         </CardTitle>
@@ -98,15 +99,15 @@ export function BusinessHours() {
               <div 
                 key={day} 
                 className={`flex justify-between items-center py-2 px-3 rounded-lg ${
-                  isToday ? 'bg-red-50 border border-red-200' : 'hover:bg-gray-50'
+                  isToday ? 'bg-green-50 border border-green-200' : 'hover:bg-gray-50'
                 }`}
                 data-testid={`hours-${day}`}
               >
-                <span className={`font-medium ${isToday ? 'text-red-700' : 'text-gray-700'}`}>
+                <span className={`font-medium ${isToday ? 'text-green-700' : 'text-gray-700'}`}>
                   {dayName}
-                  {isToday && <span className="ml-2 text-xs text-red-600">(Today)</span>}
+                  {isToday && <span className="ml-2 text-xs text-green-600">(Today)</span>}
                 </span>
-                <span className={`text-sm ${isToday ? 'text-red-700 font-medium' : 'text-gray-600'}`}>
+                <span className={`text-sm ${isToday ? 'text-green-700 font-medium' : 'text-gray-600'}`}>
                   {hours ? `${formatTime(hours.open)} - ${formatTime(hours.close)}` : 'Closed'}
                 </span>
               </div>

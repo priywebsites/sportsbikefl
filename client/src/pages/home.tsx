@@ -24,7 +24,7 @@ export default function Home() {
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
       <section className="hero-gradient py-32 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[#a3bfa3d6]"></div>
+        <div className="absolute inset-0 bg-gradient-to-br from-[#bed1d4d6] to-white"></div>
         <div className="container mx-auto text-center relative z-10">
           <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight animate-fade-in text-[#000000] text-center" data-testid="text-hero-title">
             <span className="block">Own It.</span>
@@ -294,7 +294,7 @@ export default function Home() {
         </div>
       </section>
       {/* Trust & Credibility Section */}
-      <section className="py-16 px-4 bg-white border-t border-gray-200">
+      <section className="py-16 px-4 bg-gradient-to-br from-[#bed1d4d6] to-white border-t border-gray-200">
         <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4 text-gray-900">Why Riders Trust Sportbike Parts & Export</h2>
