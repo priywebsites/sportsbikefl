@@ -167,9 +167,23 @@ export default function ProductDetail() {
               )}
             </div>
 
-            <p className="text-foreground leading-relaxed" data-testid="text-product-description">
-              {product.description}
-            </p>
+            <div className="text-foreground leading-relaxed" data-testid="text-product-description">
+              {product.description.split('\n').map((line, index) => {
+                if (line.trim() === '') return <br key={index} />;
+                if (line.includes('KEY SPECIFICATIONS:') || line.includes('DEPOSIT POLICY:')) {
+                  return <h4 key={index} className="font-semibold text-lg mt-6 mb-2">{line.trim()}</h4>;
+                }
+                if (line.trim().startsWith('•')) {
+                  return (
+                    <div key={index} className="flex items-start ml-4 mb-1">
+                      <span className="text-red-600 font-bold mr-3 mt-1">•</span>
+                      <span className="text-left">{line.trim().substring(1).trim()}</span>
+                    </div>
+                  );
+                }
+                return <p key={index} className="mb-2">{line}</p>;
+              })}
+            </div>
 
             <Separator />
 
@@ -193,17 +207,37 @@ export default function ProductDetail() {
             <Separator />
 
             <div className="space-y-4">
-              <Button
-                size="lg"
-                className="w-full"
-                onClick={handleAddToCart}
-                disabled={isUpdating || product.stockStatus === "sold" || product.stockQuantity === 0}
-                data-testid="button-add-to-cart"
-              >
-                <ShoppingCart className="mr-2 h-5 w-5" />
-                {product.stockStatus === "sold" ? "Sold Out" : 
-                 product.stockQuantity === 0 ? "Out of Stock" : "Add to Cart"}
-              </Button>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <Button
+                  size="lg"
+                  className="w-full"
+                  onClick={handleAddToCart}
+                  disabled={isUpdating || product.stockStatus === "sold" || product.stockQuantity === 0}
+                  data-testid="button-add-to-cart"
+                >
+                  <ShoppingCart className="mr-2 h-5 w-5" />
+                  {product.stockStatus === "sold" ? "Sold Out" : 
+                   product.stockQuantity === 0 ? "Out of Stock" : "Add to Cart"}
+                </Button>
+                
+                {/* Pay Deposit Button - Only show for motorcycles */}
+                {product.category === "motorcycles" && product.stockStatus !== "sold" && (
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="w-full border-green-600 text-green-600 hover:bg-green-50"
+                    onClick={() => {
+                      toast({
+                        title: "Deposit Payment",
+                        description: "Deposit payment functionality coming soon. Contact us at (407) 483-4884 to reserve this motorcycle.",
+                      });
+                    }}
+                    data-testid="button-pay-deposit"
+                  >
+                    💳 Pay $500 Deposit Now
+                  </Button>
+                )}
+              </div>
             </div>
 
             {/* Product Specifications */}

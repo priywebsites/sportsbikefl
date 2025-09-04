@@ -9,25 +9,28 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
 import { insertProductSchema, InsertProduct } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Upload, X, Image, Plus } from "lucide-react";
+import { Upload, X, Image, Plus, FileText, Settings } from "lucide-react";
 
 interface AddProductModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  editingProduct?: any;
 }
 
 const formSchema = insertProductSchema.extend({
   images: insertProductSchema.shape.images.optional(),
 });
 
-export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
+export function AddProductModal({ open, onOpenChange, editingProduct }: AddProductModalProps) {
   const { toast } = useToast();
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [description, setDescription] = useState("");
+  const [keySpecs, setKeySpecs] = useState("");
 
   const form = useForm<InsertProduct>({
     resolver: zodResolver(formSchema),
@@ -47,51 +50,42 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
 
   const createProductMutation = useMutation({
     mutationFn: async (productData: InsertProduct) => {
-      const response = await apiRequest("POST", "/api/products", productData);
+      const url = editingProduct ? `/api/products/${editingProduct.id}` : "/api/products";
+      const method = editingProduct ? "PUT" : "POST";
+      const response = await apiRequest(method, url, productData);
       return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/products"] });
       toast({
-        title: "Product created",
-        description: "The product has been successfully added to your inventory.",
+        title: editingProduct ? "Product updated" : "Product created",
+        description: editingProduct 
+          ? "The product has been successfully updated." 
+          : "The product has been successfully added to your inventory.",
       });
       form.reset();
       setUploadedImages([]);
       setDescription("");
+      setKeySpecs("");
       onOpenChange(false);
     },
     onError: () => {
       toast({
         title: "Error",
-        description: "Failed to create product. Please try again.",
+        description: `Failed to ${editingProduct ? 'update' : 'create'} product. Please try again.`,
         variant: "destructive",
       });
     },
   });
 
-  // Auto-fill deposit info when needed
+  // Auto-fill deposit info for motorcycles
   const getDepositInfo = () => `
-Deposit Policy:
+
+DEPOSIT POLICY:
 • $500 deposit required to hold unit
 • Deposit locks in the motorcycle for up to 30 days
 • Applied toward the final purchase price
 • Ensures exclusive reservation of the bike`;
-
-  // Format description with bullet points
-  const formatDescription = (desc: string) => {
-    if (!desc) return "";
-    
-    // Add deposit info if it's a motorcycle
-    const selectedCategory = form.getValues("category");
-    let formattedDesc = desc;
-    
-    if (selectedCategory === "motorcycles") {
-      formattedDesc += "\n\n" + getDepositInfo();
-    }
-    
-    return formattedDesc;
-  };
 
   // Handle file upload
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,7 +109,24 @@ Deposit Policy:
   };
 
   const onSubmit = (data: InsertProduct) => {
-    const finalDescription = formatDescription(description);
+    // Format final description with all sections
+    let finalDescription = "";
+    
+    // Add main description
+    if (description.trim()) {
+      finalDescription += description.trim();
+    }
+    
+    // Add key specifications section
+    if (keySpecs.trim()) {
+      finalDescription += "\n\nKEY SPECIFICATIONS:\n" + keySpecs.trim();
+    }
+    
+    // Add deposit info for motorcycles
+    const selectedCategory = form.getValues("category");
+    if (selectedCategory === "motorcycles") {
+      finalDescription += getDepositInfo();
+    }
     
     createProductMutation.mutate({
       ...data,
@@ -126,20 +137,63 @@ Deposit Policy:
     });
   };
 
-  // Reset form when modal opens
+  // Reset form when modal opens or populate with editing data
   useEffect(() => {
     if (open) {
-      form.reset();
-      setUploadedImages([]);
-      setDescription("");
+      if (editingProduct) {
+        // Populate form with existing product data
+        const [mainDesc, specsSection, depositSection] = editingProduct.description.split(/\n\n(?=KEY SPECIFICATIONS:|DEPOSIT POLICY:)/);
+        
+        form.reset({
+          title: editingProduct.title,
+          description: editingProduct.description,
+          price: editingProduct.price,
+          discount: editingProduct.discount || "0",
+          discountType: editingProduct.discountType || "percentage",
+          category: editingProduct.category,
+          stockQuantity: editingProduct.stockQuantity,
+          stockStatus: editingProduct.stockStatus,
+          images: editingProduct.images || [],
+          featured: editingProduct.featured || false,
+        });
+        
+        setDescription(mainDesc || "");
+        
+        if (specsSection && specsSection.startsWith("KEY SPECIFICATIONS:")) {
+          setKeySpecs(specsSection.replace("KEY SPECIFICATIONS:\\n", "").replace("KEY SPECIFICATIONS:", ""));
+        } else {
+          setKeySpecs("");
+        }
+        
+        setUploadedImages(editingProduct.images || []);
+      } else {
+        // Reset for new product
+        form.reset({
+          title: "",
+          description: "",
+          price: "0",
+          discount: "0",
+          discountType: "percentage",
+          category: "motorcycles",
+          stockQuantity: 1,
+          stockStatus: "in_stock",
+          images: [],
+          featured: false,
+        });
+        setUploadedImages([]);
+        setDescription("");
+        setKeySpecs("");
+      }
     }
-  }, [open, form]);
+  }, [open, editingProduct, form]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" data-testid="add-product-modal">
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto" data-testid="add-product-modal">
         <DialogHeader>
-          <DialogTitle>Add New Item to Inventory</DialogTitle>
+          <DialogTitle className="text-xl">
+            {editingProduct ? `Edit ${editingProduct.title}` : "Add New Item to Inventory"}
+          </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
@@ -147,8 +201,11 @@ Deposit Policy:
             
             {/* Category Selection */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Category</CardTitle>
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg flex items-center">
+                  <Settings className="mr-2 h-5 w-5" />
+                  Product Category
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <FormField
@@ -179,8 +236,11 @@ Deposit Policy:
 
             {/* Image Upload Section */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Product Images</CardTitle>
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg flex items-center">
+                  <Image className="mr-2 h-5 w-5" />
+                  Product Images
+                </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
@@ -233,8 +293,11 @@ Deposit Policy:
 
             {/* Basic Information */}
             <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Product Information</CardTitle>
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg flex items-center">
+                  <FileText className="mr-2 h-5 w-5" />
+                  Product Information
+                </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Title */}
@@ -251,28 +314,75 @@ Deposit Policy:
                     </FormItem>
                   )}
                 />
+              </CardContent>
+            </Card>
 
-                {/* Description/Specs */}
+            {/* Description Section */}
+            <Card>
+              <CardHeader className="pb-4">
+                <CardTitle className="text-lg">Product Description</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Description/Specifications</label>
+                  <label className="block text-sm font-medium mb-2">General Description</label>
                   <Textarea
-                    rows={6}
-                    placeholder="Enter detailed description and specifications. Use bullet points (•) for better formatting:&#10;&#10;• Feature 1&#10;• Feature 2&#10;• Specification detail&#10;• Additional information"
+                    rows={4}
+                    placeholder="Enter general product description...&#10;&#10;Example:&#10;• High-quality materials and construction&#10;• Professional grade performance&#10;• Suitable for various applications"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
                     data-testid="textarea-description"
-                    className="font-mono text-sm"
+                    className="text-sm"
                   />
-                  <p className="text-xs text-muted-foreground mt-2">
-                    Use bullet points (•) for better formatting. For motorcycles, deposit info will be automatically added.
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Use bullet points (•) for better readability. Start each point on a new line.
+                  </p>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Key Specifications</label>
+                  <Textarea
+                    rows={6}
+                    placeholder="Enter detailed specifications...&#10;&#10;Example:&#10;• Make: Honda&#10;• Model: CBR1000RR&#10;• Year: 2023&#10;• Engine: 999cc inline-4&#10;• Power: 189 HP&#10;• Transmission: 6-speed&#10;• Weight: 195kg"
+                    value={keySpecs}
+                    onChange={(e) => setKeySpecs(e.target.value)}
+                    data-testid="textarea-key-specs"
+                    className="text-sm"
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    List technical specifications, features, and important details using bullet points.
                   </p>
                 </div>
               </CardContent>
             </Card>
 
+            {/* Auto-filled Deposit Information Preview */}
+            {form.watch("category") === "motorcycles" && (
+              <Card className="bg-green-50 border-green-200">
+                <CardHeader className="pb-4">
+                  <CardTitle className="text-lg text-green-800">Deposit Policy (Auto-Added)</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm text-green-700 space-y-1">
+                    <p className="font-medium mb-3">The following deposit policy will be automatically added to all motorcycles:</p>
+                    <div className="bg-white p-4 rounded border">
+                      <p className="font-semibold mb-2">DEPOSIT POLICY:</p>
+                      <div className="space-y-1 text-sm text-left">
+                        <div>• $500 deposit required to hold unit</div>
+                        <div>• Deposit locks in the motorcycle for up to 30 days</div>
+                        <div>• Applied toward the final purchase price</div>
+                        <div>• Ensures exclusive reservation of the bike</div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
             {/* Pricing and Stock */}
             <Card>
-              <CardHeader>
+              <CardHeader className="pb-4">
                 <CardTitle className="text-lg">Pricing & Inventory</CardTitle>
               </CardHeader>
               <CardContent>
@@ -322,29 +432,6 @@ Deposit Policy:
               </CardContent>
             </Card>
 
-            {/* Auto-filled Deposit Information Preview */}
-            {form.watch("category") === "motorcycles" && (
-              <Card className="bg-green-50 border-green-200">
-                <CardHeader>
-                  <CardTitle className="text-lg text-green-800">Auto-Added Deposit Information</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-sm text-green-700 space-y-1">
-                    <p className="font-medium">The following will be automatically added to the description:</p>
-                    <div className="bg-white p-3 rounded border mt-2">
-                      <p className="font-medium mb-2">Deposit Policy:</p>
-                      <ul className="space-y-1 text-sm">
-                        <li>• $500 deposit required to hold unit</li>
-                        <li>• Deposit locks in the motorcycle for up to 30 days</li>
-                        <li>• Applied toward the final purchase price</li>
-                        <li>• Ensures exclusive reservation of the bike</li>
-                      </ul>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
             {/* Submit Buttons */}
             <div className="flex justify-end space-x-4 pt-6 border-t">
               <Button
@@ -361,7 +448,9 @@ Deposit Policy:
                 data-testid="button-add-product"
                 className="bg-red-600 hover:bg-red-700"
               >
-                {createProductMutation.isPending ? "Adding to Inventory..." : "Add to Inventory"}
+                {createProductMutation.isPending 
+                  ? (editingProduct ? "Updating Product..." : "Adding to Inventory...") 
+                  : (editingProduct ? "Update Product" : "Add to Inventory")}
               </Button>
             </div>
           </form>

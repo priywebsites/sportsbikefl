@@ -25,7 +25,10 @@ import {
   TrendingUp, 
   DollarSign,
   Eye,
-  EyeOff
+  EyeOff,
+  Star,
+  StarOff,
+  Percent
 } from "lucide-react";
 
 export default function OwnerDashboard() {
@@ -325,50 +328,73 @@ export default function OwnerDashboard() {
                             {getStatusBadge(product)}
                           </TableCell>
                           <TableCell>
-                            <div className="flex space-x-2">
+                            <div className="flex space-x-1">
                               <Button
-                                size="icon"
-                                variant="ghost"
+                                size="sm"
+                                variant="outline"
                                 onClick={() => setEditingProduct(product)}
                                 data-testid={`button-edit-${product.id}`}
+                                className="h-8 px-2 text-blue-600 border-blue-600 hover:bg-blue-50"
                               >
-                                <Edit className="h-4 w-4" />
+                                <Edit className="h-3 w-3 mr-1" />
+                                Edit
                               </Button>
                               <Button
-                                size="icon"
-                                variant="ghost"
+                                size="sm"
+                                variant="outline"
                                 onClick={() => setDiscountProduct(product)}
                                 data-testid={`button-discount-${product.id}`}
+                                className="h-8 px-2 text-orange-600 border-orange-600 hover:bg-orange-50"
                               >
-                                <Tag className="h-4 w-4" />
+                                <Percent className="h-3 w-3 mr-1" />
+                                Discount
                               </Button>
                               <Button
-                                size="icon"
-                                variant="ghost"
+                                size="sm"
+                                variant="outline"
                                 onClick={() => handleMarkSold(product)}
                                 disabled={updateProductMutation.isPending}
                                 data-testid={`button-toggle-sold-${product.id}`}
+                                className={`h-8 px-2 ${
+                                  product.stockStatus === "sold" 
+                                    ? "text-green-600 border-green-600 hover:bg-green-50" 
+                                    : "text-red-600 border-red-600 hover:bg-red-50"
+                                }`}
                               >
-                                {product.stockStatus === "sold" ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                {product.stockStatus === "sold" ? (
+                                  <><Eye className="h-3 w-3 mr-1" />Unsold</>
+                                ) : (
+                                  <><EyeOff className="h-3 w-3 mr-1" />Mark Sold</>
+                                )}
                               </Button>
                               <Button
-                                size="icon"
-                                variant="ghost"
+                                size="sm"
+                                variant="outline"
                                 onClick={() => handleToggleFeatured(product)}
                                 disabled={updateProductMutation.isPending}
                                 data-testid={`button-toggle-featured-${product.id}`}
+                                className={`h-8 px-2 ${
+                                  product.featured 
+                                    ? "text-yellow-600 border-yellow-600 hover:bg-yellow-50" 
+                                    : "text-gray-600 border-gray-600 hover:bg-gray-50"
+                                }`}
                               >
-                                <Check className="h-4 w-4" />
+                                {product.featured ? (
+                                  <><StarOff className="h-3 w-3 mr-1" />Unfeature</>
+                                ) : (
+                                  <><Star className="h-3 w-3 mr-1" />Feature</>
+                                )}
                               </Button>
                               <Button
-                                size="icon"
-                                variant="ghost"
-                                className="text-destructive hover:text-destructive/80"
+                                size="sm"
+                                variant="outline"
+                                className="h-8 px-2 text-red-600 border-red-600 hover:bg-red-50"
                                 onClick={() => handleDeleteProduct(product.id)}
                                 disabled={deleteProductMutation.isPending}
                                 data-testid={`button-delete-${product.id}`}
                               >
-                                <Trash2 className="h-4 w-4" />
+                                <Trash2 className="h-3 w-3 mr-1" />
+                                Delete
                               </Button>
                             </div>
                           </TableCell>
@@ -481,6 +507,13 @@ export default function OwnerDashboard() {
         <AddProductModal
           open={isAddProductOpen}
           onOpenChange={setIsAddProductOpen}
+        />
+
+        {/* Edit Product Modal */}
+        <AddProductModal
+          open={!!editingProduct}
+          onOpenChange={(open) => !open && setEditingProduct(null)}
+          editingProduct={editingProduct}
         />
 
         {/* Discount Management Dialog */}
