@@ -91,7 +91,7 @@ export class MemStorage implements IStorage {
         price: "1299.00",
         discount: "15",
         discountType: "percentage",
-        category: "parts",
+        category: "oem parts",
         stockQuantity: 5,
         stockStatus: "in_stock",
         images: ["https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"],
@@ -103,7 +103,7 @@ export class MemStorage implements IStorage {
         price: "189.99",
         discount: "0",
         discountType: "percentage",
-        category: "parts",
+        category: "used parts",
         stockQuantity: 10,
         stockStatus: "in_stock",
         images: ["https://pixabay.com/get/g478bacc54188a48f3b2ef018a519563ef96af3f09928fafe1930df12242700cb4dee03c1eadd9e0fbc7969e25d08040caa0d252dafb33e0dbb60cb40f32a6f95_1280.jpg"],
@@ -115,7 +115,7 @@ export class MemStorage implements IStorage {
         price: "599.00",
         discount: "5",
         discountType: "percentage",
-        category: "accessories",
+        category: "tires",
         stockQuantity: 8,
         stockStatus: "in_stock",
         images: ["https://images.unsplash.com/photo-1542362567-b07e54358753?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&h=400"],
@@ -149,6 +149,10 @@ export class MemStorage implements IStorage {
       const fullProduct: Product = {
         ...product,
         id,
+        discount: product.discount ?? "0",
+        discountType: product.discountType ?? "percentage",
+        stockQuantity: product.stockQuantity ?? 1,
+        stockStatus: product.stockStatus ?? "in_stock",
         createdAt: new Date(),
       };
       this.products.set(id, fullProduct);
@@ -194,6 +198,10 @@ export class MemStorage implements IStorage {
     const fullProduct: Product = {
       ...product,
       id,
+      discount: product.discount ?? "0",
+      discountType: product.discountType ?? "percentage",
+      stockQuantity: product.stockQuantity ?? 1,
+      stockStatus: product.stockStatus ?? "in_stock",
       createdAt: new Date(),
     };
     this.products.set(id, fullProduct);
@@ -254,7 +262,7 @@ export class MemStorage implements IStorage {
 
     if (existingItem) {
       // Update quantity
-      existingItem.quantity += cartItem.quantity;
+      existingItem.quantity += (cartItem.quantity ?? 1);
       this.cartItems.set(existingItem.id, existingItem);
       return existingItem;
     } else {
@@ -263,6 +271,7 @@ export class MemStorage implements IStorage {
       const fullCartItem: CartItem = {
         ...cartItem,
         id,
+        quantity: cartItem.quantity ?? 1,
         createdAt: new Date(),
       };
       this.cartItems.set(id, fullCartItem);
