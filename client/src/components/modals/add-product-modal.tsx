@@ -31,6 +31,7 @@ export function AddProductModal({ open, onOpenChange, editingProduct }: AddProdu
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [description, setDescription] = useState("");
   const [keySpecs, setKeySpecs] = useState("");
+  const [isDragActive, setIsDragActive] = useState(false);
 
   const form = useForm<InsertProduct>({
     resolver: zodResolver(formSchema),
@@ -67,6 +68,7 @@ export function AddProductModal({ open, onOpenChange, editingProduct }: AddProdu
       setUploadedImages([]);
       setDescription("");
       setKeySpecs("");
+      setIsDragActive(false);
       onOpenChange(false);
     },
     onError: () => {
@@ -88,15 +90,14 @@ DEPOSIT POLICY:
 • Ensures exclusive reservation of the bike`;
 
   // Handle file upload with better quality
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files;
-    if (!files) return;
-
+  const processFiles = (files: FileList | File[]) => {
     Array.from(files).forEach((file) => {
+      // Only process image files
+      if (!file.type.startsWith('image/')) return;
       // Create a canvas to maintain image quality
       const canvas = document.createElement('canvas');
       const ctx = canvas.getContext('2d');
-      const img = new Image();
+      const img = document.createElement('img');
       
       img.onload = () => {
         // Set canvas size to maintain original aspect ratio
@@ -132,6 +133,32 @@ DEPOSIT POLICY:
       };
       reader.readAsDataURL(file);
     });
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
+    processFiles(files);
+  };
+
+  const handleDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragActive(false);
+    
+    const files = event.dataTransfer.files;
+    if (files.length > 0) {
+      processFiles(files);
+    }
+  };
+
+  const handleDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragActive(true);
+  };
+
+  const handleDragLeave = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setIsDragActive(false);
   };
 
   const removeImage = (index: number) => {
@@ -225,6 +252,7 @@ DEPOSIT POLICY:
         setUploadedImages([]);
         setDescription("");
         setKeySpecs("");
+        setIsDragActive(false);
       }
     }
   }, [open, editingProduct, form]);
@@ -311,8 +339,16 @@ DEPOSIT POLICY:
                 <div className="space-y-4">
                   {/* Upload Area */}
                   <div 
-                    className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:bg-muted/50 transition-colors"
+                    className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
+                      isDragActive 
+                        ? 'border-red-500 bg-red-50 dark:bg-red-950/10' 
+                        : 'border-border hover:bg-muted/50'
+                    }`}
                     onClick={() => fileInputRef.current?.click()}
+                    onDrop={handleDrop}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    data-testid="image-upload-area"
                   >
                     <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
                     <p className="text-lg font-medium mb-2">Upload Product Images</p>
