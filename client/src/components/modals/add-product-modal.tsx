@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
@@ -8,10 +8,11 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { insertProductSchema, InsertProduct } from "@shared/schema";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { useToast } from "@/hooks/use-toast";
-import { Upload } from "lucide-react";
+import { Upload, X, Image, Plus } from "lucide-react";
 
 interface AddProductModalProps {
   open: boolean;
@@ -24,7 +25,9 @@ const formSchema = insertProductSchema.extend({
 
 export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
   const { toast } = useToast();
-  const [imageUrls, setImageUrls] = useState<string>("");
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [description, setDescription] = useState("");
 
   const form = useForm<InsertProduct>({
     resolver: zodResolver(formSchema),
@@ -35,7 +38,7 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
       discount: "0",
       discountType: "percentage",
       category: "motorcycles",
-      stockQuantity: 0,
+      stockQuantity: 1,
       stockStatus: "in_stock",
       images: [],
       featured: false,
@@ -54,7 +57,8 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
         description: "The product has been successfully added to your inventory.",
       });
       form.reset();
-      setImageUrls("");
+      setUploadedImages([]);
+      setDescription("");
       onOpenChange(false);
     },
     onError: () => {
@@ -66,188 +70,283 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
     },
   });
 
-  const onSubmit = (data: InsertProduct) => {
-    const images = imageUrls
-      .split('\n')
-      .map(url => url.trim())
-      .filter(url => url.length > 0);
+  // Auto-fill deposit info when needed
+  const getDepositInfo = () => `
+Deposit Policy:
+• $500 deposit required to hold unit
+• Deposit locks in the motorcycle for up to 30 days
+• Applied toward the final purchase price
+• Ensures exclusive reservation of the bike`;
 
+  // Format description with bullet points
+  const formatDescription = (desc: string) => {
+    if (!desc) return "";
+    
+    // Add deposit info if it's a motorcycle
+    const selectedCategory = form.getValues("category");
+    let formattedDesc = desc;
+    
+    if (selectedCategory === "motorcycles") {
+      formattedDesc += "\n\n" + getDepositInfo();
+    }
+    
+    return formattedDesc;
+  };
+
+  // Handle file upload
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (!files) return;
+
+    Array.from(files).forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        if (result) {
+          setUploadedImages(prev => [...prev, result]);
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const removeImage = (index: number) => {
+    setUploadedImages(prev => prev.filter((_, i) => i !== index));
+  };
+
+  const onSubmit = (data: InsertProduct) => {
+    const finalDescription = formatDescription(description);
+    
     createProductMutation.mutate({
       ...data,
-      images,
+      description: finalDescription,
+      images: uploadedImages,
       price: data.price.toString(),
       discount: data.discount?.toString() || "0",
     });
   };
 
+  // Reset form when modal opens
+  useEffect(() => {
+    if (open) {
+      form.reset();
+      setUploadedImages([]);
+      setDescription("");
+    }
+  }, [open, form]);
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto" data-testid="add-product-modal">
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto" data-testid="add-product-modal">
         <DialogHeader>
-          <DialogTitle>Add New Product</DialogTitle>
+          <DialogTitle>Add New Item to Inventory</DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <FormField
-                control={form.control}
-                name="title"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Product Title</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter product title" {...field} data-testid="input-title" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="category"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger data-testid="select-category">
-                          <SelectValue placeholder="Select category" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="motorcycles">Motorcycles</SelectItem>
-                        <SelectItem value="parts">Parts</SelectItem>
-                        <SelectItem value="accessories">Accessories</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Price</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        placeholder="0.00"
-                        {...field}
-                        data-testid="input-price"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="stockQuantity"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Stock Quantity</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        min="0"
-                        placeholder="0"
-                        {...field}
-                        onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
-                        data-testid="input-stock-quantity"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="discount"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Discount</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        placeholder="0"
-                        {...field}
-                        data-testid="input-discount"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-
-              <FormField
-                control={form.control}
-                name="discountType"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Discount Type</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger data-testid="select-discount-type">
-                          <SelectValue placeholder="Select discount type" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        <SelectItem value="percentage">Percentage</SelectItem>
-                        <SelectItem value="flat">Flat Amount</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <FormField
-              control={form.control}
-              name="description"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      rows={3}
-                      placeholder="Enter product description"
-                      {...field}
-                      data-testid="textarea-description"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <div>
-              <label className="block text-sm font-medium mb-2">Product Images</label>
-              <div className="border-2 border-dashed border-border rounded-lg p-6 text-center">
-                <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                <p className="text-muted-foreground mb-4">Enter image URLs (one per line)</p>
-                <Textarea
-                  rows={4}
-                  placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"
-                  value={imageUrls}
-                  onChange={(e) => setImageUrls(e.target.value)}
-                  data-testid="textarea-image-urls"
+            
+            {/* Category Selection */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Category</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <FormField
+                  control={form.control}
+                  name="category"
+                  render={({ field }) => (
+                    <FormItem>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger data-testid="select-category" className="w-full">
+                            <SelectValue placeholder="Select category" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="motorcycles">Motorcycles</SelectItem>
+                          <SelectItem value="oem parts">OEM Parts</SelectItem>
+                          <SelectItem value="used parts">Used Parts</SelectItem>
+                          <SelectItem value="custom wheels">Custom Wheels</SelectItem>
+                          <SelectItem value="tires">Tires</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
-              </div>
-            </div>
+              </CardContent>
+            </Card>
 
-            <div className="flex justify-end space-x-4">
+            {/* Image Upload Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Product Images</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {/* Upload Area */}
+                  <div 
+                    className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:bg-muted/50 transition-colors"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                    <p className="text-lg font-medium mb-2">Upload Product Images</p>
+                    <p className="text-muted-foreground">Click to select multiple images or drag and drop</p>
+                    <Button type="button" variant="outline" className="mt-4">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Choose Images
+                    </Button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      multiple
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      className="hidden"
+                    />
+                  </div>
+                  
+                  {/* Image Preview Grid */}
+                  {uploadedImages.length > 0 && (
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      {uploadedImages.map((image, index) => (
+                        <div key={index} className="relative group">
+                          <img
+                            src={image}
+                            alt={`Upload ${index + 1}`}
+                            className="w-full h-24 object-cover rounded-lg border"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeImage(index)}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Basic Information */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Product Information</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Title */}
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Product Title</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Enter product title" {...field} data-testid="input-title" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Description/Specs */}
+                <div>
+                  <label className="block text-sm font-medium mb-2">Description/Specifications</label>
+                  <Textarea
+                    rows={6}
+                    placeholder="Enter detailed description and specifications. Use bullet points (•) for better formatting:&#10;&#10;• Feature 1&#10;• Feature 2&#10;• Specification detail&#10;• Additional information"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    data-testid="textarea-description"
+                    className="font-mono text-sm"
+                  />
+                  <p className="text-xs text-muted-foreground mt-2">
+                    Use bullet points (•) for better formatting. For motorcycles, deposit info will be automatically added.
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Pricing and Stock */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg">Pricing & Inventory</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="price"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Price ($)</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            placeholder="0.00"
+                            {...field}
+                            data-testid="input-price"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="stockQuantity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Stock Quantity</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            min="0"
+                            placeholder="1"
+                            {...field}
+                            onChange={(e) => field.onChange(parseInt(e.target.value) || 0)}
+                            data-testid="input-stock-quantity"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Auto-filled Deposit Information Preview */}
+            {form.watch("category") === "motorcycles" && (
+              <Card className="bg-green-50 border-green-200">
+                <CardHeader>
+                  <CardTitle className="text-lg text-green-800">Auto-Added Deposit Information</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-sm text-green-700 space-y-1">
+                    <p className="font-medium">The following will be automatically added to the description:</p>
+                    <div className="bg-white p-3 rounded border mt-2">
+                      <p className="font-medium mb-2">Deposit Policy:</p>
+                      <ul className="space-y-1 text-sm">
+                        <li>• $500 deposit required to hold unit</li>
+                        <li>• Deposit locks in the motorcycle for up to 30 days</li>
+                        <li>• Applied toward the final purchase price</li>
+                        <li>• Ensures exclusive reservation of the bike</li>
+                      </ul>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Submit Buttons */}
+            <div className="flex justify-end space-x-4 pt-6 border-t">
               <Button
                 type="button"
                 variant="outline"
@@ -260,8 +359,9 @@ export function AddProductModal({ open, onOpenChange }: AddProductModalProps) {
                 type="submit"
                 disabled={createProductMutation.isPending}
                 data-testid="button-add-product"
+                className="bg-red-600 hover:bg-red-700"
               >
-                {createProductMutation.isPending ? "Adding..." : "Add Product"}
+                {createProductMutation.isPending ? "Adding to Inventory..." : "Add to Inventory"}
               </Button>
             </div>
           </form>

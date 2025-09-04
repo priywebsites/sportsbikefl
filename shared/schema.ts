@@ -16,7 +16,7 @@ export const products = pgTable("products", {
   price: decimal("price", { precision: 10, scale: 2 }).notNull(),
   discount: decimal("discount", { precision: 5, scale: 2 }).default("0"),
   discountType: text("discount_type", { enum: ["percentage", "flat"] }).default("percentage"),
-  category: text("category", { enum: ["motorcycles", "parts", "accessories"] }).notNull(),
+  category: text("category", { enum: ["motorcycles", "oem parts", "used parts", "custom wheels", "tires"] }).notNull(),
   stockQuantity: integer("stock_quantity").notNull().default(0),
   stockStatus: text("stock_status", { enum: ["in_stock", "sold", "out_of_stock"] }).notNull().default("in_stock"),
   images: text("images").array().notNull().default(sql`ARRAY[]::text[]`),
