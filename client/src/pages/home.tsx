@@ -26,8 +26,10 @@ export default function Home() {
       <section className="hero-gradient py-32 px-4 relative overflow-hidden">
         <div className="absolute inset-0 bg-[#a3bfa3d6]"></div>
         <div className="container mx-auto text-center relative z-10">
-          <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight animate-fade-in text-[#000000]" data-testid="text-hero-title">
-            Own It. Ride It. Love It.
+          <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight animate-fade-in text-[#000000] text-center" data-testid="text-hero-title">
+            <span className="block">Own It.</span>
+            <span className="block">Ride It.</span>
+            <span className="block">Love It.</span>
           </h1>
           <p className="text-xl mb-12 max-w-3xl mx-auto animate-slide-up text-[#000000e6]" data-testid="text-hero-description">
             Discover our collection of high-performance motorcycles, genuine parts, and premium accessories. 
@@ -215,7 +217,7 @@ export default function Home() {
         </div>
       </section>
       {/* Motorcycle Loan Services Section */}
-      <section className="py-16 px-4 from-red-50 to-white bg-[#bed1d4d6]">
+      <section className="py-16 px-4 bg-gradient-to-br from-[#bed1d4d6] to-white">
         <div className="container mx-auto max-w-4xl text-center">
           <div className="mb-12">
             <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
