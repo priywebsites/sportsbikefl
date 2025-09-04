@@ -42,6 +42,7 @@ export default function Catalog() {
   // Filter and sort products
   const filteredAndSortedProducts = products
     .filter(product => {
+      if (filters.condition && product.condition !== filters.condition) return false;
       if (filters.inStock && product.stockQuantity === 0) return false;
       if (filters.onSale && (!product.discount || parseFloat(product.discount) === 0)) return false;
       if (filters.minPrice && parseFloat(product.price) < filters.minPrice) return false;
@@ -135,6 +136,33 @@ export default function Catalog() {
                           data-testid="checkbox-accessories"
                         />
                         <span className="ml-2">Accessories</span>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Condition Filter */}
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">Condition</label>
+                    <div className="space-y-2">
+                      <label className="flex items-center">
+                        <Checkbox
+                          checked={filters.condition === "new"}
+                          onCheckedChange={(checked) => 
+                            handleFilterChange("condition", checked ? "new" : undefined)
+                          }
+                          data-testid="checkbox-new"
+                        />
+                        <span className="ml-2">New</span>
+                      </label>
+                      <label className="flex items-center">
+                        <Checkbox
+                          checked={filters.condition === "used"}
+                          onCheckedChange={(checked) => 
+                            handleFilterChange("condition", checked ? "used" : undefined)
+                          }
+                          data-testid="checkbox-used"
+                        />
+                        <span className="ml-2">Used</span>
                       </label>
                     </div>
                   </div>

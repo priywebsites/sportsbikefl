@@ -13,6 +13,7 @@ export interface CartState {
 
 export interface ProductFilters {
   category?: string;
+  condition?: string;
   search?: string;
   minPrice?: number;
   maxPrice?: number;

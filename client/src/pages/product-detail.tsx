@@ -116,8 +116,9 @@ export default function ProductDetail() {
               <img
                 src={product.images[selectedImageIndex] || "/placeholder-product.jpg"}
                 alt={product.title}
-                className="w-full max-h-96 object-contain bg-gray-50 rounded-lg"
+                className="w-full max-w-full h-auto max-h-96 object-contain bg-gray-50 rounded-lg"
                 data-testid="img-product-main"
+                style={{ imageRendering: 'crisp-edges' }}
               />
               <div className="absolute top-4 right-4">
                 {getStatusBadge()}

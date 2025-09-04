@@ -191,6 +191,7 @@ DEPOSIT POLICY:
           discount: editingProduct.discount || "0",
           discountType: editingProduct.discountType || "percentage",
           category: editingProduct.category,
+          condition: editingProduct.condition || "new",
           stockQuantity: editingProduct.stockQuantity,
           stockStatus: editingProduct.stockStatus,
           images: editingProduct.images || [],
@@ -215,6 +216,7 @@ DEPOSIT POLICY:
           discount: "0",
           discountType: "percentage",
           category: "motorcycles",
+          condition: "new",
           stockQuantity: 1,
           stockStatus: "in_stock",
           images: [],
@@ -265,6 +267,29 @@ DEPOSIT POLICY:
                           <SelectItem value="used parts">Used Parts</SelectItem>
                           <SelectItem value="custom wheels">Custom Wheels</SelectItem>
                           <SelectItem value="tires">Tires</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                {/* Condition */}
+                <FormField
+                  control={form.control}
+                  name="condition"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Condition</FormLabel>
+                      <Select onValueChange={field.onChange} value={field.value}>
+                        <FormControl>
+                          <SelectTrigger data-testid="select-condition">
+                            <SelectValue placeholder="Select condition" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="new">New</SelectItem>
+                          <SelectItem value="used">Used</SelectItem>
                         </SelectContent>
                       </Select>
                       <FormMessage />
