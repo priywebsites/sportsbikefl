@@ -131,14 +131,14 @@ export class MemStorage implements IStorage {
         stockQuantity: 1,
         stockStatus: "in_stock",
         images: [
-          "@assets/IMG_6210-300x300_1757018807660.jpeg",
-          "@assets/IMG_6211-300x300_1757018807660.jpeg",
-          "@assets/IMG_6214-300x300_1757018807660.jpeg",
-          "@assets/IMG_6215-300x300_1757018807660.jpeg",
-          "@assets/IMG_6222-e1754957191101_1757018807660.jpeg",
-          "@assets/IMG_6225-300x300_1757018807660.jpeg",
-          "@assets/IMG_6226-300x300_1757018807660.jpeg",
-          "@assets/IMG_6227-300x300_1757018807660.jpeg"
+          "@assets/k1.jpg",
+          "@assets/k2.jpg",
+          "@assets/k3.jpg",
+          "@assets/k4.jpg",
+          "@assets/k5.jpg",
+          "@assets/k6.jpg",
+          "@assets/k7.jpg",
+          "@assets/k8.jpg"
         ],
         featured: true,
       },
