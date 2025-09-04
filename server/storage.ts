@@ -131,14 +131,14 @@ export class MemStorage implements IStorage {
         stockQuantity: 1,
         stockStatus: "in_stock",
         images: [
-          "@assets/k1.jpg",
-          "@assets/k2.jpg",
-          "@assets/k3.jpg",
-          "@assets/k4.jpg",
-          "@assets/k5.jpg",
-          "@assets/k6.jpg",
-          "@assets/k7.jpg",
-          "@assets/k8.jpg"
+          "/images/k1.jpg",
+          "/images/k2.jpg",
+          "/images/k3.jpg",
+          "/images/k4.jpg",
+          "/images/k5.jpg",
+          "/images/k6.jpg",
+          "/images/k7.jpg",
+          "/images/k8.jpg"
         ],
         featured: true,
       },
