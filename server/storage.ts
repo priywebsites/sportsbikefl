@@ -1,7 +1,7 @@
 import { type User, type InsertUser, type Product, type InsertProduct, type UpdateProduct, type CartItem, type InsertCartItem, type CartItemWithProduct, users, products, cartItems } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
-import { eq, like, or, desc } from "drizzle-orm";
+import { eq, like, or, desc, and, sql } from "drizzle-orm";
 
 export interface IStorage {
   // User methods
@@ -410,17 +410,39 @@ export class DatabaseStorage implements IStorage {
   }
 
   async searchProducts(query: string): Promise<Product[]> {
-    return await db
+    const cacheKey = `search_${query.toLowerCase().trim()}`;
+    const cached = this.cache.get<Product[]>(cacheKey);
+    if (cached) return cached;
+
+    // Handle multiple keywords by splitting the query
+    const keywords = query.toLowerCase().trim().split(/\s+/).filter(word => word.length > 0);
+    
+    if (keywords.length === 0) {
+      return [];
+    }
+
+    // Build conditions for each keyword - each keyword must appear somewhere in title or description
+    const conditions = keywords.map(keyword => 
+      or(
+        like(sql`LOWER(${products.title})`, `%${keyword}%`),
+        like(sql`LOWER(${products.description})`, `%${keyword}%`)
+      )
+    );
+
+    // All keywords must match (AND logic)
+    const result = await db
       .select()
       .from(products)
-      .where(
-        or(
-          like(products.title, `%${query}%`),
-          like(products.description, `%${query}%`)
-        )
+      .where(and(...conditions))
+      .orderBy(
+        // Prioritize title matches over description matches
+        desc(sql`CASE WHEN LOWER(${products.title}) LIKE '%${keywords[0]}%' THEN 2 ELSE 1 END`),
+        desc(products.createdAt)
       )
-      .orderBy(desc(products.createdAt))
       .limit(50);
+    
+    this.cache.set(cacheKey, result);
+    return result;
   }
 
   // Cart methods
