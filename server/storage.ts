@@ -309,7 +309,32 @@ export class MemStorage implements IStorage {
   }
 }
 
+// Simple in-memory cache
+class SimpleCache {
+  private cache: Map<string, { data: any; timestamp: number }> = new Map();
+  private ttl = 30000; // 30 seconds
+
+  get<T>(key: string): T | null {
+    const item = this.cache.get(key);
+    if (!item) return null;
+    if (Date.now() - item.timestamp > this.ttl) {
+      this.cache.delete(key);
+      return null;
+    }
+    return item.data;
+  }
+
+  set(key: string, data: any): void {
+    this.cache.set(key, { data, timestamp: Date.now() });
+  }
+
+  clear(): void {
+    this.cache.clear();
+  }
+}
+
 export class DatabaseStorage implements IStorage {
+  private cache = new SimpleCache();
   // User methods
   async getUser(id: string): Promise<User | undefined> {
     const [user] = await db.select().from(users).where(eq(users.id, id));
@@ -331,11 +356,17 @@ export class DatabaseStorage implements IStorage {
 
   // Product methods
   async getAllProducts(): Promise<Product[]> {
-    return await db.select().from(products).orderBy(desc(products.createdAt));
+    const cacheKey = 'all_products';
+    const cached = this.cache.get<Product[]>(cacheKey);
+    if (cached) return cached;
+    
+    const result = await db.select().from(products).orderBy(desc(products.createdAt)).limit(100);
+    this.cache.set(cacheKey, result);
+    return result;
   }
 
   async getProductsByCategory(category: string): Promise<Product[]> {
-    return await db.select().from(products).where(eq(products.category, category));
+    return await db.select().from(products).where(eq(products.category, category)).orderBy(desc(products.createdAt)).limit(50);
   }
 
   async getProduct(id: string): Promise<Product | undefined> {
@@ -348,6 +379,7 @@ export class DatabaseStorage implements IStorage {
       .insert(products)
       .values(product)
       .returning();
+    this.cache.clear(); // Clear cache when products change
     return newProduct;
   }
 
@@ -357,16 +389,24 @@ export class DatabaseStorage implements IStorage {
       .set(updates)
       .where(eq(products.id, id))
       .returning();
+    this.cache.clear(); // Clear cache when products change
     return updatedProduct || undefined;
   }
 
   async deleteProduct(id: string): Promise<boolean> {
     const result = await db.delete(products).where(eq(products.id, id));
+    this.cache.clear(); // Clear cache when products change
     return result.rowCount !== undefined && result.rowCount > 0;
   }
 
   async getFeaturedProducts(): Promise<Product[]> {
-    return await db.select().from(products).where(eq(products.featured, true));
+    const cacheKey = 'featured_products';
+    const cached = this.cache.get<Product[]>(cacheKey);
+    if (cached) return cached;
+    
+    const result = await db.select().from(products).where(eq(products.featured, true)).orderBy(desc(products.createdAt)).limit(20);
+    this.cache.set(cacheKey, result);
+    return result;
   }
 
   async searchProducts(query: string): Promise<Product[]> {
@@ -378,7 +418,9 @@ export class DatabaseStorage implements IStorage {
           like(products.title, `%${query}%`),
           like(products.description, `%${query}%`)
         )
-      );
+      )
+      .orderBy(desc(products.createdAt))
+      .limit(50);
   }
 
   // Cart methods

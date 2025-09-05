@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, decimal, boolean, timestamp } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, decimal, boolean, timestamp, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -23,7 +23,14 @@ export const products = pgTable("products", {
   images: text("images").array().notNull().default(sql`ARRAY[]::text[]`),
   featured: boolean("featured").default(false),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => ({
+  categoryIdx: index("category_idx").on(table.category),
+  conditionIdx: index("condition_idx").on(table.condition),
+  featuredIdx: index("featured_idx").on(table.featured),
+  stockStatusIdx: index("stock_status_idx").on(table.stockStatus),
+  createdAtIdx: index("created_at_idx").on(table.createdAt),
+  titleIdx: index("title_idx").on(table.title),
+}));
 
 export const cartItems = pgTable("cart_items", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -31,7 +38,10 @@ export const cartItems = pgTable("cart_items", {
   productId: varchar("product_id").notNull().references(() => products.id),
   quantity: integer("quantity").notNull().default(1),
   createdAt: timestamp("created_at").defaultNow(),
-});
+}, (table) => ({
+  sessionIdx: index("cart_session_idx").on(table.sessionId),
+  productIdx: index("cart_product_idx").on(table.productId),
+}));
 
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
