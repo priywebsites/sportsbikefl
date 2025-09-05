@@ -23,14 +23,13 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="hero-gradient py-32 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-[#bed1d4d6] to-white"></div>
+      <section className="bg-white py-32 px-4 relative overflow-hidden">
         <div className="container mx-auto text-center relative z-10">
-          <h1 className="text-6xl md:text-8xl font-bold mb-8 leading-tight animate-fade-in text-[#000000] text-center" data-testid="text-hero-title">
-            <span className="block">Own It.</span>
-            <span className="block">Ride It.</span>
-            <span className="block">Love It.</span>
-          </h1>
+          <div className="inline-block bg-gradient-to-br from-white/30 via-white/20 to-transparent backdrop-blur-sm border border-white/30 rounded-2xl px-12 py-8 mb-8 shadow-2xl animate-fade-in" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.2) 50%, rgba(0,0,0,0.1) 100%)', backdropFilter: 'blur(10px)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3), 0 10px 30px rgba(0,0,0,0.2)' }}>
+            <h1 className="text-4xl md:text-6xl font-bold leading-tight text-gray-900" data-testid="text-hero-title">
+              From Sportbikes to Parts — We've Got It All.
+            </h1>
+          </div>
           <p className="text-xl mb-12 max-w-3xl mx-auto animate-slide-up text-[#000000e6]" data-testid="text-hero-description">
             Discover our collection of high-performance motorcycles, genuine parts, and premium accessories. 
             Your next adventure starts here with the best selection in Florida.
@@ -42,7 +41,7 @@ export default function Home() {
               </Button>
             </Link>
             <Link href="/catalog?category=parts">
-              <Button variant="outline" size="lg" className="text-lg px-10 py-6 border-white bg-transparent text-white hover:bg-white hover:text-red-600 shadow-lg transition-all duration-300 rounded-full" data-testid="button-browse-parts">
+              <Button variant="outline" size="lg" className="text-lg px-10 py-6 border-black bg-transparent text-black hover:bg-black hover:text-white shadow-lg transition-all duration-300 rounded-full" data-testid="button-browse-parts">
                 Browse Parts
               </Button>
             </Link>
