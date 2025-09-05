@@ -23,7 +23,7 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-white py-32 px-4 relative overflow-hidden">
+      <section className="bg-white py-16 px-4 relative overflow-hidden">
         <div className="container mx-auto text-center relative z-10">
           <div className="inline-block bg-gradient-to-br from-white/30 via-white/20 to-transparent backdrop-blur-sm border border-white/30 rounded-2xl px-12 py-8 mb-8 shadow-2xl animate-fade-in" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.2) 50%, rgba(0,0,0,0.1) 100%)', backdropFilter: 'blur(10px)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3), 0 10px 30px rgba(0,0,0,0.2)' }}>
             <h1 className="text-4xl md:text-6xl font-bold leading-tight text-gray-900" data-testid="text-hero-title">
