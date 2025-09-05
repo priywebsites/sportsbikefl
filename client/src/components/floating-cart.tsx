@@ -50,9 +50,10 @@ export function FloatingCart() {
     }
   }, [totalItems]);
 
-  if (totalItems === 0) {
-    return null;
-  }
+  // Temporarily always show cart for debugging
+  // if (totalItems === 0) {
+  //   return null;
+  // }
 
   return (
     <>
