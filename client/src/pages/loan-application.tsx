@@ -9,15 +9,62 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { CreditCard, ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
+import { useToast } from "@/hooks/use-toast";
 
 export default function LoanApplication() {
   const [addCoApplicant, setAddCoApplicant] = useState("no");
   const [acceptTerms, setAcceptTerms] = useState(false);
+  const { toast } = useToast();
+
+  const submitLoanMutation = useMutation({
+    mutationFn: async (formData: FormData) => {
+      const applicationData = {
+        firstName: formData.get('firstName') as string,
+        lastName: formData.get('lastName') as string,
+        email: formData.get('email') as string,
+        phone: formData.get('phone') as string,
+        income: formData.get('income') as string,
+        employment: formData.get('employment') as string,
+        creditScore: formData.get('creditScore') as string,
+        loanAmount: formData.get('loanAmount') as string,
+        downPayment: formData.get('downPayment') as string,
+        vehicleInterest: formData.get('vehicleInterest') as string,
+      };
+      
+      const response = await apiRequest("POST", "/api/send-loan-application", applicationData);
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Application Submitted Successfully!",
+        description: "Your loan application has been sent to our finance team. We'll contact you within 24 hours.",
+      });
+    },
+    onError: (error: any) => {
+      console.error("Error submitting loan application:", error);
+      toast({
+        title: "Error",
+        description: "Failed to submit your application. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle form submission
-    console.log("Loan application submitted");
+    if (!acceptTerms) {
+      toast({
+        title: "Please accept terms",
+        description: "You must accept the terms and conditions to proceed.",
+        variant: "destructive",
+      });
+      return;
+    }
+    
+    const formData = new FormData(e.target as HTMLFormElement);
+    submitLoanMutation.mutate(formData);
   };
 
   return (
@@ -343,10 +390,10 @@ export default function LoanApplication() {
                   type="submit" 
                   size="lg" 
                   className="w-full md:w-auto text-lg px-12 py-6 bg-red-600 hover:bg-red-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 rounded-full"
-                  disabled={!acceptTerms}
+                  disabled={!acceptTerms || submitLoanMutation.isPending}
                   data-testid="button-submit-application"
                 >
-                  Submit Application
+                  {submitLoanMutation.isPending ? "Submitting Application..." : "Submit Application"}
                 </Button>
               </div>
             </form>
