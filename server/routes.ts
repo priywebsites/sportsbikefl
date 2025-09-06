@@ -162,6 +162,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Checkout route - reduces stock when items are purchased
+  app.post("/api/checkout", async (req, res) => {
+    try {
+      const sessionId = req.session.id;
+      const cartItems = await storage.getCartItems(sessionId);
+      
+      // Process each cart item and reduce stock
+      for (const cartItem of cartItems) {
+        const product = await storage.getProduct(cartItem.productId);
+        if (product) {
+          const newStockQuantity = Math.max(0, product.stockQuantity - cartItem.quantity);
+          const newStockStatus = newStockQuantity === 0 ? "sold" : product.stockStatus;
+          
+          await storage.updateProduct(cartItem.productId, {
+            stockQuantity: newStockQuantity,
+            stockStatus: newStockStatus
+          });
+        }
+      }
+      
+      // Clear the cart after checkout
+      await storage.clearCart(sessionId);
+      
+      res.json({ message: "Checkout completed successfully" });
+    } catch (error) {
+      console.error("Error during checkout:", error);
+      res.status(500).json({ message: "Failed to complete checkout" });
+    }
+  });
+
   app.post("/api/cart", async (req, res) => {
     try {
       const sessionId = getSessionId(req);

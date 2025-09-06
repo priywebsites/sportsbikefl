@@ -44,8 +44,11 @@ export default function Catalog() {
   });
 
   // Filter and sort products
-  const filteredAndSortedProducts = products
+  const filteredAndSortedProducts = (Array.isArray(products) ? products : [])
     .filter(product => {
+      // Hide sold out products
+      if (product.stockQuantity === 0) return false;
+      
       if (filters.condition && product.condition !== filters.condition) return false;
       if (filters.inStock && product.stockQuantity === 0) return false;
       if (filters.onSale && (!product.discount || parseFloat(product.discount) === 0)) return false;

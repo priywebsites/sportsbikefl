@@ -5,10 +5,33 @@ import { useCart } from "@/hooks/use-cart";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "wouter";
 import { ArrowLeft, Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
+import { useMutation } from "@tanstack/react-query";
+import { apiRequest } from "@/lib/queryClient";
 
 export default function Cart() {
   const { items, total, itemCount, updateQuantity, removeFromCart, clearCart, isUpdating } = useCart();
   const { toast } = useToast();
+
+  const checkoutMutation = useMutation({
+    mutationFn: async () => {
+      const response = await apiRequest("POST", "/api/checkout", {});
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "Checkout Successful",
+        description: "Your order has been processed and inventory has been updated.",
+      });
+    },
+    onError: (error: any) => {
+      console.error("Checkout error:", error);
+      toast({
+        title: "Error",
+        description: "Failed to complete checkout. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const handleUpdateQuantity = async (id: string, quantity: number) => {
     try {
@@ -232,8 +255,14 @@ export default function Cart() {
                   </span>
                 </div>
 
-                <Button className="w-full" size="lg" data-testid="button-checkout">
-                  Proceed to Checkout
+                <Button 
+                  className="w-full" 
+                  size="lg" 
+                  data-testid="button-checkout"
+                  onClick={() => checkoutMutation.mutate()}
+                  disabled={checkoutMutation.isPending}
+                >
+                  {checkoutMutation.isPending ? "Processing..." : "Proceed to Checkout"}
                 </Button>
 
                 <div className="text-xs text-muted-foreground text-center">
