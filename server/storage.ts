@@ -511,6 +511,217 @@ export class DatabaseStorage implements IStorage {
     const result = await db.delete(cartItems).where(eq(cartItems.sessionId, sessionId));
     return result.rowCount !== undefined && result.rowCount >= 0;
   }
+
+  // Service methods
+  async getAllServices(): Promise<Service[]> {
+    return await db.select().from(services).orderBy(services.name);
+  }
+
+  async getActiveServices(): Promise<Service[]> {
+    return await db.select().from(services).where(eq(services.isActive, true)).orderBy(services.name);
+  }
+
+  async getService(id: string): Promise<Service | undefined> {
+    const [service] = await db.select().from(services).where(eq(services.id, id));
+    return service || undefined;
+  }
+
+  async createService(service: InsertService): Promise<Service> {
+    const [newService] = await db.insert(services).values(service).returning();
+    return newService;
+  }
+
+  async updateService(id: string, updates: Partial<InsertService>): Promise<Service | undefined> {
+    const [updatedService] = await db.update(services).set(updates).where(eq(services.id, id)).returning();
+    return updatedService || undefined;
+  }
+
+  async deleteService(id: string): Promise<boolean> {
+    const result = await db.delete(services).where(eq(services.id, id));
+    return result.rowCount !== undefined && result.rowCount > 0;
+  }
+
+  // Booking methods
+  async getAllBookings(): Promise<BookingWithService[]> {
+    const items = await db
+      .select({
+        id: bookings.id,
+        serviceId: bookings.serviceId,
+        customerName: bookings.customerName,
+        customerEmail: bookings.customerEmail,
+        customerPhone: bookings.customerPhone,
+        bookingDate: bookings.bookingDate,
+        startTime: bookings.startTime,
+        endTime: bookings.endTime,
+        status: bookings.status,
+        notes: bookings.notes,
+        createdAt: bookings.createdAt,
+        service: services
+      })
+      .from(bookings)
+      .innerJoin(services, eq(bookings.serviceId, services.id))
+      .orderBy(desc(bookings.bookingDate), bookings.startTime);
+    
+    return items.map(item => ({
+      ...item,
+      service: item.service
+    }));
+  }
+
+  async getBookingsByDate(date: string): Promise<BookingWithService[]> {
+    const items = await db
+      .select({
+        id: bookings.id,
+        serviceId: bookings.serviceId,
+        customerName: bookings.customerName,
+        customerEmail: bookings.customerEmail,
+        customerPhone: bookings.customerPhone,
+        bookingDate: bookings.bookingDate,
+        startTime: bookings.startTime,
+        endTime: bookings.endTime,
+        status: bookings.status,
+        notes: bookings.notes,
+        createdAt: bookings.createdAt,
+        service: services
+      })
+      .from(bookings)
+      .innerJoin(services, eq(bookings.serviceId, services.id))
+      .where(eq(bookings.bookingDate, date))
+      .orderBy(bookings.startTime);
+    
+    return items.map(item => ({
+      ...item,
+      service: item.service
+    }));
+  }
+
+  async getBookingsByService(serviceId: string): Promise<BookingWithService[]> {
+    const items = await db
+      .select({
+        id: bookings.id,
+        serviceId: bookings.serviceId,
+        customerName: bookings.customerName,
+        customerEmail: bookings.customerEmail,
+        customerPhone: bookings.customerPhone,
+        bookingDate: bookings.bookingDate,
+        startTime: bookings.startTime,
+        endTime: bookings.endTime,
+        status: bookings.status,
+        notes: bookings.notes,
+        createdAt: bookings.createdAt,
+        service: services
+      })
+      .from(bookings)
+      .innerJoin(services, eq(bookings.serviceId, services.id))
+      .where(eq(bookings.serviceId, serviceId))
+      .orderBy(desc(bookings.bookingDate), bookings.startTime);
+    
+    return items.map(item => ({
+      ...item,
+      service: item.service
+    }));
+  }
+
+  async getBooking(id: string): Promise<BookingWithService | undefined> {
+    const items = await db
+      .select({
+        id: bookings.id,
+        serviceId: bookings.serviceId,
+        customerName: bookings.customerName,
+        customerEmail: bookings.customerEmail,
+        customerPhone: bookings.customerPhone,
+        bookingDate: bookings.bookingDate,
+        startTime: bookings.startTime,
+        endTime: bookings.endTime,
+        status: bookings.status,
+        notes: bookings.notes,
+        createdAt: bookings.createdAt,
+        service: services
+      })
+      .from(bookings)
+      .innerJoin(services, eq(bookings.serviceId, services.id))
+      .where(eq(bookings.id, id));
+    
+    if (items.length === 0) return undefined;
+    
+    const item = items[0];
+    return {
+      ...item,
+      service: item.service
+    };
+  }
+
+  async createBooking(booking: InsertBooking): Promise<Booking> {
+    const [newBooking] = await db.insert(bookings).values(booking).returning();
+    return newBooking;
+  }
+
+  async updateBooking(id: string, updates: Partial<InsertBooking>): Promise<Booking | undefined> {
+    const [updatedBooking] = await db.update(bookings).set(updates).where(eq(bookings.id, id)).returning();
+    return updatedBooking || undefined;
+  }
+
+  async deleteBooking(id: string): Promise<boolean> {
+    const result = await db.delete(bookings).where(eq(bookings.id, id));
+    return result.rowCount !== undefined && result.rowCount > 0;
+  }
+
+  async getBookingsByDateRange(startDate: string, endDate: string): Promise<BookingWithService[]> {
+    const items = await db
+      .select({
+        id: bookings.id,
+        serviceId: bookings.serviceId,
+        customerName: bookings.customerName,
+        customerEmail: bookings.customerEmail,
+        customerPhone: bookings.customerPhone,
+        bookingDate: bookings.bookingDate,
+        startTime: bookings.startTime,
+        endTime: bookings.endTime,
+        status: bookings.status,
+        notes: bookings.notes,
+        createdAt: bookings.createdAt,
+        service: services
+      })
+      .from(bookings)
+      .innerJoin(services, eq(bookings.serviceId, services.id))
+      .where(and(
+        sql`${bookings.bookingDate} >= ${startDate}`,
+        sql`${bookings.bookingDate} <= ${endDate}`
+      ))
+      .orderBy(bookings.bookingDate, bookings.startTime);
+    
+    return items.map(item => ({
+      ...item,
+      service: item.service
+    }));
+  }
+
+  async checkTimeSlotAvailability(serviceId: string, date: string, startTime: string, endTime: string): Promise<boolean> {
+    const conflictingBookings = await db
+      .select()
+      .from(bookings)
+      .where(and(
+        eq(bookings.serviceId, serviceId),
+        eq(bookings.bookingDate, date),
+        eq(bookings.status, "confirmed"),
+        or(
+          and(
+            sql`${bookings.startTime} <= ${startTime}`,
+            sql`${bookings.endTime} > ${startTime}`
+          ),
+          and(
+            sql`${bookings.startTime} < ${endTime}`,
+            sql`${bookings.endTime} >= ${endTime}`
+          ),
+          and(
+            sql`${bookings.startTime} >= ${startTime}`,
+            sql`${bookings.endTime} <= ${endTime}`
+          )
+        )
+      ));
+    
+    return conflictingBookings.length === 0;
+  }
 }
 
 export const storage = new DatabaseStorage();

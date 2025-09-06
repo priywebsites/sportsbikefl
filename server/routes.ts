@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertProductSchema, updateProductSchema, insertCartItemSchema } from "@shared/schema";
+import { insertProductSchema, updateProductSchema, insertCartItemSchema, insertServiceSchema, insertBookingSchema } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -211,6 +211,161 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ message: "Cart cleared" });
     } catch (error) {
       res.status(500).json({ message: "Failed to clear cart" });
+    }
+  });
+
+  // Services routes
+  app.get("/api/services", async (req, res) => {
+    try {
+      const services = await storage.getActiveServices();
+      res.json(services);
+    } catch (error) {
+      console.error("Error fetching services:", error);
+      res.status(500).json({ message: "Failed to fetch services" });
+    }
+  });
+
+  app.get("/api/services/:id", async (req, res) => {
+    try {
+      const service = await storage.getService(req.params.id);
+      if (!service) {
+        return res.status(404).json({ message: "Service not found" });
+      }
+      res.json(service);
+    } catch (error) {
+      console.error("Error fetching service:", error);
+      res.status(500).json({ message: "Failed to fetch service" });
+    }
+  });
+
+  app.post("/api/services", requireAuth, async (req, res) => {
+    try {
+      const parsed = insertServiceSchema.parse(req.body);
+      const service = await storage.createService(parsed);
+      res.status(201).json(service);
+    } catch (error: any) {
+      console.error("Error creating service:", error);
+      if (error.name === "ZodError") {
+        return res.status(400).json({ message: "Invalid service data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create service" });
+    }
+  });
+
+  // Bookings routes
+  app.get("/api/bookings", requireAuth, async (req, res) => {
+    try {
+      const { date, service_id, start_date, end_date } = req.query;
+      
+      let bookings;
+      if (date) {
+        bookings = await storage.getBookingsByDate(date as string);
+      } else if (service_id) {
+        bookings = await storage.getBookingsByService(service_id as string);
+      } else if (start_date && end_date) {
+        bookings = await storage.getBookingsByDateRange(start_date as string, end_date as string);
+      } else {
+        bookings = await storage.getAllBookings();
+      }
+      
+      res.json(bookings);
+    } catch (error) {
+      console.error("Error fetching bookings:", error);
+      res.status(500).json({ message: "Failed to fetch bookings" });
+    }
+  });
+
+  app.get("/api/bookings/:id", requireAuth, async (req, res) => {
+    try {
+      const booking = await storage.getBooking(req.params.id);
+      if (!booking) {
+        return res.status(404).json({ message: "Booking not found" });
+      }
+      res.json(booking);
+    } catch (error) {
+      console.error("Error fetching booking:", error);
+      res.status(500).json({ message: "Failed to fetch booking" });
+    }
+  });
+
+  app.post("/api/bookings", async (req, res) => {
+    try {
+      const parsed = insertBookingSchema.parse(req.body);
+      
+      // Check availability
+      const isAvailable = await storage.checkTimeSlotAvailability(
+        parsed.serviceId,
+        parsed.bookingDate,
+        parsed.startTime,
+        parsed.endTime
+      );
+      
+      if (!isAvailable) {
+        return res.status(409).json({ message: "Time slot is not available" });
+      }
+      
+      const booking = await storage.createBooking(parsed);
+      res.status(201).json(booking);
+    } catch (error: any) {
+      console.error("Error creating booking:", error);
+      if (error.name === "ZodError") {
+        return res.status(400).json({ message: "Invalid booking data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to create booking" });
+    }
+  });
+
+  app.put("/api/bookings/:id", requireAuth, async (req, res) => {
+    try {
+      const updates = insertBookingSchema.partial().parse(req.body);
+      const booking = await storage.updateBooking(req.params.id, updates);
+      if (!booking) {
+        return res.status(404).json({ message: "Booking not found" });
+      }
+      res.json(booking);
+    } catch (error: any) {
+      console.error("Error updating booking:", error);
+      if (error.name === "ZodError") {
+        return res.status(400).json({ message: "Invalid booking data", errors: error.errors });
+      }
+      res.status(500).json({ message: "Failed to update booking" });
+    }
+  });
+
+  app.delete("/api/bookings/:id", requireAuth, async (req, res) => {
+    try {
+      const success = await storage.deleteBooking(req.params.id);
+      if (!success) {
+        return res.status(404).json({ message: "Booking not found" });
+      }
+      res.json({ message: "Booking deleted successfully" });
+    } catch (error) {
+      console.error("Error deleting booking:", error);
+      res.status(500).json({ message: "Failed to delete booking" });
+    }
+  });
+
+  // Time slot availability check
+  app.get("/api/bookings/availability/:serviceId", async (req, res) => {
+    try {
+      const { serviceId } = req.params;
+      const { date, startTime, endTime } = req.query;
+      
+      if (!date || !startTime || !endTime) {
+        return res.status(400).json({ message: "Missing required parameters: date, startTime, endTime" });
+      }
+      
+      const isAvailable = await storage.checkTimeSlotAvailability(
+        serviceId,
+        date as string,
+        startTime as string,
+        endTime as string
+      );
+      
+      res.json({ available: isAvailable });
+    } catch (error) {
+      console.error("Error checking availability:", error);
+      res.status(500).json({ message: "Failed to check availability" });
     }
   });
 
