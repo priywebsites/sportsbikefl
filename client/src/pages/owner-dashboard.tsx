@@ -9,6 +9,17 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { 
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { AddProductModal } from "@/components/modals/add-product-modal";
 import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
@@ -72,6 +83,29 @@ export default function OwnerDashboard() {
       return response.json();
     },
     enabled: isAuthenticated,
+  });
+
+  // Delete appointment mutation
+  const deleteAppointmentMutation = useMutation({
+    mutationFn: async (appointmentId: string) => {
+      const response = await apiRequest("DELETE", `/api/bookings/${appointmentId}`);
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/bookings"] });
+      toast({
+        title: "Appointment Canceled",
+        description: "The appointment has been successfully canceled and the time slot is now available for booking.",
+      });
+    },
+    onError: (error: any) => {
+      console.error("Error deleting appointment:", error);
+      toast({
+        title: "Error",
+        description: "Failed to cancel the appointment. Please try again.",
+        variant: "destructive",
+      });
+    },
   });
 
   const updateProductMutation = useMutation({
@@ -510,7 +544,7 @@ export default function OwnerDashboard() {
                             </div>
                           </div>
                           
-                          {/* Service Details */}
+                          {/* Service Details and Actions */}
                           <div className="space-y-2">
                             <div className="text-sm text-gray-600">
                               <strong>Duration:</strong> {appointment.service?.durationMinutes} minutes
@@ -530,6 +564,41 @@ export default function OwnerDashboard() {
                                 <strong>Notes:</strong> {appointment.notes}
                               </div>
                             )}
+                            
+                            {/* Delete Button */}
+                            <div className="pt-4">
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <Button 
+                                    variant="outline" 
+                                    size="sm" 
+                                    className="text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                                    data-testid={`button-delete-appointment-${appointment.id}`}
+                                  >
+                                    <Trash2 className="h-4 w-4 mr-2" />
+                                    Cancel Appointment
+                                  </Button>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent>
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Cancel Appointment</AlertDialogTitle>
+                                    <AlertDialogDescription>
+                                      Are you sure you want to cancel this appointment for {appointment.customerName}? 
+                                      The time slot will become available for other customers to book.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel>Keep Appointment</AlertDialogCancel>
+                                    <AlertDialogAction 
+                                      onClick={() => deleteAppointmentMutation.mutate(appointment.id)}
+                                      className="bg-red-600 hover:bg-red-700"
+                                    >
+                                      {deleteAppointmentMutation.isPending ? "Canceling..." : "Cancel Appointment"}
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </div>
                           </div>
                         </div>
                       </div>

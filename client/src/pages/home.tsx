@@ -25,6 +25,8 @@ export default function Home() {
       const response = await fetch("/api/products?featured=true");
       return response.json();
     },
+    staleTime: 5 * 60 * 1000, // Keep data fresh for 5 minutes
+    gcTime: 10 * 60 * 1000, // Keep in cache for 10 minutes
   });
 
   return (
@@ -32,7 +34,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="bg-white py-16 px-4 relative overflow-hidden">
         <div className="container mx-auto text-center relative z-10">
-          <div className="inline-block bg-gradient-to-br from-white/30 via-white/20 to-transparent backdrop-blur-sm border border-white/30 rounded-2xl px-12 py-8 mb-8 shadow-2xl hero-title" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.2) 50%, rgba(0,0,0,0.1) 100%)', backdropFilter: 'blur(10px)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3), 0 10px 30px rgba(0,0,0,0.2)' }}>
+          <div className="inline-block bg-gradient-to-br from-white/30 via-red-50/40 to-red-100/30 backdrop-blur-sm border border-white/30 rounded-2xl px-12 py-8 mb-8 shadow-2xl hero-title" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(254,226,226,0.3) 30%, rgba(252,165,165,0.2) 70%, rgba(239,68,68,0.1) 100%)', backdropFilter: 'blur(10px)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3), 0 10px 30px rgba(0,0,0,0.2)' }}>
             <h1 className="text-4xl md:text-6xl font-bold leading-tight text-gray-900" data-testid="text-hero-title">
               From Sportbikes to Parts — We've Got It All.
             </h1>
@@ -230,7 +232,7 @@ export default function Home() {
       </section>
       {/* Motorcycle Loan Services Section */}
       <section id="loan-services" className="py-16 px-4 bg-gradient-to-br from-[#bed1d4d6] to-white">
-        <div className="container mx-auto max-w-4xl text-center scroll-scale-in">
+        <div className="container mx-auto max-w-4xl text-center scroll-fade-in">
           <div className="mb-12">
             <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
               <CreditCard className="text-red-600 text-2xl" />
@@ -400,7 +402,7 @@ export default function Home() {
 
       {/* All-in-One Service Section */}
       <section className="py-20 px-4 bg-white">
-        <div className="container mx-auto max-w-6xl">
+        <div className="container mx-auto max-w-6xl scroll-fade-in">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-4xl md:text-5xl font-bold mb-8 text-gray-900">

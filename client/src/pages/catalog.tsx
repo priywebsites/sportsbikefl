@@ -10,8 +10,10 @@ import { Separator } from "@/components/ui/separator";
 import { ProductCard } from "@/components/product-card";
 import { ProductWithDiscount, ProductFilters, SortOption } from "@/lib/types";
 import { Search, Grid, List, Filter } from "lucide-react";
+import { useScrollAnimations } from "@/hooks/use-scroll-animations";
 
 export default function Catalog() {
+  useScrollAnimations();
   const [location] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
   const [filters, setFilters] = useState<ProductFilters>({});
@@ -37,6 +39,8 @@ export default function Catalog() {
       const response = await fetch(`/api/products?${params.toString()}`);
       return response.json();
     },
+    staleTime: 3 * 60 * 1000, // Keep data fresh for 3 minutes
+    gcTime: 8 * 60 * 1000, // Keep in cache for 8 minutes
   });
 
   // Filter and sort products

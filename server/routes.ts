@@ -335,6 +335,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Email route for loan applications
+  app.post("/api/send-loan-application", async (req, res) => {
+    try {
+      const { sendLoanApplicationEmail } = await import('./emailService');
+      const result = await sendLoanApplicationEmail(req.body);
+      
+      if (result.success) {
+        res.json({ message: "Loan application sent successfully" });
+      } else {
+        res.status(500).json({ message: "Failed to send loan application", error: result.error });
+      }
+    } catch (error) {
+      console.error("Error processing loan application:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
+  });
+
   app.delete("/api/bookings/:id", requireAuth, async (req, res) => {
     try {
       const success = await storage.deleteBooking(req.params.id);
