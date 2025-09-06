@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, integer, decimal, boolean, timestamp, index } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, integer, decimal, boolean, timestamp, index, time, date } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -43,6 +43,40 @@ export const cartItems = pgTable("cart_items", {
   productIdx: index("cart_product_idx").on(table.productId),
 }));
 
+export const services = pgTable("services", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description").notNull(),
+  price: decimal("price", { precision: 10, scale: 2 }),
+  priceLabel: text("price_label"), // For "Call for price" or custom labels
+  durationMinutes: integer("duration_minutes").notNull(),
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => ({
+  nameIdx: index("service_name_idx").on(table.name),
+  isActiveIdx: index("service_active_idx").on(table.isActive),
+}));
+
+export const bookings = pgTable("bookings", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceId: varchar("service_id").notNull().references(() => services.id),
+  customerName: text("customer_name").notNull(),
+  customerEmail: text("customer_email").notNull(),
+  customerPhone: text("customer_phone").notNull(),
+  bookingDate: date("booking_date").notNull(),
+  startTime: time("start_time").notNull(),
+  endTime: time("end_time").notNull(),
+  status: text("status", { enum: ["confirmed", "cancelled", "completed", "no_show"] }).default("confirmed"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow(),
+}, (table) => ({
+  serviceIdx: index("booking_service_idx").on(table.serviceId),
+  dateIdx: index("booking_date_idx").on(table.bookingDate),
+  statusIdx: index("booking_status_idx").on(table.status),
+  emailIdx: index("booking_email_idx").on(table.customerEmail),
+  createdAtIdx: index("booking_created_at_idx").on(table.createdAt),
+}));
+
 export const insertUserSchema = createInsertSchema(users).omit({
   id: true,
 });
@@ -57,6 +91,16 @@ export const insertCartItemSchema = createInsertSchema(cartItems).omit({
   createdAt: true,
 });
 
+export const insertServiceSchema = createInsertSchema(services).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertBookingSchema = createInsertSchema(bookings).omit({
+  id: true,
+  createdAt: true,
+});
+
 export const updateProductSchema = insertProductSchema.partial();
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -66,6 +110,10 @@ export type Product = typeof products.$inferSelect;
 export type InsertCartItem = z.infer<typeof insertCartItemSchema>;
 export type CartItem = typeof cartItems.$inferSelect;
 export type UpdateProduct = z.infer<typeof updateProductSchema>;
+export type InsertService = z.infer<typeof insertServiceSchema>;
+export type Service = typeof services.$inferSelect;
+export type InsertBooking = z.infer<typeof insertBookingSchema>;
+export type Booking = typeof bookings.$inferSelect;
 
 // Additional types for frontend
 export type CartItemWithProduct = CartItem & {
@@ -74,4 +122,8 @@ export type CartItemWithProduct = CartItem & {
 
 export type ProductWithDiscount = Product & {
   discountedPrice?: number;
+};
+
+export type BookingWithService = Booking & {
+  service: Service;
 };

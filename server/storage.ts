@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Product, type InsertProduct, type UpdateProduct, type CartItem, type InsertCartItem, type CartItemWithProduct, users, products, cartItems } from "@shared/schema";
+import { type User, type InsertUser, type Product, type InsertProduct, type UpdateProduct, type CartItem, type InsertCartItem, type CartItemWithProduct, type Service, type InsertService, type Booking, type InsertBooking, type BookingWithService, users, products, cartItems, services, bookings } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
 import { eq, like, or, desc, and, sql } from "drizzle-orm";
@@ -25,6 +25,25 @@ export interface IStorage {
   updateCartItem(id: string, quantity: number): Promise<CartItem | undefined>;
   removeFromCart(id: string): Promise<boolean>;
   clearCart(sessionId: string): Promise<boolean>;
+
+  // Service methods
+  getAllServices(): Promise<Service[]>;
+  getActiveServices(): Promise<Service[]>;
+  getService(id: string): Promise<Service | undefined>;
+  createService(service: InsertService): Promise<Service>;
+  updateService(id: string, updates: Partial<InsertService>): Promise<Service | undefined>;
+  deleteService(id: string): Promise<boolean>;
+
+  // Booking methods
+  getAllBookings(): Promise<BookingWithService[]>;
+  getBookingsByDate(date: string): Promise<BookingWithService[]>;
+  getBookingsByService(serviceId: string): Promise<BookingWithService[]>;
+  getBooking(id: string): Promise<BookingWithService | undefined>;
+  createBooking(booking: InsertBooking): Promise<Booking>;
+  updateBooking(id: string, updates: Partial<InsertBooking>): Promise<Booking | undefined>;
+  deleteBooking(id: string): Promise<boolean>;
+  getBookingsByDateRange(startDate: string, endDate: string): Promise<BookingWithService[]>;
+  checkTimeSlotAvailability(serviceId: string, date: string, startTime: string, endTime: string): Promise<boolean>;
 }
 
 export class MemStorage implements IStorage {

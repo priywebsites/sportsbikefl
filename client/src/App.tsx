@@ -14,6 +14,7 @@ import Contact from "@/pages/contact";
 import OwnerLogin from "@/pages/owner-login";
 import OwnerDashboard from "@/pages/owner-dashboard";
 import LoanApplication from "@/pages/loan-application";
+import BookService from "@/pages/book-service";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -27,6 +28,7 @@ function Router() {
       <Route path="/owner" component={OwnerDashboard} />
       <Route path="/contact" component={Contact} />
       <Route path="/loan-application" component={LoanApplication} />
+      <Route path="/book-service" component={BookService} />
       <Route component={NotFound} />
     </Switch>
   );
