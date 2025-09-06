@@ -5,12 +5,33 @@ interface LoanApplicationData {
   lastName: string;
   email: string;
   phone: string;
+  dateOfBirth: string;
+  ssn: string;
+  address: string;
+  city: string;
+  state: string;
+  zipCode: string;
+  idType: string;
+  idNumber: string;
   income: string;
   employment: string;
   creditScore: string;
   loanAmount: string;
   downPayment: string;
   vehicleInterest: string;
+  paystubs: string;
+  message: string;
+  addCoApplicant: string;
+  // Co-applicant fields
+  coFirstName?: string | null;
+  coLastName?: string | null;
+  coEmail?: string | null;
+  coPhone?: string | null;
+  coDateOfBirth?: string | null;
+  coSsn?: string | null;
+  coIncome?: string | null;
+  coEmployment?: string | null;
+  coCreditScore?: string | null;
 }
 
 // Create reusable transporter object using SMTP transport
@@ -51,7 +72,7 @@ export async function sendLoanApplicationEmail(applicationData: LoanApplicationD
         </div>
         
         <div class="content">
-          <h2>Applicant Information</h2>
+          <h2>Primary Applicant Information</h2>
           
           <div class="field">
             <span class="label">Name:</span>
@@ -69,36 +90,123 @@ export async function sendLoanApplicationEmail(applicationData: LoanApplicationD
           </div>
           
           <div class="field">
+            <span class="label">Date of Birth:</span>
+            <span class="value">${applicationData.dateOfBirth || 'Not provided'}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">SSN/ITIN:</span>
+            <span class="value">${applicationData.ssn || 'Not provided'}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">Address:</span>
+            <span class="value">${applicationData.address || 'Not provided'}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">City, State, ZIP:</span>
+            <span class="value">${applicationData.city || ''} ${applicationData.state || ''} ${applicationData.zipCode || ''}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">ID Type:</span>
+            <span class="value">${applicationData.idType || 'Not provided'}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">ID Number:</span>
+            <span class="value">${applicationData.idNumber || 'Not provided'}</span>
+          </div>
+          
+          <div class="field">
             <span class="label">Annual Income:</span>
-            <span class="value">$${applicationData.income}</span>
+            <span class="value">$${applicationData.income || 'Not provided'}</span>
           </div>
           
           <div class="field">
             <span class="label">Employment Status:</span>
-            <span class="value">${applicationData.employment}</span>
+            <span class="value">${applicationData.employment || 'Not provided'}</span>
           </div>
           
           <div class="field">
             <span class="label">Credit Score Range:</span>
-            <span class="value">${applicationData.creditScore}</span>
+            <span class="value">${applicationData.creditScore || 'Not provided'}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">Has Last 2 Paystubs:</span>
+            <span class="value">${applicationData.paystubs || 'Not provided'}</span>
           </div>
           
           <h2>Loan Details</h2>
           
           <div class="field">
             <span class="label">Requested Loan Amount:</span>
-            <span class="value">$${applicationData.loanAmount}</span>
+            <span class="value">$${applicationData.loanAmount || 'Not provided'}</span>
           </div>
           
           <div class="field">
             <span class="label">Down Payment:</span>
-            <span class="value">$${applicationData.downPayment}</span>
+            <span class="value">$${applicationData.downPayment || 'Not provided'}</span>
           </div>
           
           <div class="field">
             <span class="label">Vehicle Interest:</span>
-            <span class="value">${applicationData.vehicleInterest}</span>
+            <span class="value">${applicationData.vehicleInterest || 'Not provided'}</span>
           </div>
+          
+          ${applicationData.message ? `
+          <h2>Additional Information</h2>
+          <div class="field">
+            <span class="label">Message:</span>
+            <span class="value">${applicationData.message}</span>
+          </div>
+          ` : ''}
+          
+          ${applicationData.addCoApplicant === 'yes' ? `
+          <h2>Co-Applicant Information</h2>
+          
+          <div class="field">
+            <span class="label">Co-Applicant Name:</span>
+            <span class="value">${applicationData.coFirstName || ''} ${applicationData.coLastName || ''}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">Co-Applicant Email:</span>
+            <span class="value">${applicationData.coEmail || 'Not provided'}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">Co-Applicant Phone:</span>
+            <span class="value">${applicationData.coPhone || 'Not provided'}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">Co-Applicant Date of Birth:</span>
+            <span class="value">${applicationData.coDateOfBirth || 'Not provided'}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">Co-Applicant SSN/ITIN:</span>
+            <span class="value">${applicationData.coSsn || 'Not provided'}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">Co-Applicant Annual Income:</span>
+            <span class="value">$${applicationData.coIncome || 'Not provided'}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">Co-Applicant Employment:</span>
+            <span class="value">${applicationData.coEmployment || 'Not provided'}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">Co-Applicant Credit Score:</span>
+            <span class="value">${applicationData.coCreditScore || 'Not provided'}</span>
+          </div>
+          ` : ''}
           
           <div class="field">
             <span class="label">Application Date:</span>
