@@ -22,12 +22,12 @@ const TIMEZONE = "America/New_York"; // Eastern Time for Kissimmee, FL
 
 // Store hours configuration
 const STORE_HOURS = {
-  monday: { open: "09:00", close: "18:00", closed: false },
-  tuesday: { open: "09:00", close: "18:00", closed: false },
-  wednesday: { open: "09:00", close: "18:00", closed: false },
-  thursday: { open: "09:00", close: "18:00", closed: false },
-  friday: { open: "09:00", close: "18:00", closed: false },
-  saturday: { open: "09:00", close: "17:00", closed: false },
+  monday: { open: "09:00", close: "17:00", closed: false },
+  tuesday: { open: "09:00", close: "17:00", closed: false },
+  wednesday: { open: "09:00", close: "17:00", closed: false },
+  thursday: { open: "09:00", close: "17:00", closed: false },
+  friday: { open: "09:00", close: "17:00", closed: false },
+  saturday: { open: "09:00", close: "15:00", closed: false },
   sunday: { open: "09:00", close: "17:00", closed: true }
 };
 
@@ -86,10 +86,30 @@ export default function BookService() {
     const [openHour, openMinute] = dayHours.open.split(":").map(Number);
     const [closeHour, closeMinute] = dayHours.close.split(":").map(Number);
     
-    // Generate 30-minute slots
+    // Check if this is today and get current time in Eastern timezone
+    const now = new Date();
+    const easternNow = toZonedTime(now, TIMEZONE);
+    const isToday = format(date, "yyyy-MM-dd") === format(easternNow, "yyyy-MM-dd");
+    
     let currentHour = openHour;
     let currentMinute = openMinute;
     
+    // If it's today, start from current time if later than opening
+    if (isToday) {
+      const currentEasternHour = easternNow.getHours();
+      const currentEasternMinute = easternNow.getMinutes();
+      
+      if (currentEasternHour > openHour || (currentEasternHour === openHour && currentEasternMinute > openMinute)) {
+        // Round up to next 30-minute interval
+        currentHour = currentEasternHour;
+        currentMinute = currentEasternMinute <= 30 ? 30 : 0;
+        if (currentMinute === 0) {
+          currentHour++;
+        }
+      }
+    }
+    
+    // Generate 30-minute slots
     while (currentHour < closeHour || (currentHour === closeHour && currentMinute < closeMinute)) {
       const timeStr = `${currentHour.toString().padStart(2, "0")}:${currentMinute.toString().padStart(2, "0")}`;
       const label = format(new Date(2023, 0, 1, currentHour, currentMinute), "h:mm a");
@@ -102,7 +122,6 @@ export default function BookService() {
       const canFit = endHour < closeHour || (endHour === closeHour && adjustedEndMinute <= closeMinute);
       
       if (canFit) {
-        // TODO: Check against existing bookings for availability
         slots.push({
           time: timeStr,
           label,
@@ -134,10 +153,7 @@ export default function BookService() {
   // Create booking mutation
   const createBookingMutation = useMutation({
     mutationFn: async (booking: InsertBooking) => {
-      return apiRequest("/api/bookings", {
-        method: "POST",
-        body: booking,
-      });
+      return apiRequest("/api/bookings", "POST", booking);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/bookings"] });
@@ -187,11 +203,12 @@ export default function BookService() {
 
   // Helper to check if date should be disabled
   const isDateDisabled = (date: Date) => {
-    const today = startOfDay(new Date());
-    const zonedToday = toZonedTime(today, TIMEZONE);
+    const now = new Date();
+    const easternNow = toZonedTime(now, TIMEZONE);
+    const today = startOfDay(easternNow);
     
     // Disable past dates
-    if (isBefore(date, zonedToday)) {
+    if (isBefore(date, today)) {
       return true;
     }
     
@@ -260,7 +277,7 @@ export default function BookService() {
                       {service.name}
                     </CardTitle>
                     <div className="flex items-center justify-between">
-                      <Badge variant="secondary" className="bg-red-100 text-red-700">
+                      <Badge variant="secondary" className="bg-green-100 text-green-700">
                         <Clock className="h-3 w-3 mr-1" />
                         {Math.floor(service.durationMinutes / 60)}h {service.durationMinutes % 60 > 0 ? `${service.durationMinutes % 60}m` : ''}
                       </Badge>

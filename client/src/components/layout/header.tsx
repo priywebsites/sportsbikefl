@@ -115,8 +115,8 @@ export function Header() {
                     <Menu className="h-5 w-5 text-white" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-[300px] bg-white/95 backdrop-blur-md">
-                  <div className="flex flex-col space-y-6 mt-8">
+                <SheetContent side="right" className="w-[300px] bg-white/95 backdrop-blur-md overflow-y-auto">
+                  <div className="flex flex-col space-y-6 mt-8 pb-8">
                     <div className="flex items-center space-x-3 pb-4 border-b border-gray-200">
                       <img src={logoImage} alt="Sportbike Parts & Export Logo" className="w-8 h-8 object-contain" />
                       <span className="text-xl font-bold text-gray-900">Sportbike Parts & Export</span>

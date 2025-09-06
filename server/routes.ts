@@ -7,7 +7,7 @@ import { randomUUID } from "crypto";
 export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication middleware
   const requireAuth = (req: any, res: any, next: any) => {
-    if (!req.session?.userId) {
+    if (!(req.session as any)?.userId) {
       return res.status(401).json({ message: "Authentication required" });
     }
     next();
@@ -31,7 +31,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-      req.session.userId = user.id;
+      (req.session as any).userId = user.id;
       res.json({ user: { id: user.id, username: user.username } });
     } catch (error) {
       res.status(500).json({ message: "Login failed" });
@@ -52,7 +52,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    const user = await storage.getUser(req.session.userId);
+    const user = await storage.getUser((req.session as any).userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
