@@ -253,12 +253,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Bookings routes
-  app.get("/api/bookings", requireAuth, async (req, res) => {
+  app.get("/api/bookings", async (req, res) => {
     try {
       const { date, service_id, start_date, end_date } = req.query;
       
       let bookings;
-      if (date) {
+      if (date && service_id) {
+        // Get bookings for specific date and service (for overlap checking)
+        bookings = await storage.getBookingsByDateAndService(date as string, service_id as string);
+      } else if (date) {
         bookings = await storage.getBookingsByDate(date as string);
       } else if (service_id) {
         bookings = await storage.getBookingsByService(service_id as string);

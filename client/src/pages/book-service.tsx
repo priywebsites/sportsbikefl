@@ -74,10 +74,15 @@ export default function BookService() {
     queryKey: ["/api/services"],
   });
 
-  // Fetch existing bookings for overlap checking
+  // Fetch existing bookings for overlap checking - only for selected service and date
   const { data: existingBookings = [] } = useQuery<any[]>({
-    queryKey: ["/api/bookings", selectedDate ? format(selectedDate, "yyyy-MM-dd") : ""],
-    enabled: !!selectedDate,
+    queryKey: ["/api/bookings", selectedDate ? format(selectedDate, "yyyy-MM-dd") : "", selectedService?.id || ""],
+    enabled: !!selectedDate && !!selectedService,
+    queryFn: async () => {
+      const dateStr = format(selectedDate!, "yyyy-MM-dd");
+      const response = await fetch(`/api/bookings?date=${dateStr}&service_id=${selectedService!.id}`);
+      return response.json();
+    },
   });
 
   // Helper to check if two time ranges overlap
@@ -152,7 +157,7 @@ export default function BookService() {
         const endDisplay = format(new Date(2023, 0, 1, endHour, endMinute), "h:mm a");
         const label = `${startDisplay} to ${endDisplay}`;
         
-        // Check if this slot overlaps with any existing bookings
+        // Check if this slot overlaps with any existing bookings (already filtered by service on backend)
         const isAvailable = !existingBookings.some((booking: any) => {
           if (!booking?.startTime || !booking?.endTime) return false;
           return timeRangesOverlap(startTimeStr, endTimeStr, booking.startTime, booking.endTime);

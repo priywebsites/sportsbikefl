@@ -38,6 +38,7 @@ export interface IStorage {
   getAllBookings(): Promise<BookingWithService[]>;
   getBookingsByDate(date: string): Promise<BookingWithService[]>;
   getBookingsByService(serviceId: string): Promise<BookingWithService[]>;
+  getBookingsByDateAndService(date: string, serviceId: string): Promise<BookingWithService[]>;
   getBooking(id: string): Promise<BookingWithService | undefined>;
   createBooking(booking: InsertBooking): Promise<Booking>;
   updateBooking(id: string, updates: Partial<InsertBooking>): Promise<Booking | undefined>;
@@ -615,6 +616,33 @@ export class DatabaseStorage implements IStorage {
       .innerJoin(services, eq(bookings.serviceId, services.id))
       .where(eq(bookings.serviceId, serviceId))
       .orderBy(desc(bookings.bookingDate), bookings.startTime);
+    
+    return items.map(item => ({
+      ...item,
+      service: item.service
+    }));
+  }
+
+  async getBookingsByDateAndService(date: string, serviceId: string): Promise<BookingWithService[]> {
+    const items = await db
+      .select({
+        id: bookings.id,
+        serviceId: bookings.serviceId,
+        customerName: bookings.customerName,
+        customerEmail: bookings.customerEmail,
+        customerPhone: bookings.customerPhone,
+        bookingDate: bookings.bookingDate,
+        startTime: bookings.startTime,
+        endTime: bookings.endTime,
+        status: bookings.status,
+        notes: bookings.notes,
+        createdAt: bookings.createdAt,
+        service: services
+      })
+      .from(bookings)
+      .innerJoin(services, eq(bookings.serviceId, services.id))
+      .where(and(eq(bookings.bookingDate, date), eq(bookings.serviceId, serviceId)))
+      .orderBy(bookings.startTime);
     
     return items.map(item => ({
       ...item,
