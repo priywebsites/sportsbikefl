@@ -219,7 +219,7 @@ export default function Home() {
         </div>
       </section>
       {/* Motorcycle Loan Services Section */}
-      <section className="py-16 px-4 bg-gradient-to-br from-[#bed1d4d6] to-white">
+      <section id="loan-services" className="py-16 px-4 bg-gradient-to-br from-[#bed1d4d6] to-white">
         <div className="container mx-auto max-w-4xl text-center">
           <div className="mb-12">
             <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
@@ -263,7 +263,7 @@ export default function Home() {
       </section>
       
       {/* Parts & Service Financing Section */}
-      <section className="py-16 px-4 bg-white">
+      <section id="parts-financing" className="py-16 px-4 bg-white">
         <div className="container mx-auto max-w-6xl text-center">
           <div className="mb-12">
             <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">

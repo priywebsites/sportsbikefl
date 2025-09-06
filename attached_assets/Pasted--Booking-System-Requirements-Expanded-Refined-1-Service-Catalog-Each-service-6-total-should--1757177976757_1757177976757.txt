@@ -1,0 +1,71 @@
+✅ Booking System Requirements (Expanded & Refined)
+1. Service Catalog
+Each service (6 total) should include:
+Name
+Price (or “Call for price”)
+Duration
+“Book Now” button
+2. Booking Flow
+Click Book Now → opens booking modal/page.
+Show calendar (date picker) → limited to store hours.
+Show available time slots → based on service duration.
+3. Store Hours & Time Zone
+Timezone: Kissimmee, Florida (Eastern Time, EST/EDT).
+Store Hours (assumed):
+Mon–Fri: 9 AM – 6 PM
+Sat: 9 AM – 5 PM
+Sun: Closed
+Calendar should block off all times outside these hours.
+4. Slot Management
+When a customer books a slot (e.g., 10–11 AM Tire Change):
+That exact slot becomes unavailable for that service only.
+Other services at that same time remain available.
+Prevent double booking for the same service/time.
+Save: service → date → time → customer data in database.
+5. Customer Info Capture
+After selecting service + time:
+Ask for:
+First Name
+Last Name
+Email
+Phone Number
+Validate phone + email.
+Save booking to database.
+6. Notifications (Future-Ready)
+After booking:
+Show confirmation page:
+“Appointment confirmed for [Service] at [Time] on [Date].”
+(Future) Send confirmation text message via Twilio:
+Message to customer → “Your appointment is confirmed.”
+Message to owner → “New booking: [Service] at [Time] by [Customer Name].”
+For now: just ensure DB stores info and exposes booking events for Twilio integration.
+7. Admin/Owner Management
+Accessible inside Owner Login.
+Features:
+View all upcoming bookings.
+Filter bookings by service/date.
+Cancel/edit bookings if needed.
+8. Database Schema (Draft)
+Services Table
+id
+name
+price
+duration
+description
+Bookings Table
+id
+service_id
+customer_name
+customer_email
+customer_phone
+date
+start_time
+end_time
+status
+🔒 Prevent Past Bookings
+The system must check current time in Kissimmee/Orlando, FL (Eastern Time Zone).
+When rendering available slots:
+Today’s date: Only show slots later than the current time.
+Example: If it’s 11:00 AM local time, do not show 10:00 AM or earlier.
+Future dates: Show all slots (within store hours).
+Past dates: Should not be selectable in the calendar at all.

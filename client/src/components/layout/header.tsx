@@ -6,7 +6,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { CartSidebar } from "@/components/cart-sidebar";
 import { useCart } from "@/hooks/use-cart";
 import { useAuth } from "@/hooks/use-auth";
-import { ShoppingCart, User, Menu } from "lucide-react";
+import { ShoppingCart, User, Menu, CreditCard, Calendar } from "lucide-react";
 import logoImage from "@assets/sl_1756939062038.png";
 
 export function Header() {
@@ -136,6 +136,48 @@ export function Header() {
                         {item.name}
                       </Link>
                     ))}
+                    
+                    {/* Additional Services */}
+                    <div className="border-t border-gray-200 pt-4">
+                      <h3 className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-3">Services</h3>
+                      
+                      {/* Motorcycle Loan Services */}
+                      <button
+                        onClick={() => {
+                          document.getElementById('loan-services')?.scrollIntoView({ behavior: 'smooth' });
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="w-full text-left text-lg font-medium transition-all duration-300 py-3 px-4 rounded-lg hover:bg-red-50 hover:text-red-600 text-gray-700 flex items-center space-x-3 mb-2"
+                        data-testid="mobile-button-loan-services"
+                      >
+                        <CreditCard className="h-5 w-5" />
+                        <span>Motorcycle Loans</span>
+                      </button>
+                      
+                      {/* Parts & Service Financing */}
+                      <button
+                        onClick={() => {
+                          document.getElementById('parts-financing')?.scrollIntoView({ behavior: 'smooth' });
+                          setIsMobileMenuOpen(false);
+                        }}
+                        className="w-full text-left text-lg font-medium transition-all duration-300 py-3 px-4 rounded-lg hover:bg-red-50 hover:text-red-600 text-gray-700 flex items-center space-x-3 mb-2"
+                        data-testid="mobile-button-parts-financing"
+                      >
+                        <CreditCard className="h-5 w-5" />
+                        <span>Parts & Service Financing</span>
+                      </button>
+                      
+                      {/* Book Service */}
+                      <Link
+                        href="/book-service"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="w-full text-left text-lg font-medium transition-all duration-300 py-3 px-4 rounded-lg hover:bg-red-50 hover:text-red-600 text-gray-700 flex items-center space-x-3"
+                        data-testid="mobile-link-book-service"
+                      >
+                        <Calendar className="h-5 w-5" />
+                        <span>Book Service</span>
+                      </Link>
+                    </div>
                     
                     <div className="border-t border-gray-200 pt-6">
                       {/* Cart Button */}
