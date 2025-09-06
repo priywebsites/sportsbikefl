@@ -358,6 +358,144 @@ export default function LoanApplication() {
                 </div>
               </div>
 
+              {/* Co-Applicant Information - Show only if Yes is selected */}
+              {addCoApplicant === "yes" && (
+                <div className="space-y-6 border-l-4 border-red-500 pl-6 bg-red-50 p-6 rounded-r-lg">
+                  <h3 className="text-xl font-semibold text-gray-900 border-b border-gray-200 pb-2">Co-Applicant Information</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="coFirstName" className="text-sm font-medium text-gray-700">Co-Applicant First Name</Label>
+                      <Input 
+                        id="coFirstName" 
+                        name="coFirstName" 
+                        type="text" 
+                        placeholder="Enter co-applicant first name" 
+                        required={addCoApplicant === "yes"}
+                        className="rounded-lg"
+                        data-testid="input-co-first-name"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="coLastName" className="text-sm font-medium text-gray-700">Co-Applicant Last Name</Label>
+                      <Input 
+                        id="coLastName" 
+                        name="coLastName" 
+                        type="text" 
+                        placeholder="Enter co-applicant last name" 
+                        required={addCoApplicant === "yes"}
+                        className="rounded-lg"
+                        data-testid="input-co-last-name"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="coPhone" className="text-sm font-medium text-gray-700">Co-Applicant Phone Number</Label>
+                      <Input 
+                        id="coPhone" 
+                        name="coPhone" 
+                        type="tel" 
+                        placeholder="(555) 123-4567" 
+                        required={addCoApplicant === "yes"}
+                        className="rounded-lg"
+                        data-testid="input-co-phone"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="coEmail" className="text-sm font-medium text-gray-700">Co-Applicant Email</Label>
+                      <Input 
+                        id="coEmail" 
+                        name="coEmail" 
+                        type="email" 
+                        placeholder="co.applicant@example.com" 
+                        required={addCoApplicant === "yes"}
+                        className="rounded-lg"
+                        data-testid="input-co-email"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="coDob" className="text-sm font-medium text-gray-700">Co-Applicant Date of Birth</Label>
+                      <Input 
+                        id="coDob" 
+                        name="coDob" 
+                        type="date" 
+                        required={addCoApplicant === "yes"}
+                        className="rounded-lg"
+                        data-testid="input-co-dob"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="coSsn" className="text-sm font-medium text-gray-700">Co-Applicant SSN/ITIN</Label>
+                      <Input 
+                        id="coSsn" 
+                        name="coSsn" 
+                        type="text" 
+                        placeholder="XXX-XX-XXXX" 
+                        required={addCoApplicant === "yes"}
+                        className="rounded-lg"
+                        data-testid="input-co-ssn"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <Label htmlFor="coIncome" className="text-sm font-medium text-gray-700">Co-Applicant Annual Income</Label>
+                      <Input 
+                        id="coIncome" 
+                        name="coIncome" 
+                        type="number" 
+                        placeholder="50000" 
+                        required={addCoApplicant === "yes"}
+                        className="rounded-lg"
+                        data-testid="input-co-income"
+                      />
+                    </div>
+                    
+                    <div className="space-y-2">
+                      <Label htmlFor="coEmployment" className="text-sm font-medium text-gray-700">Co-Applicant Employment Status</Label>
+                      <Select name="coEmployment" required={addCoApplicant === "yes"}>
+                        <SelectTrigger className="rounded-lg" data-testid="select-co-employment">
+                          <SelectValue placeholder="Select employment status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="full-time">Full-time</SelectItem>
+                          <SelectItem value="part-time">Part-time</SelectItem>
+                          <SelectItem value="self-employed">Self-employed</SelectItem>
+                          <SelectItem value="retired">Retired</SelectItem>
+                          <SelectItem value="unemployed">Unemployed</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="coCreditScore" className="text-sm font-medium text-gray-700">Co-Applicant Credit Score Range</Label>
+                    <Select name="coCreditScore" required={addCoApplicant === "yes"}>
+                      <SelectTrigger className="rounded-lg" data-testid="select-co-credit-score">
+                        <SelectValue placeholder="Select credit score range" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="excellent">Excellent (750+)</SelectItem>
+                        <SelectItem value="good">Good (700-749)</SelectItem>
+                        <SelectItem value="fair">Fair (650-699)</SelectItem>
+                        <SelectItem value="poor">Poor (600-649)</SelectItem>
+                        <SelectItem value="very-poor">Very Poor (Below 600)</SelectItem>
+                        <SelectItem value="no-credit">No Credit History</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+              )}
+
               {/* Terms & Conditions */}
               <div className="space-y-6 bg-gray-50 p-6 rounded-lg">
                 <h3 className="text-xl font-semibold text-gray-900">Terms & Conditions</h3>
