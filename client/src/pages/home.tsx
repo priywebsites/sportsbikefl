@@ -10,6 +10,9 @@ import bikeImage from "@assets/bike_1756942189965.png";
 import partImage from "@assets/part_1756942189965.png";
 import helmetImage from "@assets/helmet_1756942189965.png";
 import serviceImage from "@assets/service_1756942841815.png";
+import acimaImage from "@assets/acima_1757177205261.png";
+import snapImage from "@assets/snap_1757177205261.png";
+import americanImage from "@assets/american_1757177205261.png";
 
 export default function Home() {
   const { data: featuredProducts = [], isLoading: isFeaturedLoading } = useQuery<ProductWithDiscount[]>({
@@ -31,8 +34,8 @@ export default function Home() {
             </h1>
           </div>
           <p className="text-xl mb-12 max-w-3xl mx-auto animate-slide-up text-[#000000e6]" data-testid="text-hero-description">
-            Discover our collection of high-performance motorcycles, genuine parts, and premium accessories. 
-            Your next adventure starts here with the best selection in Florida.
+            Discover our collection of <span className="text-red-600 font-semibold">high-performance motorcycles</span>, genuine parts, and <span className="text-red-600 font-semibold">premium accessories</span>. 
+            Your next adventure starts here with the <span className="text-red-600 font-semibold">best selection</span> in Florida.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center animate-bounce-in">
             <Link href="/catalog?category=motorcycles">
@@ -258,6 +261,90 @@ export default function Home() {
           </Link>
         </div>
       </section>
+      
+      {/* Parts & Service Financing Section */}
+      <section className="py-16 px-4 bg-white">
+        <div className="container mx-auto max-w-6xl text-center">
+          <div className="mb-12">
+            <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
+              <CreditCard className="text-red-600 text-2xl" />
+            </div>
+            <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900">Parts & Service Financing & Leasing</h2>
+            <p className="text-lg text-gray-700 max-w-3xl mx-auto leading-relaxed">
+              Flexible programs available through <span className="text-red-600 font-semibold">Acima</span>, <span className="text-red-600 font-semibold">Snap Finance</span>, and <span className="text-red-600 font-semibold">American First Finance</span>.
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+              <div className="flex justify-center mb-6">
+                <img 
+                  src={acimaImage} 
+                  alt="Acima Credit Logo" 
+                  className="h-16 object-contain"
+                />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900">Acima Credit</h3>
+              <p className="text-gray-600 mb-6">Parts Leasing: 90 Days Same as Cash</p>
+              <a
+                href="https://apply.acima.com/lease?app_id=lo&location_guid=loca-e1976713-256b-478f-ad15-7f2eb3ede202&utm_campaign=merchant&utm_source=web&lang=en"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block w-full"
+              >
+                <Button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-full font-semibold transition-colors">
+                  Apply Now with Acima
+                </Button>
+              </a>
+            </div>
+            
+            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+              <div className="flex justify-center mb-6">
+                <img 
+                  src={snapImage} 
+                  alt="Snap Finance Logo" 
+                  className="h-16 object-contain"
+                />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900">Snap Finance</h3>
+              <p className="text-gray-600 mb-6">Parts Leasing: 100 Days Same as Cash</p>
+              <a
+                href="https://getsnap.snapfinance.com/lease/en-US/consumer/apply/landing"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block w-full"
+              >
+                <Button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-full font-semibold transition-colors">
+                  Apply Now with Snap Finance
+                </Button>
+              </a>
+            </div>
+            
+            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 hover:shadow-xl transition-shadow">
+              <div className="flex justify-center mb-6">
+                <img 
+                  src={americanImage} 
+                  alt="American First Finance Logo" 
+                  className="h-16 object-contain"
+                />
+              </div>
+              <h3 className="text-xl font-semibold mb-3 text-gray-900">American First Finance</h3>
+              <p className="text-gray-600 mb-6">Parts Leasing: 90 Days Same as Cash</p>
+              <a
+                href="https://americanfirstfinance.com/app/?dealer=23474&loc=1&src=UA&usetextpin=Y"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-block w-full"
+              >
+                <Button className="w-full bg-red-600 hover:bg-red-700 text-white py-3 rounded-full font-semibold transition-colors">
+                  Apply Now with American First Finance
+                </Button>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* All-in-One Service Section */}
       <section className="py-20 px-4 bg-white">
         <div className="container mx-auto max-w-6xl">

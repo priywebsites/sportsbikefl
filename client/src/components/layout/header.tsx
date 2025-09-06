@@ -17,12 +17,23 @@ export function Header() {
   const { user, isAuthenticated } = useAuth();
 
   const navigation = [
-    { name: "Home", href: "/" },
-    { name: "Motorcycles", href: "/catalog?category=motorcycles" },
-    { name: "Parts", href: "/catalog?category=parts" },
-    { name: "Accessories", href: "/catalog?category=accessories" },
-    { name: "Contact", href: "/contact" },
+    { name: "Home", href: "/", matchPath: "/" },
+    { name: "Motorcycles", href: "/catalog?category=motorcycles", matchPath: "/catalog", category: "motorcycles" },
+    { name: "Parts", href: "/catalog?category=parts", matchPath: "/catalog", category: "parts" },
+    { name: "Accessories", href: "/catalog?category=accessories", matchPath: "/catalog", category: "accessories" },
+    { name: "Contact", href: "/contact", matchPath: "/contact" },
   ];
+
+  const isActiveLink = (item: any) => {
+    if (item.matchPath === "/") {
+      return location === "/";
+    }
+    if (item.matchPath === "/catalog" && location.startsWith("/catalog")) {
+      const urlParams = new URLSearchParams(location.split('?')[1] || '');
+      return urlParams.get('category') === item.category;
+    }
+    return location.startsWith(item.matchPath);
+  };
 
   return (
     <>
@@ -42,13 +53,13 @@ export function Header() {
                     key={item.name}
                     href={item.href}
                     className={`font-medium transition-all duration-300 hover:text-white relative ${
-                      location === item.href ? "text-white" : "text-white/80"
+                      isActiveLink(item) ? "text-white" : "text-white/80"
                     }`}
                     data-testid={`link-${item.name.toLowerCase()}`}
                   >
                     {item.name}
-                    {location === item.href && (
-                      <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-white"></div>
+                    {isActiveLink(item) && (
+                      <div className="absolute -bottom-1 left-0 right-0 h-0.5 bg-red-600"></div>
                     )}
                   </Link>
                 ))}
@@ -117,7 +128,7 @@ export function Header() {
                         key={item.name}
                         href={item.href}
                         className={`text-lg font-medium transition-all duration-300 py-3 px-4 rounded-lg hover:bg-red-50 hover:text-red-600 ${
-                          location === item.href ? 'bg-red-50 text-red-600 border-l-4 border-red-600' : 'text-gray-700'
+                          isActiveLink(item) ? 'bg-red-50 text-red-600 border-l-4 border-red-600' : 'text-gray-700'
                         }`}
                         onClick={() => setIsMobileMenuOpen(false)}
                         data-testid={`mobile-link-${item.name.toLowerCase()}`}
