@@ -3,32 +3,33 @@ import PDFDocument from 'pdfkit';
 import { Readable } from 'stream';
 
 interface LoanApplicationData {
+  // Personal Information
   firstName: string;
   lastName: string;
-  email: string;
   phone: string;
+  email: string;
   dateOfBirth: string;
   ssn: string;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  idType: string;
+  primaryId: string;
   idNumber: string;
-  income: string;
-  employment: string;
-  creditScore: string;
-  loanAmount: string;
-  downPayment: string;
-  vehicleInterest: string;
+  // Address Information
+  address: string;
+  cityStateZip: string;
+  housingStatus: string;
+  mortgageRent: string;
+  // Employment Information
+  monthlyIncome: string;
+  workplace: string;
+  workPhone: string;
   paystubs: string;
+  // Additional Information
   message: string;
   addCoApplicant: string;
   // Co-applicant fields
   coFirstName: string;
   coLastName: string;
-  coEmail: string;
   coPhone: string;
+  coEmail: string;
   coDateOfBirth: string;
   coSsn: string;
   coIncome: string;
@@ -101,29 +102,34 @@ const generateLoanApplicationPDF = (applicationData: LoanApplicationData): Promi
         doc.moveDown(1);
       };
 
-      // Primary Applicant Information
-      addSection('PRIMARY APPLICANT INFORMATION', [
-        { label: 'Name', value: `${safeString(applicationData.firstName)} ${safeString(applicationData.lastName)}` },
+      // Personal Information
+      addSection('PERSONAL INFORMATION', [
+        { label: 'First Name', value: applicationData.firstName },
+        { label: 'Last Name', value: applicationData.lastName },
+        { label: 'Phone Number / Mobile', value: applicationData.phone },
         { label: 'Email', value: applicationData.email },
-        { label: 'Phone', value: applicationData.phone },
         { label: 'Date of Birth', value: applicationData.dateOfBirth },
-        { label: 'SSN/ITIN', value: applicationData.ssn },
-        { label: 'Address', value: applicationData.address },
-        { label: 'City, State, ZIP', value: `${safeString(applicationData.city)} ${safeString(applicationData.state)} ${safeString(applicationData.zipCode)}`.trim() || 'Not provided' },
-        { label: 'ID Type', value: applicationData.idType },
-        { label: 'ID Number', value: applicationData.idNumber },
-        { label: 'Annual Income', value: applicationData.income ? `$${safeString(applicationData.income)}` : 'Not provided' },
-        { label: 'Employment Status', value: applicationData.employment },
-        { label: 'Credit Score Range', value: applicationData.creditScore },
-        { label: 'Has Last 2 Paystubs', value: applicationData.paystubs }
+        { label: 'Social Security or ITIN', value: applicationData.ssn },
+        { label: 'Primary ID', value: applicationData.primaryId },
+        { label: 'ID Number', value: applicationData.idNumber }
       ]);
 
-      // Loan Details
-      addSection('LOAN DETAILS', [
-        { label: 'Requested Loan Amount', value: applicationData.loanAmount ? `$${safeString(applicationData.loanAmount)}` : 'Not provided' },
-        { label: 'Down Payment', value: applicationData.downPayment ? `$${safeString(applicationData.downPayment)}` : 'Not provided' },
-        { label: 'Vehicle Interest', value: applicationData.vehicleInterest }
+      // Address Information
+      addSection('ADDRESS INFORMATION', [
+        { label: 'Current Home Street Address', value: applicationData.address },
+        { label: 'City, State, Zipcode', value: applicationData.cityStateZip },
+        { label: 'Housing Status', value: applicationData.housingStatus },
+        { label: 'Mortgage/Rent Payment', value: applicationData.mortgageRent ? `$${safeString(applicationData.mortgageRent)}` : 'Not provided' }
       ]);
+
+      // Employment Information
+      addSection('EMPLOYMENT INFORMATION', [
+        { label: 'Monthly Income', value: applicationData.monthlyIncome ? `$${safeString(applicationData.monthlyIncome)}` : 'Not provided' },
+        { label: 'Workplace', value: applicationData.workplace },
+        { label: 'Work Phone / Business', value: applicationData.workPhone },
+        { label: 'Do you have the last 2 paystubs available?', value: applicationData.paystubs }
+      ]);
+
 
       // Additional Information
       if (safeString(applicationData.message) !== 'Not provided') {
@@ -201,21 +207,26 @@ export async function sendLoanApplicationEmail(applicationData: LoanApplicationD
         </div>
         
         <div class="content">
-          <h2>Primary Applicant Information</h2>
+          <h2>Personal Information</h2>
           
           <div class="field">
-            <span class="label">Name:</span>
-            <span class="value">${applicationData.firstName} ${applicationData.lastName}</span>
+            <span class="label">First Name:</span>
+            <span class="value">${safeString(applicationData.firstName)}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">Last Name:</span>
+            <span class="value">${safeString(applicationData.lastName)}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">Phone Number / Mobile:</span>
+            <span class="value">${safeString(applicationData.phone)}</span>
           </div>
           
           <div class="field">
             <span class="label">Email:</span>
-            <span class="value">${applicationData.email}</span>
-          </div>
-          
-          <div class="field">
-            <span class="label">Phone:</span>
-            <span class="value">${applicationData.phone}</span>
+            <span class="value">${safeString(applicationData.email)}</span>
           </div>
           
           <div class="field">
@@ -224,23 +235,13 @@ export async function sendLoanApplicationEmail(applicationData: LoanApplicationD
           </div>
           
           <div class="field">
-            <span class="label">SSN/ITIN:</span>
+            <span class="label">Social Security or ITIN:</span>
             <span class="value">${safeString(applicationData.ssn)}</span>
           </div>
           
           <div class="field">
-            <span class="label">Address:</span>
-            <span class="value">${safeString(applicationData.address)}</span>
-          </div>
-          
-          <div class="field">
-            <span class="label">City, State, ZIP:</span>
-            <span class="value">${`${safeString(applicationData.city)} ${safeString(applicationData.state)} ${safeString(applicationData.zipCode)}`.trim() || 'Not provided'}</span>
-          </div>
-          
-          <div class="field">
-            <span class="label">ID Type:</span>
-            <span class="value">${safeString(applicationData.idType)}</span>
+            <span class="label">Primary ID:</span>
+            <span class="value">${safeString(applicationData.primaryId)}</span>
           </div>
           
           <div class="field">
@@ -248,41 +249,48 @@ export async function sendLoanApplicationEmail(applicationData: LoanApplicationD
             <span class="value">${safeString(applicationData.idNumber)}</span>
           </div>
           
+          <h2>Address Information</h2>
+          
           <div class="field">
-            <span class="label">Annual Income:</span>
-            <span class="value">${applicationData.income ? '$' + safeString(applicationData.income) : 'Not provided'}</span>
+            <span class="label">Current Home Street Address:</span>
+            <span class="value">${safeString(applicationData.address)}</span>
           </div>
           
           <div class="field">
-            <span class="label">Employment Status:</span>
-            <span class="value">${safeString(applicationData.employment)}</span>
+            <span class="label">City, State, Zipcode:</span>
+            <span class="value">${safeString(applicationData.cityStateZip)}</span>
           </div>
           
           <div class="field">
-            <span class="label">Credit Score Range:</span>
-            <span class="value">${safeString(applicationData.creditScore)}</span>
+            <span class="label">Housing Status:</span>
+            <span class="value">${safeString(applicationData.housingStatus)}</span>
           </div>
           
           <div class="field">
-            <span class="label">Has Last 2 Paystubs:</span>
+            <span class="label">Mortgage/Rent Payment:</span>
+            <span class="value">${applicationData.mortgageRent ? '$' + safeString(applicationData.mortgageRent) : 'Not provided'}</span>
+          </div>
+          
+          <h2>Employment Information</h2>
+          
+          <div class="field">
+            <span class="label">Monthly Income:</span>
+            <span class="value">${applicationData.monthlyIncome ? '$' + safeString(applicationData.monthlyIncome) : 'Not provided'}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">Workplace:</span>
+            <span class="value">${safeString(applicationData.workplace)}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">Work Phone / Business:</span>
+            <span class="value">${safeString(applicationData.workPhone)}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">Do you have the last 2 paystubs available?:</span>
             <span class="value">${safeString(applicationData.paystubs)}</span>
-          </div>
-          
-          <h2>Loan Details</h2>
-          
-          <div class="field">
-            <span class="label">Requested Loan Amount:</span>
-            <span class="value">${applicationData.loanAmount ? '$' + safeString(applicationData.loanAmount) : 'Not provided'}</span>
-          </div>
-          
-          <div class="field">
-            <span class="label">Down Payment:</span>
-            <span class="value">${applicationData.downPayment ? '$' + safeString(applicationData.downPayment) : 'Not provided'}</span>
-          </div>
-          
-          <div class="field">
-            <span class="label">Vehicle Interest:</span>
-            <span class="value">${safeString(applicationData.vehicleInterest)}</span>
           </div>
           
           ${applicationData.message ? `

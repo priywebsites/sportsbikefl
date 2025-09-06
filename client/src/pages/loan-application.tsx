@@ -27,32 +27,33 @@ export default function LoanApplication() {
       };
 
       const applicationData = {
+        // Personal Information
         firstName: getString('firstName'),
         lastName: getString('lastName'),
-        email: getString('email'),
         phone: getString('phone'),
+        email: getString('email'),
         dateOfBirth: getString('dob'),
         ssn: getString('ssn'),
-        address: getString('address'),
-        city: getString('city'),
-        state: getString('state'),
-        zipCode: getString('zipCode'),
-        idType: getString('idType'),
+        primaryId: getString('primaryId'),
         idNumber: getString('idNumber'),
-        income: getString('income'),
-        employment: getString('employment'),
-        creditScore: getString('creditScore'),
-        loanAmount: getString('loanAmount'),
-        downPayment: getString('downPayment'),
-        vehicleInterest: getString('vehicleInterest'),
+        // Address Information
+        address: getString('address'),
+        cityStateZip: getString('cityStateZip'),
+        housingStatus: getString('housingStatus'),
+        mortgageRent: getString('mortgageRent'),
+        // Employment Information
+        monthlyIncome: getString('monthlyIncome'),
+        workplace: getString('workplace'),
+        workPhone: getString('workPhone'),
         paystubs: getString('paystubs'),
+        // Additional Information
         message: getString('message'),
         addCoApplicant: addCoApplicant,
         // Co-applicant fields - always include as strings
         coFirstName: addCoApplicant === "yes" ? getString('coFirstName') : '',
         coLastName: addCoApplicant === "yes" ? getString('coLastName') : '',
-        coEmail: addCoApplicant === "yes" ? getString('coEmail') : '',
         coPhone: addCoApplicant === "yes" ? getString('coPhone') : '',
+        coEmail: addCoApplicant === "yes" ? getString('coEmail') : '',
         coDateOfBirth: addCoApplicant === "yes" ? getString('coDob') : '',
         coSsn: addCoApplicant === "yes" ? getString('coSsn') : '',
         coIncome: addCoApplicant === "yes" ? getString('coIncome') : '',
