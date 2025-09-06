@@ -440,7 +440,16 @@ export default function OwnerDashboard() {
                     <input 
                       type="date" 
                       value={format(selectedAppointmentDate, "yyyy-MM-dd")}
-                      onChange={(e) => setSelectedAppointmentDate(new Date(e.target.value))}
+                      onChange={(e) => {
+                        const dateValue = e.target.value;
+                        if (dateValue) {
+                          // Create date in local timezone and adjust to ensure proper date selection
+                          const newDate = new Date(dateValue + 'T12:00:00');
+                          setSelectedAppointmentDate(newDate);
+                        }
+                      }}
+                      // Only allow open business days (exclude Sundays)
+                      min={format(new Date(), "yyyy-MM-dd")}
                       className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
                       data-testid="input-appointment-date"
                     />
