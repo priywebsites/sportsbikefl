@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useScrollAnimations } from "@/hooks/use-scroll-animations";
+import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { ProductCard } from "@/components/product-card";
@@ -142,7 +143,7 @@ export default function Home() {
           </div>
           
           {/* Customer Testimonials */}
-          <div className="text-center mb-16 animate-slide-up">
+          <div className="text-center mb-16 scroll-fade-in">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900" data-testid="text-testimonials-heading">What Our Customers Say</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto" data-testid="text-testimonials-description">
               Real reviews from satisfied customers who trust Sportbike FL for their motorcycle needs
@@ -150,7 +151,7 @@ export default function Home() {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
-            <Card className="bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-red-600 animate-slide-up" data-testid="testimonial-1">
+            <Card className="bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-red-600 scroll-slide-left card-hover stagger-1" data-testid="testimonial-1">
               <CardContent className="p-0">
                 <div className="flex items-center mb-4">
                   {[...Array(5)].map((_, i) => (
@@ -167,7 +168,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-red-600 animate-slide-up" data-testid="testimonial-2" style={{animationDelay: '0.2s'}}>
+            <Card className="bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-red-600 scroll-scale-in card-hover stagger-2" data-testid="testimonial-2">
               <CardContent className="p-0">
                 <div className="flex items-center mb-4">
                   {[...Array(5)].map((_, i) => (
@@ -184,7 +185,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-            <Card className="bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-red-600 animate-slide-up" data-testid="testimonial-3" style={{animationDelay: '0.4s'}}>
+            <Card className="bg-white p-8 shadow-lg hover:shadow-xl transition-all duration-300 border-l-4 border-red-600 scroll-slide-right card-hover stagger-3" data-testid="testimonial-3">
               <CardContent className="p-0">
                 <div className="flex items-center mb-4">
                   {[...Array(5)].map((_, i) => (
@@ -202,7 +203,7 @@ export default function Home() {
             </Card>
           </div>
           
-          <div className="text-center bg-gray-50 p-8 rounded-2xl">
+          <div className="text-center bg-gray-50 p-8 rounded-2xl scroll-fade-in">
             <div className="flex items-center justify-center space-x-8 mb-6">
               <div className="text-center">
                 <div className="text-4xl font-bold text-red-600">141</div>
@@ -229,7 +230,7 @@ export default function Home() {
       </section>
       {/* Motorcycle Loan Services Section */}
       <section id="loan-services" className="py-16 px-4 bg-gradient-to-br from-[#bed1d4d6] to-white">
-        <div className="container mx-auto max-w-4xl text-center">
+        <div className="container mx-auto max-w-4xl text-center scroll-scale-in">
           <div className="mb-12">
             <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
               <CreditCard className="text-red-600 text-2xl" />
@@ -356,7 +357,7 @@ export default function Home() {
 
       {/* Book Service Mini Section */}
       <section className="py-16 px-4 bg-gradient-to-br from-gray-50 to-white">
-        <div className="container mx-auto max-w-4xl text-center">
+        <div className="container mx-auto max-w-4xl text-center scroll-fade-in">
           <div className="bg-white p-8 rounded-2xl shadow-lg border border-gray-200">
             <div className="bg-red-100 rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-6">
               <Wrench className="text-red-600 text-2xl" />
