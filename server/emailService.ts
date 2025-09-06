@@ -49,9 +49,17 @@ const createTransporter = () => {
 
 // Helper function to safely convert any value to string
 const safeString = (value: any): string => {
+  // Only return 'Not provided' for truly empty/null values
   if (value === null || value === undefined) return 'Not provided';
-  if (typeof value === 'string' && value.trim() === '') return 'Not provided';
-  return String(value).trim() || 'Not provided';
+  
+  // Convert to string first
+  const stringValue = String(value);
+  
+  // Only return 'Not provided' if it's completely empty after trimming
+  if (stringValue.trim() === '') return 'Not provided';
+  
+  // Return the actual value, even if it's 0, false, etc.
+  return stringValue.trim();
 };
 
 // Generate PDF from loan application data
@@ -101,10 +109,10 @@ const generateLoanApplicationPDF = (applicationData: LoanApplicationData): Promi
         { label: 'Date of Birth', value: applicationData.dateOfBirth },
         { label: 'SSN/ITIN', value: applicationData.ssn },
         { label: 'Address', value: applicationData.address },
-        { label: 'City, State, ZIP', value: `${safeString(applicationData.city)} ${safeString(applicationData.state)} ${safeString(applicationData.zipCode)}`.trim() },
+        { label: 'City, State, ZIP', value: `${safeString(applicationData.city)} ${safeString(applicationData.state)} ${safeString(applicationData.zipCode)}`.trim() || 'Not provided' },
         { label: 'ID Type', value: applicationData.idType },
         { label: 'ID Number', value: applicationData.idNumber },
-        { label: 'Annual Income', value: applicationData.income ? `$${applicationData.income}` : 'Not provided' },
+        { label: 'Annual Income', value: applicationData.income ? `$${safeString(applicationData.income)}` : 'Not provided' },
         { label: 'Employment Status', value: applicationData.employment },
         { label: 'Credit Score Range', value: applicationData.creditScore },
         { label: 'Has Last 2 Paystubs', value: applicationData.paystubs }
@@ -112,8 +120,8 @@ const generateLoanApplicationPDF = (applicationData: LoanApplicationData): Promi
 
       // Loan Details
       addSection('LOAN DETAILS', [
-        { label: 'Requested Loan Amount', value: applicationData.loanAmount ? `$${applicationData.loanAmount}` : 'Not provided' },
-        { label: 'Down Payment', value: applicationData.downPayment ? `$${applicationData.downPayment}` : 'Not provided' },
+        { label: 'Requested Loan Amount', value: applicationData.loanAmount ? `$${safeString(applicationData.loanAmount)}` : 'Not provided' },
+        { label: 'Down Payment', value: applicationData.downPayment ? `$${safeString(applicationData.downPayment)}` : 'Not provided' },
         { label: 'Vehicle Interest', value: applicationData.vehicleInterest }
       ]);
 
@@ -132,7 +140,7 @@ const generateLoanApplicationPDF = (applicationData: LoanApplicationData): Promi
           { label: 'Co-Applicant Phone', value: applicationData.coPhone },
           { label: 'Co-Applicant Date of Birth', value: applicationData.coDateOfBirth },
           { label: 'Co-Applicant SSN/ITIN', value: applicationData.coSsn },
-          { label: 'Co-Applicant Annual Income', value: applicationData.coIncome ? `$${applicationData.coIncome}` : 'Not provided' },
+          { label: 'Co-Applicant Annual Income', value: applicationData.coIncome ? `$${safeString(applicationData.coIncome)}` : 'Not provided' },
           { label: 'Co-Applicant Employment', value: applicationData.coEmployment },
           { label: 'Co-Applicant Credit Score', value: applicationData.coCreditScore }
         ]);
