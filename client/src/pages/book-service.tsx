@@ -43,8 +43,9 @@ const bookingFormSchema = z.object({
 type BookingForm = z.infer<typeof bookingFormSchema>;
 
 interface TimeSlot {
-  time: string;
-  label: string;
+  startTime: string; // "HH:MM" format
+  endTime: string; // "HH:MM" format
+  label: string; // "11:00 AM to 12:00 PM"
   available: boolean;
 }
 
@@ -72,6 +73,27 @@ export default function BookService() {
   const { data: services = [], isLoading: isServicesLoading } = useQuery<Service[]>({
     queryKey: ["/api/services"],
   });
+
+  // Fetch existing bookings for overlap checking
+  const { data: existingBookings = [] } = useQuery<any[]>({
+    queryKey: ["/api/bookings", selectedDate ? format(selectedDate, "yyyy-MM-dd") : ""],
+    enabled: !!selectedDate,
+  });
+
+  // Helper to check if two time ranges overlap
+  const timeRangesOverlap = (start1: string, end1: string, start2: string, end2: string): boolean => {
+    const timeToMinutes = (time: string) => {
+      const [hours, minutes] = time.split(':').map(Number);
+      return hours * 60 + minutes;
+    };
+    
+    const start1Minutes = timeToMinutes(start1);
+    const end1Minutes = timeToMinutes(end1);
+    const start2Minutes = timeToMinutes(start2);
+    const end2Minutes = timeToMinutes(end2);
+    
+    return start1Minutes < end2Minutes && start2Minutes < end1Minutes;
+  };
 
   // Generate available time slots based on store hours and existing bookings
   const generateTimeSlots = (date: Date, service: Service): TimeSlot[] => {
@@ -102,8 +124,10 @@ export default function BookService() {
       if (currentEasternHour > openHour || (currentEasternHour === openHour && currentEasternMinute > openMinute)) {
         // Round up to next 30-minute interval
         currentHour = currentEasternHour;
-        currentMinute = currentEasternMinute <= 30 ? 30 : 0;
-        if (currentMinute === 0) {
+        if (currentEasternMinute <= 30) {
+          currentMinute = 30;
+        } else {
+          currentMinute = 0;
           currentHour++;
         }
       }
@@ -111,21 +135,34 @@ export default function BookService() {
     
     // Generate 30-minute slots
     while (currentHour < closeHour || (currentHour === closeHour && currentMinute < closeMinute)) {
-      const timeStr = `${currentHour.toString().padStart(2, "0")}:${currentMinute.toString().padStart(2, "0")}`;
-      const label = format(new Date(2023, 0, 1, currentHour, currentMinute), "h:mm a");
+      const startTimeStr = `${currentHour.toString().padStart(2, "0")}:${currentMinute.toString().padStart(2, "0")}`;
+      
+      // Calculate end time based on service duration
+      const totalEndMinutes = currentMinute + service.durationMinutes;
+      const endHour = currentHour + Math.floor(totalEndMinutes / 60);
+      const endMinute = totalEndMinutes % 60;
+      const endTimeStr = `${endHour.toString().padStart(2, "0")}:${endMinute.toString().padStart(2, "0")}`;
       
       // Check if this slot would end before closing time
-      const endMinute = currentMinute + service.durationMinutes;
-      const endHour = currentHour + Math.floor(endMinute / 60);
-      const adjustedEndMinute = endMinute % 60;
-      
-      const canFit = endHour < closeHour || (endHour === closeHour && adjustedEndMinute <= closeMinute);
+      const canFit = endHour < closeHour || (endHour === closeHour && endMinute <= closeMinute);
       
       if (canFit) {
+        // Format start and end times for display
+        const startDisplay = format(new Date(2023, 0, 1, currentHour, currentMinute), "h:mm a");
+        const endDisplay = format(new Date(2023, 0, 1, endHour, endMinute), "h:mm a");
+        const label = `${startDisplay} to ${endDisplay}`;
+        
+        // Check if this slot overlaps with any existing bookings
+        const isAvailable = !existingBookings.some((booking: any) => {
+          if (!booking?.startTime || !booking?.endTime) return false;
+          return timeRangesOverlap(startTimeStr, endTimeStr, booking.startTime, booking.endTime);
+        });
+        
         slots.push({
-          time: timeStr,
+          startTime: startTimeStr,
+          endTime: endTimeStr,
           label,
-          available: true, // For now, assume all slots are available
+          available: isAvailable,
         });
       }
       
@@ -185,10 +222,16 @@ export default function BookService() {
   const onSubmit = (data: BookingForm) => {
     if (!selectedService) return;
     
-    const startTime = data.startTime;
-    const startMinutes = parseInt(startTime.split(":")[0]) * 60 + parseInt(startTime.split(":")[1]);
-    const endMinutes = startMinutes + selectedService.durationMinutes;
-    const endTime = `${Math.floor(endMinutes / 60).toString().padStart(2, "0")}:${(endMinutes % 60).toString().padStart(2, "0")}`;
+    // Find the selected time slot to get both start and end times
+    const selectedSlot = availableSlots.find(slot => slot.startTime === data.startTime);
+    if (!selectedSlot) {
+      toast({
+        title: "Error",
+        description: "Selected time slot is no longer available.",
+        variant: "destructive",
+      });
+      return;
+    }
     
     createBookingMutation.mutate({
       serviceId: data.serviceId,
@@ -196,8 +239,9 @@ export default function BookService() {
       customerEmail: data.customerEmail,
       customerPhone: data.customerPhone,
       bookingDate: data.bookingDate,
-      startTime,
-      endTime,
+      startTime: selectedSlot.startTime,
+      endTime: selectedSlot.endTime,
+      timezone: TIMEZONE,
     });
   };
 
@@ -375,11 +419,13 @@ export default function BookService() {
                           <SelectContent>
                             {availableSlots.map((slot) => (
                               <SelectItem
-                                key={slot.time}
-                                value={slot.time}
+                                key={slot.startTime}
+                                value={slot.startTime}
                                 disabled={!slot.available}
                               >
-                                {slot.label} {!slot.available && "(Booked)"}
+                                <span className={slot.available ? "text-green-700" : "text-red-500 line-through"}>
+                                  {slot.label} {!slot.available && "(Booked)"}
+                                </span>
                               </SelectItem>
                             ))}
                           </SelectContent>
