@@ -23,15 +23,15 @@ interface LoanApplicationData {
   message: string;
   addCoApplicant: string;
   // Co-applicant fields
-  coFirstName?: string | null;
-  coLastName?: string | null;
-  coEmail?: string | null;
-  coPhone?: string | null;
-  coDateOfBirth?: string | null;
-  coSsn?: string | null;
-  coIncome?: string | null;
-  coEmployment?: string | null;
-  coCreditScore?: string | null;
+  coFirstName: string;
+  coLastName: string;
+  coEmail: string;
+  coPhone: string;
+  coDateOfBirth: string;
+  coSsn: string;
+  coIncome: string;
+  coEmployment: string;
+  coCreditScore: string;
 }
 
 // Create reusable transporter object using SMTP transport
@@ -106,7 +106,7 @@ export async function sendLoanApplicationEmail(applicationData: LoanApplicationD
           
           <div class="field">
             <span class="label">City, State, ZIP:</span>
-            <span class="value">${applicationData.city || ''} ${applicationData.state || ''} ${applicationData.zipCode || ''}</span>
+            <span class="value">${(applicationData.city || '').trim()} ${(applicationData.state || '').trim()} ${(applicationData.zipCode || '').trim()}`.trim() || 'Not provided'}</span>
           </div>
           
           <div class="field">
@@ -121,7 +121,7 @@ export async function sendLoanApplicationEmail(applicationData: LoanApplicationD
           
           <div class="field">
             <span class="label">Annual Income:</span>
-            <span class="value">$${applicationData.income || 'Not provided'}</span>
+            <span class="value">${applicationData.income ? '$' + applicationData.income : 'Not provided'}</span>
           </div>
           
           <div class="field">
@@ -143,12 +143,12 @@ export async function sendLoanApplicationEmail(applicationData: LoanApplicationD
           
           <div class="field">
             <span class="label">Requested Loan Amount:</span>
-            <span class="value">$${applicationData.loanAmount || 'Not provided'}</span>
+            <span class="value">${applicationData.loanAmount ? '$' + applicationData.loanAmount : 'Not provided'}</span>
           </div>
           
           <div class="field">
             <span class="label">Down Payment:</span>
-            <span class="value">$${applicationData.downPayment || 'Not provided'}</span>
+            <span class="value">${applicationData.downPayment ? '$' + applicationData.downPayment : 'Not provided'}</span>
           </div>
           
           <div class="field">
@@ -169,7 +169,7 @@ export async function sendLoanApplicationEmail(applicationData: LoanApplicationD
           
           <div class="field">
             <span class="label">Co-Applicant Name:</span>
-            <span class="value">${applicationData.coFirstName || ''} ${applicationData.coLastName || ''}</span>
+            <span class="value">${(applicationData.coFirstName + ' ' + applicationData.coLastName).trim() || 'Not provided'}</span>
           </div>
           
           <div class="field">
@@ -194,7 +194,7 @@ export async function sendLoanApplicationEmail(applicationData: LoanApplicationD
           
           <div class="field">
             <span class="label">Co-Applicant Annual Income:</span>
-            <span class="value">$${applicationData.coIncome || 'Not provided'}</span>
+            <span class="value">${applicationData.coIncome ? '$' + applicationData.coIncome : 'Not provided'}</span>
           </div>
           
           <div class="field">

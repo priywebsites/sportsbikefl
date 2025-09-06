@@ -20,38 +20,44 @@ export default function LoanApplication() {
 
   const submitLoanMutation = useMutation({
     mutationFn: async (formData: FormData) => {
+      // Helper function to safely get string values
+      const getString = (key: string): string => {
+        const value = formData.get(key);
+        return value ? String(value) : '';
+      };
+
       const applicationData = {
-        firstName: formData.get('firstName') as string,
-        lastName: formData.get('lastName') as string,
-        email: formData.get('email') as string,
-        phone: formData.get('phone') as string,
-        dateOfBirth: formData.get('dob') as string,
-        ssn: formData.get('ssn') as string,
-        address: formData.get('address') as string,
-        city: formData.get('city') as string,
-        state: formData.get('state') as string,
-        zipCode: formData.get('zipCode') as string,
-        idType: formData.get('idType') as string,
-        idNumber: formData.get('idNumber') as string,
-        income: formData.get('income') as string,
-        employment: formData.get('employment') as string,
-        creditScore: formData.get('creditScore') as string,
-        loanAmount: formData.get('loanAmount') as string,
-        downPayment: formData.get('downPayment') as string,
-        vehicleInterest: formData.get('vehicleInterest') as string,
-        paystubs: formData.get('paystubs') as string,
-        message: formData.get('message') as string,
+        firstName: getString('firstName'),
+        lastName: getString('lastName'),
+        email: getString('email'),
+        phone: getString('phone'),
+        dateOfBirth: getString('dob'),
+        ssn: getString('ssn'),
+        address: getString('address'),
+        city: getString('city'),
+        state: getString('state'),
+        zipCode: getString('zipCode'),
+        idType: getString('idType'),
+        idNumber: getString('idNumber'),
+        income: getString('income'),
+        employment: getString('employment'),
+        creditScore: getString('creditScore'),
+        loanAmount: getString('loanAmount'),
+        downPayment: getString('downPayment'),
+        vehicleInterest: getString('vehicleInterest'),
+        paystubs: getString('paystubs'),
+        message: getString('message'),
         addCoApplicant: addCoApplicant,
-        // Co-applicant fields if applicable
-        coFirstName: addCoApplicant === "yes" ? formData.get('coFirstName') as string : null,
-        coLastName: addCoApplicant === "yes" ? formData.get('coLastName') as string : null,
-        coEmail: addCoApplicant === "yes" ? formData.get('coEmail') as string : null,
-        coPhone: addCoApplicant === "yes" ? formData.get('coPhone') as string : null,
-        coDateOfBirth: addCoApplicant === "yes" ? formData.get('coDob') as string : null,
-        coSsn: addCoApplicant === "yes" ? formData.get('coSsn') as string : null,
-        coIncome: addCoApplicant === "yes" ? formData.get('coIncome') as string : null,
-        coEmployment: addCoApplicant === "yes" ? formData.get('coEmployment') as string : null,
-        coCreditScore: addCoApplicant === "yes" ? formData.get('coCreditScore') as string : null,
+        // Co-applicant fields - always include as strings
+        coFirstName: addCoApplicant === "yes" ? getString('coFirstName') : '',
+        coLastName: addCoApplicant === "yes" ? getString('coLastName') : '',
+        coEmail: addCoApplicant === "yes" ? getString('coEmail') : '',
+        coPhone: addCoApplicant === "yes" ? getString('coPhone') : '',
+        coDateOfBirth: addCoApplicant === "yes" ? getString('coDob') : '',
+        coSsn: addCoApplicant === "yes" ? getString('coSsn') : '',
+        coIncome: addCoApplicant === "yes" ? getString('coIncome') : '',
+        coEmployment: addCoApplicant === "yes" ? getString('coEmployment') : '',
+        coCreditScore: addCoApplicant === "yes" ? getString('coCreditScore') : '',
       };
       
       const response = await apiRequest("POST", "/api/send-loan-application", applicationData);
