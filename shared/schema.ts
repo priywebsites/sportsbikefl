@@ -64,8 +64,9 @@ export const bookings = pgTable("bookings", {
   customerEmail: text("customer_email").notNull(),
   customerPhone: text("customer_phone").notNull(),
   bookingDate: date("booking_date").notNull(),
-  startTime: time("start_time").notNull(),
-  endTime: time("end_time").notNull(),
+  startTime: varchar("start_time").notNull(), // Format: "HH:MM"
+  endTime: varchar("end_time").notNull(), // Format: "HH:MM"
+  timezone: varchar("timezone").notNull().default("America/New_York"), // Eastern Time
   status: text("status", { enum: ["confirmed", "cancelled", "completed", "no_show"] }).default("confirmed"),
   notes: text("notes"),
   createdAt: timestamp("created_at").defaultNow(),

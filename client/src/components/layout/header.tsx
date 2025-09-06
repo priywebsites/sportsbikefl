@@ -171,7 +171,9 @@ export function Header() {
                       <Link
                         href="/book-service"
                         onClick={() => setIsMobileMenuOpen(false)}
-                        className="w-full text-left text-lg font-medium transition-all duration-300 py-3 px-4 rounded-lg hover:bg-red-50 hover:text-red-600 text-gray-700 flex items-center space-x-3"
+                        className={`w-full text-left text-lg font-medium transition-all duration-300 py-3 px-4 rounded-lg hover:bg-red-50 hover:text-red-600 flex items-center space-x-3 ${
+                          location === "/book-service" ? 'bg-red-50 text-red-600 border-l-4 border-red-600' : 'text-gray-700'
+                        }`}
                         data-testid="mobile-link-book-service"
                       >
                         <Calendar className="h-5 w-5" />
