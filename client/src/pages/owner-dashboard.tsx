@@ -14,6 +14,8 @@ import { useAuth } from "@/hooks/use-auth";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import { Product, UpdateProduct } from "@/lib/types";
+import { Booking, BookingWithService } from "@shared/schema";
+import { format } from "date-fns";
 import { 
   LogOut, 
   Plus, 
@@ -28,7 +30,12 @@ import {
   EyeOff,
   Star,
   StarOff,
-  Percent
+  Percent,
+  Calendar,
+  Clock,
+  User,
+  Phone,
+  Mail
 } from "lucide-react";
 
 export default function OwnerDashboard() {
@@ -36,6 +43,7 @@ export default function OwnerDashboard() {
   const { user, logout, isAuthenticated } = useAuth();
   const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("inventory");
+  const [selectedAppointmentDate, setSelectedAppointmentDate] = useState<Date>(new Date());
   const [isAddProductOpen, setIsAddProductOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
   const [discountProduct, setDiscountProduct] = useState<Product | null>(null);
@@ -51,6 +59,16 @@ export default function OwnerDashboard() {
     queryKey: ["/api/products"],
     queryFn: async () => {
       const response = await fetch("/api/products");
+      return response.json();
+    },
+    enabled: isAuthenticated,
+  });
+
+  // Fetch appointments for selected date
+  const { data: appointments = [], isLoading: isAppointmentsLoading } = useQuery<BookingWithService[]>({
+    queryKey: ["/api/bookings", format(selectedAppointmentDate, "yyyy-MM-dd")],
+    queryFn: async () => {
+      const response = await fetch(`/api/bookings?date=${format(selectedAppointmentDate, "yyyy-MM-dd")}`);
       return response.json();
     },
     enabled: isAuthenticated,
@@ -243,10 +261,14 @@ export default function OwnerDashboard() {
 
         {/* Dashboard Tabs */}
         <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="inventory" data-testid="tab-inventory">
               <Package className="h-4 w-4 mr-2" />
               Inventory
+            </TabsTrigger>
+            <TabsTrigger value="appointments" data-testid="tab-appointments">
+              <Calendar className="h-4 w-4 mr-2" />
+              Appointments
             </TabsTrigger>
             <TabsTrigger value="discounts" data-testid="tab-discounts">
               <Tag className="h-4 w-4 mr-2" />
@@ -402,6 +424,108 @@ export default function OwnerDashboard() {
                       ))}
                     </TableBody>
                   </Table>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Appointments Management */}
+          <TabsContent value="appointments">
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle>Appointments Management</CardTitle>
+                  <div className="flex items-center space-x-4">
+                    <Calendar className="h-5 w-5 text-gray-500" />
+                    <input 
+                      type="date" 
+                      value={format(selectedAppointmentDate, "yyyy-MM-dd")}
+                      onChange={(e) => setSelectedAppointmentDate(new Date(e.target.value))}
+                      className="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500"
+                      data-testid="input-appointment-date"
+                    />
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {isAppointmentsLoading ? (
+                  <div className="text-center py-8" data-testid="loading-appointments">
+                    <p>Loading appointments...</p>
+                  </div>
+                ) : appointments.length === 0 ? (
+                  <div className="text-center py-8" data-testid="empty-appointments">
+                    <Calendar className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-muted-foreground">
+                      No appointments scheduled for {format(selectedAppointmentDate, "MMMM d, yyyy")}.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {appointments.map((appointment: any) => (
+                      <div 
+                        key={appointment.id} 
+                        className="border border-gray-200 rounded-lg p-6 hover:shadow-md transition-shadow"
+                        data-testid={`appointment-${appointment.id}`}
+                      >
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                          {/* Time and Service Info */}
+                          <div className="space-y-2">
+                            <div className="flex items-center space-x-2">
+                              <Clock className="h-4 w-4 text-red-600" />
+                              <span className="font-semibold text-lg">
+                                {format(new Date(`2023-01-01T${appointment.startTime}`), "h:mm a")} - {format(new Date(`2023-01-01T${appointment.endTime}`), "h:mm a")}
+                              </span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Tag className="h-4 w-4 text-gray-500" />
+                              <span className="font-medium">{appointment.service?.name}</span>
+                            </div>
+                            <Badge variant={appointment.status === "confirmed" ? "default" : "secondary"} className="text-xs">
+                              {appointment.status}
+                            </Badge>
+                          </div>
+                          
+                          {/* Customer Info */}
+                          <div className="space-y-2">
+                            <div className="flex items-center space-x-2">
+                              <User className="h-4 w-4 text-gray-500" />
+                              <span className="font-medium">{appointment.customerName}</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Phone className="h-4 w-4 text-gray-500" />
+                              <span className="text-sm text-gray-600">{appointment.customerPhone}</span>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                              <Mail className="h-4 w-4 text-gray-500" />
+                              <span className="text-sm text-gray-600">{appointment.customerEmail}</span>
+                            </div>
+                          </div>
+                          
+                          {/* Service Details */}
+                          <div className="space-y-2">
+                            <div className="text-sm text-gray-600">
+                              <strong>Duration:</strong> {appointment.service?.durationMinutes} minutes
+                            </div>
+                            {appointment.service?.price && (
+                              <div className="text-sm text-gray-600">
+                                <strong>Price:</strong> ${parseFloat(appointment.service.price).toFixed(2)}
+                              </div>
+                            )}
+                            {appointment.service?.priceLabel && (
+                              <div className="text-sm text-gray-600">
+                                <strong>Pricing:</strong> {appointment.service.priceLabel}
+                              </div>
+                            )}
+                            {appointment.notes && (
+                              <div className="text-sm text-gray-600">
+                                <strong>Notes:</strong> {appointment.notes}
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 )}
               </CardContent>
             </Card>
