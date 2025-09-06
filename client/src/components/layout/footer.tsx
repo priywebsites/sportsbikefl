@@ -12,7 +12,7 @@ export function Footer() {
               <div className="bg-white/10 backdrop-blur-sm rounded-full p-2 border border-white/20">
                 <img src={logoImage} alt="SportbikeFL Logo" className="w-8 h-8 object-contain" />
               </div>
-              <span className="text-2xl font-bold text-white">Sportbike Parts & Export</span>
+              <span className="text-2xl font-bold text-white">Sportbike FL</span>
             </div>
             <p className="text-gray-300 leading-relaxed">
               Your premier destination for high-performance motorcycles and genuine parts in Florida.
@@ -56,21 +56,15 @@ export function Footer() {
           <div>
             <h4 className="font-bold mb-6 text-lg text-white">Follow Us</h4>
             <div className="flex space-x-4">
-              <a href="#" className="bg-gray-600 hover:bg-gray-700 p-3 rounded-full transition-all duration-300 hover:scale-110" data-testid="link-facebook">
+              <a href="https://www.facebook.com/sportbikeparts/" target="_blank" rel="noopener noreferrer" className="bg-gray-600 hover:bg-gray-700 p-3 rounded-full transition-all duration-300 hover:scale-110" data-testid="link-facebook">
                 <FaFacebook className="text-xl text-white" />
-              </a>
-              <a href="#" className="bg-red-600 hover:bg-red-700 p-3 rounded-full transition-all duration-300 hover:scale-110" data-testid="link-instagram">
-                <FaInstagram className="text-xl text-white" />
-              </a>
-              <a href="#" className="bg-black hover:bg-gray-800 p-3 rounded-full transition-all duration-300 hover:scale-110" data-testid="link-youtube">
-                <FaYoutube className="text-xl text-white" />
               </a>
             </div>
           </div>
         </div>
         
         <div className="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
-          <p data-testid="text-copyright">&copy; 2024 Sportbike Parts & Export. All rights reserved.</p>
+          <p data-testid="text-copyright">&copy; 2024 Sportbike FL. All rights reserved.</p>
         </div>
       </div>
     </footer>

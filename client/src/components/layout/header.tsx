@@ -22,6 +22,7 @@ export function Header() {
     { name: "Parts", href: "/catalog?category=parts", matchPath: "/catalog", category: "parts" },
     { name: "Accessories", href: "/catalog?category=accessories", matchPath: "/catalog", category: "accessories" },
     { name: "Contact", href: "/contact", matchPath: "/contact" },
+    { name: "Book Service", href: "/book-service", matchPath: "/book-service" },
   ];
 
   const isActiveLink = (item: any) => {
@@ -43,9 +44,9 @@ export function Header() {
             <div className="flex items-center space-x-8">
               <Link href="/" className="flex items-center space-x-3 group" data-testid="link-home">
                 <div className="bg-white rounded-full p-2 group-hover:scale-110 transition-transform duration-300 border-2 border-black">
-                  <img src={logoImage} alt="Sportbike Parts & Export Logo" className="w-8 h-8 object-contain" />
+                  <img src={logoImage} alt="Sportbike FL Logo" className="w-8 h-8 object-contain" />
                 </div>
-                <span className="text-2xl font-bold text-white drop-shadow-lg">Sportbike Parts & Export</span>
+                <span className="text-2xl font-bold text-white drop-shadow-lg">Sportbike FL</span>
               </Link>
               <div className="hidden md:flex space-x-8">
                 {navigation.map((item) => (
@@ -118,8 +119,8 @@ export function Header() {
                 <SheetContent side="right" className="w-[300px] bg-white/95 backdrop-blur-md overflow-y-auto">
                   <div className="flex flex-col space-y-6 mt-8 pb-8">
                     <div className="flex items-center space-x-3 pb-4 border-b border-gray-200">
-                      <img src={logoImage} alt="Sportbike Parts & Export Logo" className="w-8 h-8 object-contain" />
-                      <span className="text-xl font-bold text-gray-900">Sportbike Parts & Export</span>
+                      <img src={logoImage} alt="Sportbike FL Logo" className="w-8 h-8 object-contain" />
+                      <span className="text-xl font-bold text-gray-900">Sportbike FL</span>
                     </div>
                     
                     {/* Navigation Links */}

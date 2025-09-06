@@ -190,7 +190,8 @@ export default function BookService() {
   // Create booking mutation
   const createBookingMutation = useMutation({
     mutationFn: async (booking: InsertBooking) => {
-      return apiRequest("/api/bookings", "POST", booking);
+      const response = await apiRequest("POST", "/api/bookings", booking);
+      return response.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["/api/bookings"] });
@@ -288,16 +289,6 @@ export default function BookService() {
             <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
               Available Services ({services.length})
             </h2>
-            <div className="flex items-center justify-center space-x-6 text-sm text-gray-600">
-              <div className="flex items-center space-x-2">
-                <MapPin className="h-4 w-4" />
-                <span>2215 Clay St, Kissimmee, FL 34741</span>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Phone className="h-4 w-4" />
-                <span>(407) 483-4884</span>
-              </div>
-            </div>
           </div>
           
           {isServicesLoading ? (

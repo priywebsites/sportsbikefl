@@ -10,7 +10,7 @@ export default function Contact() {
     <div className="min-h-screen py-8 px-4 bg-gray-50">
       <div className="container mx-auto max-w-6xl">
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4 text-gray-900" data-testid="text-contact-heading">Contact SportbikeFL</h1>
+          <h1 className="text-4xl font-bold mb-4 text-gray-900" data-testid="text-contact-heading">Contact Sportbike FL</h1>
           <p className="text-lg text-gray-600" data-testid="text-contact-description">
             Get in touch with Florida's premier sportbike dealership. We're here to help with all your motorcycle needs.
           </p>

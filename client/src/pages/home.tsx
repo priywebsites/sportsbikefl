@@ -58,7 +58,7 @@ export default function Home() {
           <div className="text-center mb-16 animate-slide-up">
             <h2 className="text-4xl md:text-5xl font-bold mb-6 text-gray-900" data-testid="text-testimonials-heading">What Our Customers Say</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto" data-testid="text-testimonials-description">
-              Real reviews from satisfied customers who trust Sportbike Parts & Export for their motorcycle needs
+              Real reviews from satisfied customers who trust Sportbike FL for their motorcycle needs
             </p>
           </div>
           
@@ -135,7 +135,7 @@ export default function Home() {
               </div>
             </div>
             <p className="text-gray-700 max-w-3xl mx-auto">
-              Join hundreds of satisfied customers who trust Sportbike Parts & Export for professional service, competitive pricing, and comprehensive motorcycle solutions. Our multilingual staff provides excellent customer service in English, Spanish, and Portuguese.
+              Join hundreds of satisfied customers who trust Sportbike FL for professional service, competitive pricing, and comprehensive motorcycle solutions. Our multilingual staff provides excellent customer service in English, Spanish, and Portuguese.
             </p>
           </div>
 
@@ -383,7 +383,7 @@ export default function Home() {
       <section className="py-16 px-4 bg-gradient-to-br from-[#bed1d4d6] to-white border-t border-gray-200">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-gray-900">Why Riders Trust Sportbike Parts & Export</h2>
+            <h2 className="text-3xl font-bold mb-4 text-gray-900">Why Riders Trust Sportbike FL</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Serving Florida's motorcycle community with expertise, quality, and dedicated service
             </p>
