@@ -12,7 +12,7 @@ import bikeImage from "@assets/bike_1756942189965.png";
 import partImage from "@assets/part_1756942189965.png";
 import helmetImage from "@assets/helmet_1756942189965.png";
 import serviceImage from "@assets/service_1756942841815.png";
-import heroImage from "@assets/k1.jpg";
+import heroImage from "@assets/hero_1757363647658.jpeg";
 import acimaImage from "@assets/acima_1757177205261.png";
 import snapImage from "@assets/snap_1757177205261.png";
 import americanImage from "@assets/american_1757177205261.png";

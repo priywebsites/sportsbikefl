@@ -47,7 +47,8 @@ export const queryClient = new QueryClient({
       queryFn: getQueryFn({ on401: "throw" }),
       refetchInterval: false,
       refetchOnWindowFocus: false,
-      staleTime: Infinity,
+      staleTime: 10 * 60 * 1000, // 10 minutes
+      gcTime: 30 * 60 * 1000, // 30 minutes
       retry: false,
     },
     mutations: {
@@ -55,3 +56,39 @@ export const queryClient = new QueryClient({
     },
   },
 });
+
+// Preload products immediately when app loads
+export const preloadProducts = async () => {
+  try {
+    // Preload all products
+    await queryClient.prefetchQuery({
+      queryKey: ["/api/products"],
+      staleTime: 10 * 60 * 1000, // 10 minutes
+    });
+    
+    // Preload featured products
+    await queryClient.prefetchQuery({
+      queryKey: ["/api/products", { featured: "true" }],
+      queryFn: async () => {
+        const response = await fetch("/api/products?featured=true");
+        return response.json();
+      },
+      staleTime: 10 * 60 * 1000,
+    });
+    
+    // Preload products by category
+    const categories = ['motorcycles', 'parts', 'accessories'];
+    await Promise.all(categories.map(category => 
+      queryClient.prefetchQuery({
+        queryKey: ["/api/products", { category }],
+        queryFn: async () => {
+          const response = await fetch(`/api/products?category=${category}`);
+          return response.json();
+        },
+        staleTime: 10 * 60 * 1000,
+      })
+    ));
+  } catch (error) {
+    console.log('Preloading failed, will load on demand:', error);
+  }
+};
