@@ -44,7 +44,7 @@ export default function Home() {
               backgroundRepeat: 'no-repeat'
             }}
           >
-            <div className="absolute inset-0 bg-black/80"></div>
+            <div className="absolute inset-0 bg-[#696969cc]"></div>
             <h1 className="text-4xl md:text-6xl font-bold leading-tight text-white relative z-10" data-testid="text-hero-title">
               From Sportbikes to Parts — We've Got It All.
             </h1>
@@ -73,7 +73,6 @@ export default function Home() {
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-gray-50 to-transparent"></div>
       </section>
-
       {/* Quick Navigation Grid */}
       <section className="py-20 px-4 bg-white">
         <div className="container mx-auto">
@@ -283,7 +282,6 @@ export default function Home() {
           </Link>
         </div>
       </section>
-      
       {/* Parts & Service Financing Section */}
       <section id="parts-financing" className="py-16 px-4 bg-white">
         <div className="container mx-auto max-w-6xl text-center">
@@ -366,7 +364,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* Book Service Mini Section */}
       <section className="py-16 px-4 bg-gradient-to-br from-gray-50 to-white">
         <div className="container mx-auto max-w-4xl text-center scroll-fade-in">
@@ -409,7 +406,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
       {/* All-in-One Service Section */}
       <section className="py-20 px-4 bg-white">
         <div className="container mx-auto max-w-6xl scroll-fade-in">
