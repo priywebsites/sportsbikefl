@@ -760,11 +760,12 @@ export default function OwnerDashboard() {
                     const amount = (document.getElementById("discount-amount") as HTMLInputElement)?.value || "0";
                     const type = "percentage"; // This should be from the select, simplified for demo
                     handleApplyDiscount(amount, type);
+                    setDiscountProduct(null); // Close modal immediately
                   }}
                   disabled={updateProductMutation.isPending}
                   data-testid="button-apply-discount"
                 >
-                  Apply Discount
+                  {updateProductMutation.isPending ? "Applying..." : "Apply Discount"}
                 </Button>
               </div>
             </div>
