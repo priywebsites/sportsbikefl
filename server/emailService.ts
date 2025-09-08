@@ -305,18 +305,23 @@ export async function sendLoanApplicationEmail(applicationData: LoanApplicationD
           <h2>Co-Applicant Information</h2>
           
           <div class="field">
-            <span class="label">Co-Applicant Name:</span>
-            <span class="value">${`${safeString(applicationData.coFirstName)} ${safeString(applicationData.coLastName)}`.trim() || 'Not provided'}</span>
+            <span class="label">Co-Applicant First Name:</span>
+            <span class="value">${safeString(applicationData.coFirstName)}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">Co-Applicant Last Name:</span>
+            <span class="value">${safeString(applicationData.coLastName)}</span>
+          </div>
+          
+          <div class="field">
+            <span class="label">Co-Applicant Phone Number:</span>
+            <span class="value">${safeString(applicationData.coPhone)}</span>
           </div>
           
           <div class="field">
             <span class="label">Co-Applicant Email:</span>
             <span class="value">${safeString(applicationData.coEmail)}</span>
-          </div>
-          
-          <div class="field">
-            <span class="label">Co-Applicant Phone:</span>
-            <span class="value">${safeString(applicationData.coPhone)}</span>
           </div>
           
           <div class="field">
@@ -335,12 +340,12 @@ export async function sendLoanApplicationEmail(applicationData: LoanApplicationD
           </div>
           
           <div class="field">
-            <span class="label">Co-Applicant Employment:</span>
+            <span class="label">Co-Applicant Employment Status:</span>
             <span class="value">${safeString(applicationData.coEmployment)}</span>
           </div>
           
           <div class="field">
-            <span class="label">Co-Applicant Credit Score:</span>
+            <span class="label">Co-Applicant Credit Score Range:</span>
             <span class="value">${safeString(applicationData.coCreditScore)}</span>
           </div>
           ` : ''}
