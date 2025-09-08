@@ -12,6 +12,7 @@ import bikeImage from "@assets/bike_1756942189965.png";
 import partImage from "@assets/part_1756942189965.png";
 import helmetImage from "@assets/helmet_1756942189965.png";
 import serviceImage from "@assets/service_1756942841815.png";
+import heroImage from "@assets/k1.jpg";
 import acimaImage from "@assets/acima_1757177205261.png";
 import snapImage from "@assets/snap_1757177205261.png";
 import americanImage from "@assets/american_1757177205261.png";
@@ -34,8 +35,17 @@ export default function Home() {
       {/* Hero Section */}
       <section className="bg-white py-16 px-4 relative overflow-hidden">
         <div className="container mx-auto text-center relative z-10">
-          <div className="inline-block bg-gradient-to-br from-white/30 via-red-50/40 to-red-100/30 backdrop-blur-sm border border-white/30 rounded-2xl px-12 py-8 mb-8 shadow-2xl hero-title" style={{ background: 'linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(254,226,226,0.3) 30%, rgba(252,165,165,0.2) 70%, rgba(239,68,68,0.1) 100%)', backdropFilter: 'blur(10px)', boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.3), 0 10px 30px rgba(0,0,0,0.2)' }}>
-            <h1 className="text-4xl md:text-6xl font-bold leading-tight text-gray-900" data-testid="text-hero-title">
+          <div 
+            className="inline-block border border-white/30 rounded-2xl px-12 py-8 mb-8 shadow-2xl hero-title relative overflow-hidden"
+            style={{
+              backgroundImage: `url(${heroImage})`,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              backgroundRepeat: 'no-repeat'
+            }}
+          >
+            <div className="absolute inset-0 bg-black/80"></div>
+            <h1 className="text-4xl md:text-6xl font-bold leading-tight text-white relative z-10" data-testid="text-hero-title">
               From Sportbikes to Parts — We've Got It All.
             </h1>
           </div>
