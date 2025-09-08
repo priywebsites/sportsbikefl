@@ -38,7 +38,7 @@ export function Header() {
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-black border-b border-white/20 shadow-lg">
+      <header className="sticky top-0 z-50 bg-black/80 backdrop-blur-md border-b border-white/20 shadow-lg" style={{ backdropFilter: 'blur(16px)', background: 'rgba(0, 0, 0, 0.85)' }}>
         <nav className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-8">

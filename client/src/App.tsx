@@ -1,5 +1,5 @@
 import { Switch, Route } from "wouter";
-import { queryClient } from "./lib/queryClient";
+import { queryClient, preloadProducts } from "./lib/queryClient";
 import { QueryClientProvider, useQuery } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { FloatingCart } from "@/components/floating-cart";
@@ -19,27 +19,10 @@ import BookService from "@/pages/book-service";
 import NotFound from "@/pages/not-found";
 
 function Router() {
-  // Preload products in background for faster catalog loading
-  useQuery({
-    queryKey: ["/api/products"],
-    queryFn: async () => {
-      const response = await fetch("/api/products");
-      return response.json();
-    },
-    staleTime: 5 * 60 * 1000, // Keep data fresh for 5 minutes
-    gcTime: 15 * 60 * 1000, // Keep in cache for 15 minutes
-  });
-
-  // Preload featured products for home page
-  useQuery({
-    queryKey: ["/api/products", { featured: "true" }],
-    queryFn: async () => {
-      const response = await fetch("/api/products?featured=true");
-      return response.json();
-    },
-    staleTime: 5 * 60 * 1000,
-    gcTime: 15 * 60 * 1000,
-  });
+  // Comprehensive product preloading on app start
+  useEffect(() => {
+    preloadProducts();
+  }, []);
 
   return (
     <Switch>
