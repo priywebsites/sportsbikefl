@@ -17,6 +17,7 @@ import OwnerDashboard from "@/pages/owner-dashboard";
 import LoanApplication from "@/pages/loan-application";
 import BookService from "@/pages/book-service";
 import Checkout from "@/pages/checkout";
+import CheckoutSuccess from "@/pages/checkout-success";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -32,6 +33,7 @@ function Router() {
       <Route path="/product/:id" component={ProductDetail} />
       <Route path="/cart" component={Cart} />
       <Route path="/checkout/:productId" component={Checkout} />
+      <Route path="/checkout/success" component={CheckoutSuccess} />
       <Route path="/owner/login" component={OwnerLogin} />
       <Route path="/owner" component={OwnerDashboard} />
       <Route path="/contact" component={Contact} />

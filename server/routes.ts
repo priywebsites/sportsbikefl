@@ -4,13 +4,36 @@ import { storage } from "./storage";
 import { insertProductSchema, updateProductSchema, insertCartItemSchema, insertServiceSchema, insertBookingSchema } from "@shared/schema";
 import { randomUUID } from "crypto";
 import Stripe from "stripe";
+import twilio from "twilio";
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
 }
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2025-08-27.basil",
+  apiVersion: "2024-06-20",
 });
+
+// Initialize Twilio
+const twilioClient = twilio(
+  process.env.TWILIO_ACCOUNT_SID,
+  process.env.TWILIO_AUTH_TOKEN
+);
+
+// SMS helper functions
+const sendSMS = async (to: string, body: string) => {
+  try {
+    const message = await twilioClient.messages.create({
+      body,
+      from: process.env.TWILIO_PHONE_NUMBER,
+      to
+    });
+    console.log(`SMS sent successfully to ${to}: ${message.sid}`);
+    return { success: true, messageId: message.sid };
+  } catch (error) {
+    console.error(`Failed to send SMS to ${to}:`, error);
+    return { success: false, error };
+  }
+};
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication middleware
@@ -346,6 +369,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const booking = await storage.createBooking(parsed);
+
+      // Send SMS notifications for service bookings
+      try {
+        const service = await storage.getServiceById(booking.serviceId);
+        if (service) {
+          const ownerPhone = "+14319973415"; // Shop owner's phone number
+          const customerPhone = booking.customerPhone;
+
+          // Format the booking time for SMS
+          const bookingDate = new Date(`${booking.bookingDate} ${booking.startTime}`);
+          const timeFormatted = bookingDate.toLocaleString('en-US', {
+            weekday: 'long',
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          });
+
+          // Send notification to shop owner
+          const ownerMessage = `New appointment booked with ${service.name} at ${timeFormatted}`;
+          await sendSMS(ownerPhone, ownerMessage);
+
+          // Send confirmation to customer
+          const customerMessage = `Your appointment for ${service.name} at ${timeFormatted} is confirmed.`;
+          await sendSMS(customerPhone, customerMessage);
+        }
+      } catch (smsError) {
+        console.error("SMS notification error:", smsError);
+        // Don't fail the booking if SMS fails
+      }
+
       res.status(201).json(booking);
     } catch (error: any) {
       console.error("Error creating booking:", error);
@@ -427,52 +483,100 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Stripe payment routes
-  app.post("/api/create-payment-intent", async (req, res) => {
+  // Stripe hosted checkout session
+  app.post("/api/create-checkout-session", async (req, res) => {
     try {
-      const { amount, productId, productTitle, isDeposit = false } = req.body;
+      const { productId, isDeposit = false } = req.body;
       
-      if (!amount || amount <= 0) {
-        return res.status(400).json({ message: "Invalid amount" });
+      if (!productId) {
+        return res.status(400).json({ message: "Product ID is required" });
       }
 
-      const paymentIntent = await stripe.paymentIntents.create({
-        amount: Math.round(amount * 100), // Convert to cents
-        currency: "usd",
+      // Get product details server-side for security
+      const product = await storage.getProduct(productId);
+      if (!product) {
+        return res.status(404).json({ message: "Product not found" });
+      }
+
+      // Calculate amount server-side based on product and deposit preference
+      let amount: number;
+      let productTitle = product.title;
+      let description: string;
+      
+      // Apply discount if exists
+      let productPrice = parseFloat(product.price);
+      if (product.discount && parseFloat(product.discount) > 0) {
+        if (product.discountType === "percentage") {
+          productPrice = productPrice * (1 - parseFloat(product.discount) / 100);
+        } else {
+          productPrice = productPrice - parseFloat(product.discount);
+        }
+      }
+
+      if (isDeposit && product.category === "motorcycles") {
+        // For motorcycles, allow $500 deposit
+        amount = 500;
+        description = `$500 deposit payment for ${productTitle}. Remaining balance ($${(productPrice - 500).toFixed(2)}) due upon pickup/delivery.`;
+        productTitle = `Deposit for ${productTitle}`;
+      } else {
+        // Full payment for all other items or full motorcycle payment
+        amount = productPrice;
+        description = `Full payment for ${productTitle}`;
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: [
+          {
+            price_data: {
+              currency: 'usd',
+              product_data: {
+                name: productTitle,
+                description: description,
+              },
+              unit_amount: Math.round(amount * 100), // Convert to cents
+            },
+            quantity: 1,
+          },
+        ],
+        mode: 'payment',
+        success_url: `${req.headers.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${req.headers.origin}/catalog`,
         metadata: {
-          productId: productId || '',
-          productTitle: productTitle || '',
+          productId: productId,
+          productTitle: product.title,
           isDeposit: isDeposit ? 'true' : 'false',
+          originalPrice: productPrice.toString(),
         },
       });
 
       res.json({ 
-        clientSecret: paymentIntent.client_secret,
-        paymentIntentId: paymentIntent.id 
+        checkoutUrl: session.url,
+        sessionId: session.id 
       });
     } catch (error: any) {
-      console.error("Error creating payment intent:", error);
+      console.error("Error creating checkout session:", error);
       res.status(500).json({ 
-        message: "Error creating payment intent", 
+        message: "Error creating checkout session", 
         error: error.message 
       });
     }
   });
 
-  // Get payment intent details (for confirmation page)
-  app.get("/api/payment-intent/:id", async (req, res) => {
+  // Get checkout session details (for success page)
+  app.get("/api/checkout-session/:sessionId", async (req, res) => {
     try {
-      const paymentIntent = await stripe.paymentIntents.retrieve(req.params.id);
+      const session = await stripe.checkout.sessions.retrieve(req.params.sessionId);
       res.json({
-        id: paymentIntent.id,
-        amount: paymentIntent.amount / 100, // Convert back to dollars
-        status: paymentIntent.status,
-        metadata: paymentIntent.metadata,
+        id: session.id,
+        amount_total: session.amount_total ? session.amount_total / 100 : 0,
+        payment_status: session.payment_status,
+        metadata: session.metadata,
       });
     } catch (error: any) {
-      console.error("Error retrieving payment intent:", error);
+      console.error("Error retrieving checkout session:", error);
       res.status(500).json({ 
-        message: "Error retrieving payment intent", 
+        message: "Error retrieving checkout session", 
         error: error.message 
       });
     }

@@ -48,18 +48,40 @@ export default function ProductDetail() {
     }
   };
 
-  const handlePayment = (isDeposit: boolean = false) => {
+  const handlePayment = async (isDeposit: boolean = false) => {
     if (!product) return;
     
-    const amount = isDeposit ? 500 : (product.discountedPrice || parseFloat(product.price));
-    const params = new URLSearchParams({
-      productId: product.id,
-      amount: amount.toString(),
-      title: product.title,
-      deposit: isDeposit.toString()
-    });
-    
-    setLocation(`/checkout/${product.id}?${params.toString()}`);
+    try {
+      const response = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          productId: product.id,
+          isDeposit
+        }),
+      });
+
+      const data = await response.json();
+      
+      if (response.ok && data.checkoutUrl) {
+        // Redirect to Stripe hosted checkout
+        window.location.href = data.checkoutUrl;
+      } else {
+        toast({
+          title: "Error",
+          description: data.message || "Failed to create checkout session",
+          variant: "destructive",
+        });
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to initiate payment. Please try again.",
+        variant: "destructive",
+      });
+    }
   };
 
   if (isLoading) {
