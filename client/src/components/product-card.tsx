@@ -4,8 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ProductWithDiscount } from "@/lib/types";
 import { useCart } from "@/hooks/use-cart";
 import { useToast } from "@/hooks/use-toast";
-import { Link } from "wouter";
-import { ShoppingCart } from "lucide-react";
+import { Link, useLocation } from "wouter";
+import { ShoppingCart, CreditCard, DollarSign } from "lucide-react";
 
 interface ProductCardProps {
   product: ProductWithDiscount;
@@ -14,6 +14,7 @@ interface ProductCardProps {
 export function ProductCard({ product }: ProductCardProps) {
   const { addToCart, isUpdating } = useCart();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -32,6 +33,21 @@ export function ProductCard({ product }: ProductCardProps) {
         variant: "destructive",
       });
     }
+  };
+
+  const handlePayment = (e: React.MouseEvent, isDeposit: boolean = false) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    const amount = isDeposit ? 500 : (product.discountedPrice || parseFloat(product.price));
+    const params = new URLSearchParams({
+      productId: product.id,
+      amount: amount.toString(),
+      title: product.title,
+      deposit: isDeposit.toString()
+    });
+    
+    setLocation(`/checkout/${product.id}?${params.toString()}`);
   };
 
   const getStatusBadge = () => {
@@ -97,16 +113,56 @@ export function ProductCard({ product }: ProductCardProps) {
               {product.stockQuantity > 0 ? `${product.stockQuantity} in stock` : "Out of stock"}
             </span>
           </div>
-          <Button
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-            onClick={handleAddToCart}
-            disabled={isUpdating || product.stockStatus === "sold" || product.stockQuantity === 0}
-            data-testid={`button-add-to-cart-${product.id}`}
-          >
-            <ShoppingCart className="h-5 w-5 mr-2" />
-            {product.stockStatus === "sold" ? "Sold Out" : 
-             product.stockQuantity === 0 ? "Out of Stock" : "Add to Cart"}
-          </Button>
+          <div className="space-y-2">
+            {/* Payment buttons based on product category */}
+            {product.category === "motorcycles" ? (
+              <>
+                <Button
+                  className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  onClick={(e) => handlePayment(e, true)}
+                  disabled={product.stockStatus === "sold" || product.stockQuantity === 0}
+                  data-testid={`button-pay-deposit-${product.id}`}
+                >
+                  <CreditCard className="h-5 w-5 mr-2" />
+                  {product.stockStatus === "sold" ? "Sold Out" : 
+                   product.stockQuantity === 0 ? "Out of Stock" : "Pay $500 Deposit"}
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full border-red-600 text-red-600 hover:bg-red-50 font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  onClick={handleAddToCart}
+                  disabled={isUpdating || product.stockStatus === "sold" || product.stockQuantity === 0}
+                  data-testid={`button-add-to-cart-${product.id}`}
+                >
+                  <ShoppingCart className="h-5 w-5 mr-2" />
+                  Add to Cart
+                </Button>
+              </>
+            ) : (
+              <>
+                <Button
+                  className="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  onClick={(e) => handlePayment(e, false)}
+                  disabled={product.stockStatus === "sold" || product.stockQuantity === 0}
+                  data-testid={`button-buy-now-${product.id}`}
+                >
+                  <DollarSign className="h-5 w-5 mr-2" />
+                  {product.stockStatus === "sold" ? "Sold Out" : 
+                   product.stockQuantity === 0 ? "Out of Stock" : "Buy Now"}
+                </Button>
+                <Button
+                  variant="outline"
+                  className="w-full border-red-600 text-red-600 hover:bg-red-50 font-semibold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                  onClick={handleAddToCart}
+                  disabled={isUpdating || product.stockStatus === "sold" || product.stockQuantity === 0}
+                  data-testid={`button-add-to-cart-${product.id}`}
+                >
+                  <ShoppingCart className="h-5 w-5 mr-2" />
+                  Add to Cart
+                </Button>
+              </>
+            )}
+          </div>
         </div>
       </CardContent>
     </Card>

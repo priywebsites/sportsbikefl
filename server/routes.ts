@@ -3,6 +3,14 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertProductSchema, updateProductSchema, insertCartItemSchema, insertServiceSchema, insertBookingSchema } from "@shared/schema";
 import { randomUUID } from "crypto";
+import Stripe from "stripe";
+
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
+}
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: "2025-08-27.basil",
+});
 
 export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication middleware
@@ -416,6 +424,57 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error checking availability:", error);
       res.status(500).json({ message: "Failed to check availability" });
+    }
+  });
+
+  // Stripe payment routes
+  app.post("/api/create-payment-intent", async (req, res) => {
+    try {
+      const { amount, productId, productTitle, isDeposit = false } = req.body;
+      
+      if (!amount || amount <= 0) {
+        return res.status(400).json({ message: "Invalid amount" });
+      }
+
+      const paymentIntent = await stripe.paymentIntents.create({
+        amount: Math.round(amount * 100), // Convert to cents
+        currency: "usd",
+        metadata: {
+          productId: productId || '',
+          productTitle: productTitle || '',
+          isDeposit: isDeposit ? 'true' : 'false',
+        },
+      });
+
+      res.json({ 
+        clientSecret: paymentIntent.client_secret,
+        paymentIntentId: paymentIntent.id 
+      });
+    } catch (error: any) {
+      console.error("Error creating payment intent:", error);
+      res.status(500).json({ 
+        message: "Error creating payment intent", 
+        error: error.message 
+      });
+    }
+  });
+
+  // Get payment intent details (for confirmation page)
+  app.get("/api/payment-intent/:id", async (req, res) => {
+    try {
+      const paymentIntent = await stripe.paymentIntents.retrieve(req.params.id);
+      res.json({
+        id: paymentIntent.id,
+        amount: paymentIntent.amount / 100, // Convert back to dollars
+        status: paymentIntent.status,
+        metadata: paymentIntent.metadata,
+      });
+    } catch (error: any) {
+      console.error("Error retrieving payment intent:", error);
+      res.status(500).json({ 
+        message: "Error retrieving payment intent", 
+        error: error.message 
+      });
     }
   });
 

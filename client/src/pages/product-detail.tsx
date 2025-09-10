@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useRoute } from "wouter";
+import { useRoute, useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { ProductWithDiscount } from "@/lib/types";
 import { useCart } from "@/hooks/use-cart";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, ShoppingCart, Star, Package, Truck } from "lucide-react";
+import { ArrowLeft, ShoppingCart, Star, Package, Truck, CreditCard, DollarSign } from "lucide-react";
 import { Link } from "wouter";
 
 export default function ProductDetail() {
@@ -16,6 +16,7 @@ export default function ProductDetail() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const { addToCart, isUpdating } = useCart();
   const { toast } = useToast();
+  const [, setLocation] = useLocation();
 
   const { data: product, isLoading, error } = useQuery<ProductWithDiscount>({
     queryKey: ["/api/products", params?.id],
@@ -45,6 +46,20 @@ export default function ProductDetail() {
         variant: "destructive",
       });
     }
+  };
+
+  const handlePayment = (isDeposit: boolean = false) => {
+    if (!product) return;
+    
+    const amount = isDeposit ? 500 : (product.discountedPrice || parseFloat(product.price));
+    const params = new URLSearchParams({
+      productId: product.id,
+      amount: amount.toString(),
+      title: product.title,
+      deposit: isDeposit.toString()
+    });
+    
+    setLocation(`/checkout/${product.id}?${params.toString()}`);
   };
 
   if (isLoading) {
@@ -215,35 +230,58 @@ export default function ProductDetail() {
             <Separator />
 
             <div className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <Button
-                  size="lg"
-                  className="w-full"
-                  onClick={handleAddToCart}
-                  disabled={isUpdating || product.stockStatus === "sold" || product.stockQuantity === 0}
-                  data-testid="button-add-to-cart"
-                >
-                  <ShoppingCart className="mr-2 h-5 w-5" />
-                  {product.stockStatus === "sold" ? "Sold Out" : 
-                   product.stockQuantity === 0 ? "Out of Stock" : "Add to Cart"}
-                </Button>
-                
-                {/* Pay Deposit Button - Only show for motorcycles */}
-                {product.category === "motorcycles" && product.stockStatus !== "sold" && (
-                  <Button
-                    size="lg"
-                    variant="outline"
-                    className="w-full border-green-600 text-green-600 hover:bg-green-50"
-                    onClick={() => {
-                      toast({
-                        title: "Deposit Payment",
-                        description: "Deposit payment functionality coming soon. Contact us at (407) 483-4884 to reserve this motorcycle.",
-                      });
-                    }}
-                    data-testid="button-pay-deposit"
-                  >
-                    💳 Pay $500 Deposit Now
-                  </Button>
+              <div className="space-y-3">
+                {/* Payment buttons based on product category */}
+                {product.category === "motorcycles" ? (
+                  <>
+                    <Button
+                      size="lg"
+                      className="w-full bg-red-600 hover:bg-red-700 text-white"
+                      onClick={() => handlePayment(true)}
+                      disabled={product.stockStatus === "sold" || product.stockQuantity === 0}
+                      data-testid="button-pay-deposit"
+                    >
+                      <CreditCard className="mr-2 h-5 w-5" />
+                      {product.stockStatus === "sold" ? "Sold Out" : 
+                       product.stockQuantity === 0 ? "Out of Stock" : "Pay $500 Deposit Now"}
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="w-full border-red-600 text-red-600 hover:bg-red-50"
+                      onClick={handleAddToCart}
+                      disabled={isUpdating || product.stockStatus === "sold" || product.stockQuantity === 0}
+                      data-testid="button-add-to-cart"
+                    >
+                      <ShoppingCart className="mr-2 h-5 w-5" />
+                      Add to Cart
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button
+                      size="lg"
+                      className="w-full bg-red-600 hover:bg-red-700 text-white"
+                      onClick={() => handlePayment(false)}
+                      disabled={product.stockStatus === "sold" || product.stockQuantity === 0}
+                      data-testid="button-buy-now"
+                    >
+                      <DollarSign className="mr-2 h-5 w-5" />
+                      {product.stockStatus === "sold" ? "Sold Out" : 
+                       product.stockQuantity === 0 ? "Out of Stock" : "Buy Now"}
+                    </Button>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="w-full border-red-600 text-red-600 hover:bg-red-50"
+                      onClick={handleAddToCart}
+                      disabled={isUpdating || product.stockStatus === "sold" || product.stockQuantity === 0}
+                      data-testid="button-add-to-cart"
+                    >
+                      <ShoppingCart className="mr-2 h-5 w-5" />
+                      Add to Cart
+                    </Button>
+                  </>
                 )}
               </div>
             </div>
