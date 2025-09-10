@@ -372,7 +372,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Send SMS notifications for service bookings
       try {
-        const service = await storage.getServiceById(booking.serviceId);
+        const service = await storage.getService(booking.serviceId);
         if (service) {
           const ownerPhone = "+14319973415"; // Shop owner's phone number
           const customerPhone = booking.customerPhone;
