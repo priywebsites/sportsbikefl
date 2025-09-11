@@ -6,7 +6,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { ProductCard } from "@/components/product-card";
 import { ProductWithDiscount } from "@/lib/types";
 import { Link } from "wouter";
-import { Bike, Settings, Shield, Star, CheckCircle, Users, Award, MapPin, Clock, CreditCard, Wrench } from "lucide-react";
+import { Bike, Settings, Shield, Star, CheckCircle, Users, Award, MapPin, Clock, CreditCard, Wrench, Package, Circle } from "lucide-react";
 import { BusinessHours } from "@/components/business-hours";
 import bikeImage from "@assets/bike_1756942189965.png";
 import partImage from "@assets/part_1756942189965.png";
@@ -59,9 +59,9 @@ export default function Home() {
                 Shop Motorcycles
               </Button>
             </Link>
-            <Link href="/catalog?category=parts">
+            <Link href="/catalog?category=oem%20parts">
               <Button variant="outline" size="lg" className="text-lg px-10 py-6 border-black bg-transparent text-black hover:bg-black hover:text-white shadow-lg transition-all duration-300 rounded-full" data-testid="button-browse-parts">
-                Browse Parts
+                Browse OEM Parts
               </Button>
             </Link>
             <a href="tel:+14074834884">
@@ -78,11 +78,11 @@ export default function Home() {
         <div className="container mx-auto">
           <div className="mt-16 mb-20 bg-gray-100 p-12 rounded-3xl">
             <h3 className="text-3xl font-semibold mb-12 text-center text-gray-900 scroll-fade-in" data-testid="text-categories-heading">Shop by Category</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6">
               <Link href="/catalog?category=motorcycles">
                 <Card className="overflow-hidden shadow-lg border-0 rounded-2xl scroll-scale-in card-hover cursor-pointer stagger-1" data-testid="card-category-motorcycles">
                   <CardContent 
-                    className="p-10 text-center bg-gradient-to-br from-red-600 to-red-800 text-white relative h-64"
+                    className="p-6 text-center bg-gradient-to-br from-red-600 to-red-800 text-white relative h-48"
                     style={{
                       backgroundImage: `url(${bikeImage})`,
                       backgroundSize: 'cover',
@@ -92,64 +92,114 @@ export default function Home() {
                   >
                     <div className="absolute inset-0 group-hover:bg-red-600/80 transition-colors duration-300 bg-[#4a4444e6]"></div>
                     <div className="relative z-10 h-full flex flex-col justify-center">
-                      <div className="bg-white/20 backdrop-blur-sm rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                        <Bike className="text-white text-3xl drop-shadow-lg" />
+                      <div className="bg-white/20 backdrop-blur-sm rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                        <Bike className="text-white text-2xl drop-shadow-lg" />
                       </div>
-                      <h4 className="text-2xl font-bold mb-3 text-white drop-shadow-lg">Motorcycles</h4>
-                      <p className="text-white/90 mb-6 drop-shadow-lg">Premium sportbikes and street bikes</p>
-                      <span className="bg-white text-red-600 px-6 py-2 rounded-full font-semibold inline-block hover:bg-red-50 transition-colors drop-shadow-lg">Browse All →</span>
+                      <h4 className="text-lg font-bold mb-2 text-white drop-shadow-lg">Motorcycles</h4>
+                      <p className="text-white/90 text-sm mb-3 drop-shadow-lg">Premium sportbikes</p>
+                      <span className="bg-white text-red-600 px-4 py-1 rounded-full font-semibold text-sm inline-block hover:bg-red-50 transition-colors drop-shadow-lg">Browse →</span>
                     </div>
                   </CardContent>
                 </Card>
               </Link>
               
-              <Link href="/catalog?category=parts">
-                <Card className="overflow-hidden shadow-lg border-0 rounded-2xl scroll-scale-in card-hover cursor-pointer stagger-2" data-testid="card-category-parts">
+              <Link href="/catalog?category=oem%20parts">
+                <Card className="overflow-hidden shadow-lg border-0 rounded-2xl scroll-scale-in card-hover cursor-pointer stagger-2" data-testid="card-category-oem-parts">
                   <CardContent 
-                    className="p-10 text-center bg-gradient-to-br from-gray-700 to-gray-900 text-white relative h-64"
+                    className="p-6 text-center bg-gradient-to-br from-blue-600 to-blue-800 text-white relative h-48"
                     style={{
-                      backgroundImage: `url(${partImage})`,
+                      backgroundImage: `url(${heroImage})`,
                       backgroundSize: 'cover',
                       backgroundPosition: 'center',
                       backgroundRepeat: 'no-repeat'
                     }}
                   >
-                    <div className="absolute inset-0 bg-gray-800/80 group-hover:bg-gray-800/70 transition-colors duration-300"></div>
+                    <div className="absolute inset-0 group-hover:bg-blue-600/80 transition-colors duration-300 bg-[#4a4444e6]"></div>
                     <div className="relative z-10 h-full flex flex-col justify-center">
-                      <div className="bg-white/20 backdrop-blur-sm rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                        <Settings className="text-white text-3xl drop-shadow-lg" />
+                      <div className="bg-white/20 backdrop-blur-sm rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                        <Package className="text-white text-2xl drop-shadow-lg" />
                       </div>
-                      <h4 className="text-2xl font-bold mb-3 text-white drop-shadow-lg">Parts</h4>
-                      <p className="text-white/90 mb-6 drop-shadow-lg">Genuine OEM and aftermarket parts</p>
-                      <span className="bg-white text-gray-700 px-6 py-2 rounded-full font-semibold inline-block hover:bg-gray-50 transition-colors drop-shadow-lg">Browse All →</span>
+                      <h4 className="text-lg font-bold mb-2 text-white drop-shadow-lg">OEM Parts</h4>
+                      <p className="text-white/90 text-sm mb-3 drop-shadow-lg">Original parts</p>
+                      <span className="bg-white text-blue-600 px-4 py-1 rounded-full font-semibold text-sm inline-block hover:bg-blue-50 transition-colors drop-shadow-lg">Browse →</span>
                     </div>
                   </CardContent>
                 </Card>
               </Link>
               
-              <Link href="/catalog?category=accessories">
-                <Card className="overflow-hidden shadow-lg border-0 rounded-2xl scroll-scale-in card-hover cursor-pointer stagger-3" data-testid="card-category-accessories">
+              <Link href="/catalog?category=used%20parts">
+                <Card className="overflow-hidden shadow-lg border-0 rounded-2xl scroll-scale-in card-hover cursor-pointer stagger-3" data-testid="card-category-used-parts">
                   <CardContent 
-                    className="p-10 text-center bg-gradient-to-br from-red-700 to-black text-white relative h-64"
+                    className="p-6 text-center bg-gradient-to-br from-green-600 to-green-800 text-white relative h-48"
                     style={{
-                      backgroundImage: `url(${helmetImage})`,
+                      backgroundImage: `url(${bikeImage})`,
                       backgroundSize: 'cover',
                       backgroundPosition: 'center',
                       backgroundRepeat: 'no-repeat'
                     }}
                   >
-                    <div className="absolute inset-0 bg-black/80 group-hover:bg-black/70 transition-colors duration-300"></div>
+                    <div className="absolute inset-0 group-hover:bg-green-600/80 transition-colors duration-300 bg-[#4a4444e6]"></div>
                     <div className="relative z-10 h-full flex flex-col justify-center">
-                      <div className="bg-white/20 backdrop-blur-sm rounded-full w-20 h-20 flex items-center justify-center mx-auto mb-6">
-                        <Shield className="text-white text-3xl drop-shadow-lg" />
+                      <div className="bg-white/20 backdrop-blur-sm rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                        <Wrench className="text-white text-2xl drop-shadow-lg" />
                       </div>
-                      <h4 className="text-2xl font-bold mb-3 text-white drop-shadow-lg">Accessories</h4>
-                      <p className="text-white/90 mb-6 drop-shadow-lg">Gear, helmets, and riding accessories</p>
-                      <span className="bg-white text-red-700 px-6 py-2 rounded-full font-semibold inline-block hover:bg-red-50 transition-colors drop-shadow-lg">Browse All →</span>
+                      <h4 className="text-lg font-bold mb-2 text-white drop-shadow-lg">Used Parts</h4>
+                      <p className="text-white/90 text-sm mb-3 drop-shadow-lg">Quality used parts</p>
+                      <span className="bg-white text-green-600 px-4 py-1 rounded-full font-semibold text-sm inline-block hover:bg-green-50 transition-colors drop-shadow-lg">Browse →</span>
                     </div>
                   </CardContent>
                 </Card>
               </Link>
+              
+              <Link href="/catalog?category=custom%20wheels">
+                <Card className="overflow-hidden shadow-lg border-0 rounded-2xl scroll-scale-in card-hover cursor-pointer stagger-4" data-testid="card-category-custom-wheels">
+                  <CardContent 
+                    className="p-6 text-center bg-gradient-to-br from-purple-600 to-purple-800 text-white relative h-48"
+                    style={{
+                      backgroundImage: `url(${heroImage})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat'
+                    }}
+                  >
+                    <div className="absolute inset-0 group-hover:bg-purple-600/80 transition-colors duration-300 bg-[#4a4444e6]"></div>
+                    <div className="relative z-10 h-full flex flex-col justify-center">
+                      <div className="bg-white/20 backdrop-blur-sm rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                        <Settings className="text-white text-2xl drop-shadow-lg" />
+                      </div>
+                      <h4 className="text-lg font-bold mb-2 text-white drop-shadow-lg">Custom Wheels</h4>
+                      <p className="text-white/90 text-sm mb-3 drop-shadow-lg">Custom rims</p>
+                      <span className="bg-white text-purple-600 px-4 py-1 rounded-full font-semibold text-sm inline-block hover:bg-purple-50 transition-colors drop-shadow-lg">Browse →</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+              
+              <Link href="/catalog?category=tires">
+                <Card className="overflow-hidden shadow-lg border-0 rounded-2xl scroll-scale-in card-hover cursor-pointer stagger-5" data-testid="card-category-tires">
+                  <CardContent 
+                    className="p-6 text-center bg-gradient-to-br from-orange-600 to-orange-800 text-white relative h-48"
+                    style={{
+                      backgroundImage: `url(${bikeImage})`,
+                      backgroundSize: 'cover',
+                      backgroundPosition: 'center',
+                      backgroundRepeat: 'no-repeat'
+                    }}
+                  >
+                    <div className="absolute inset-0 group-hover:bg-orange-600/80 transition-colors duration-300 bg-[#4a4444e6]"></div>
+                    <div className="relative z-10 h-full flex flex-col justify-center">
+                      <div className="bg-white/20 backdrop-blur-sm rounded-full w-16 h-16 flex items-center justify-center mx-auto mb-3">
+                        <Circle className="text-white text-2xl drop-shadow-lg" />
+                      </div>
+                      <h4 className="text-lg font-bold mb-2 text-white drop-shadow-lg">Tires</h4>
+                      <p className="text-white/90 text-sm mb-3 drop-shadow-lg">Premium tires</p>
+                      <span className="bg-white text-orange-600 px-4 py-1 rounded-full font-semibold text-sm inline-block hover:bg-orange-50 transition-colors drop-shadow-lg">Browse →</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </Link>
+              
+              
             </div>
           </div>
           

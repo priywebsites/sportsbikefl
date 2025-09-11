@@ -1,4 +1,4 @@
-import { type User, type InsertUser, type Product, type InsertProduct, type UpdateProduct, type CartItem, type InsertCartItem, type CartItemWithProduct, type Service, type InsertService, type Booking, type InsertBooking, type BookingWithService, users, products, cartItems, services, bookings } from "@shared/schema";
+import { type User, type InsertUser, type Product, type InsertProduct, type UpdateProduct, type CartItem, type InsertCartItem, type CartItemWithProduct, type Service, type InsertService, type Booking, type InsertBooking, type BookingWithService, type Sale, type InsertSale, type SaleWithProduct, users, products, cartItems, services, bookings, sales } from "@shared/schema";
 import { randomUUID } from "crypto";
 import { db } from "./db";
 import { eq, like, or, desc, and, sql } from "drizzle-orm";
@@ -45,6 +45,13 @@ export interface IStorage {
   deleteBooking(id: string): Promise<boolean>;
   getBookingsByDateRange(startDate: string, endDate: string): Promise<BookingWithService[]>;
   checkTimeSlotAvailability(serviceId: string, date: string, startTime: string, endTime: string): Promise<boolean>;
+
+  // Sales methods
+  createSale(sale: InsertSale): Promise<Sale>;
+  getAllSales(): Promise<SaleWithProduct[]>;
+  getSalesByProduct(productId: string): Promise<Sale[]>;
+  getTotalSales(): Promise<number>;
+  processSaleAndUpdateInventory(productId: string, quantity: number, salePrice: number, sessionId?: string): Promise<Sale>;
 }
 
 export class MemStorage implements IStorage {
@@ -250,12 +257,21 @@ export class MemStorage implements IStorage {
   }
 
   async searchProducts(query: string): Promise<Product[]> {
-    const lowercaseQuery = query.toLowerCase();
+    const queryWords = query.toLowerCase().split(' ').filter(word => word.length > 0);
+    if (queryWords.length === 0) return [];
+    
     return Array.from(this.products.values()).filter(
-      p => 
-        p.stockStatus !== "sold" &&
-        (p.title.toLowerCase().includes(lowercaseQuery) ||
-         p.description.toLowerCase().includes(lowercaseQuery))
+      p => {
+        if (p.stockStatus === "sold") return false;
+        
+        const title = p.title.toLowerCase();
+        const description = p.description.toLowerCase();
+        
+        // Check if any query word matches any word in title or description
+        return queryWords.some(queryWord => 
+          title.includes(queryWord) || description.includes(queryWord)
+        );
+      }
     );
   }
 
@@ -749,6 +765,57 @@ export class DatabaseStorage implements IStorage {
       ));
     
     return conflictingBookings.length === 0;
+  }
+
+  // Sales methods
+  async createSale(sale: InsertSale): Promise<Sale> {
+    const [newSale] = await db.insert(sales).values(sale).returning();
+    return newSale;
+  }
+
+  async getAllSales(): Promise<SaleWithProduct[]> {
+    return await db.select().from(sales)
+      .innerJoin(products, eq(sales.productId, products.id))
+      .orderBy(desc(sales.saleDate))
+      .then(rows => rows.map(row => ({
+        ...row.sales,
+        product: row.products
+      })));
+  }
+
+  async getSalesByProduct(productId: string): Promise<Sale[]> {
+    return await db.select().from(sales).where(eq(sales.productId, productId)).orderBy(desc(sales.saleDate));
+  }
+
+  async getTotalSales(): Promise<number> {
+    const result = await db.select({ count: sql<number>`count(*)` }).from(sales);
+    return result[0]?.count || 0;
+  }
+
+  async processSaleAndUpdateInventory(productId: string, quantity: number, salePrice: number, sessionId?: string): Promise<Sale> {
+    const product = await this.getProduct(productId);
+    if (!product) {
+      throw new Error('Product not found');
+    }
+
+    // Update inventory - decrease stock
+    const newStockQuantity = Math.max(0, product.stockQuantity - quantity);
+    const newStockStatus = newStockQuantity === 0 ? 'out_of_stock' : 'in_stock';
+    
+    await this.updateProduct(productId, {
+      stockQuantity: newStockQuantity,
+      stockStatus: newStockStatus as any
+    });
+
+    // Create sale record
+    const saleData: InsertSale = {
+      productId,
+      quantity,
+      salePrice: salePrice.toString(),
+      stripeSessionId: sessionId
+    };
+
+    return await this.createSale(saleData);
   }
 }
 

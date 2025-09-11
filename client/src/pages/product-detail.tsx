@@ -212,22 +212,25 @@ export default function ProductDetail() {
               )}
             </div>
 
-            <div className="text-foreground leading-relaxed" data-testid="text-product-description">
-              {product.description.split('\n').map((line, index) => {
-                if (line.trim() === '') return <br key={index} />;
-                if (line.includes('KEY SPECIFICATIONS:') || line.includes('DEPOSIT POLICY:')) {
-                  return <h4 key={index} className="font-semibold text-lg mt-6 mb-2">{line.trim()}</h4>;
-                }
-                if (line.trim().startsWith('•')) {
-                  return (
-                    <div key={index} className="flex items-start ml-4 mb-1">
-                      <span className="text-red-600 font-bold mr-3 mt-1">•</span>
-                      <span className="text-left">{line.trim().substring(1).trim()}</span>
-                    </div>
-                  );
-                }
-                return <p key={index} className="mb-2">{line}</p>;
-              })}
+            <div>
+              <h3 className="text-xl font-semibold mb-4" data-testid="text-description-heading">Description</h3>
+              <div className="text-foreground leading-relaxed" data-testid="text-product-description">
+                {product.description.split('\n').map((line, index) => {
+                  if (line.trim() === '') return <br key={index} />;
+                  if (line.includes('KEY SPECIFICATIONS:') || line.includes('DEPOSIT POLICY:')) {
+                    return <h4 key={index} className="font-semibold text-lg mt-6 mb-2">{line.trim()}</h4>;
+                  }
+                  if (line.trim().startsWith('•')) {
+                    return (
+                      <div key={index} className="flex items-start ml-4 mb-1">
+                        <span className="text-red-600 font-bold mr-3 mt-1">•</span>
+                        <span className="text-left">{line.trim().substring(1).trim()}</span>
+                      </div>
+                    );
+                  }
+                  return <p key={index} className="mb-2">{line}</p>;
+                })}
+              </div>
             </div>
 
             <Separator />

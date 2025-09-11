@@ -1,7 +1,7 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
-import { insertProductSchema, updateProductSchema, insertCartItemSchema, insertServiceSchema, insertBookingSchema } from "@shared/schema";
+import { insertProductSchema, updateProductSchema, insertCartItemSchema, insertServiceSchema, insertBookingSchema, insertSaleSchema } from "@shared/schema";
 import { randomUUID } from "crypto";
 import Stripe from "stripe";
 import twilio from "twilio";
@@ -560,6 +560,144 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: "Error creating checkout session", 
         error: error.message 
       });
+    }
+  });
+
+  // Create checkout session for cart items
+  app.post("/api/create-cart-checkout-session", async (req, res) => {
+    try {
+      const { cartItems } = req.body;
+      
+      if (!cartItems || cartItems.length === 0) {
+        return res.status(400).json({ message: "Cart is empty" });
+      }
+
+      // Create line items for Stripe
+      const lineItems = [];
+      let totalAmount = 0;
+
+      for (const cartItem of cartItems) {
+        const product = await storage.getProduct(cartItem.productId);
+        if (!product) continue;
+
+        let productPrice = parseFloat(product.price);
+        
+        // Apply discount if exists
+        if (product.discount && parseFloat(product.discount) > 0) {
+          if (product.discountType === "percentage") {
+            productPrice = productPrice * (1 - parseFloat(product.discount) / 100);
+          } else {
+            productPrice = productPrice - parseFloat(product.discount);
+          }
+        }
+
+        lineItems.push({
+          price_data: {
+            currency: 'usd',
+            product_data: {
+              name: product.title,
+              description: product.description,
+            },
+            unit_amount: Math.round(productPrice * 100), // Convert to cents
+          },
+          quantity: cartItem.quantity,
+        });
+
+        totalAmount += productPrice * cartItem.quantity;
+      }
+
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: lineItems,
+        mode: 'payment',
+        success_url: `${req.headers.origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${req.headers.origin}/cart`,
+        metadata: {
+          cartCheckout: 'true',
+          totalAmount: totalAmount.toString(),
+          cartSessionId: getSessionId(req),
+          cartItemsData: JSON.stringify(cartItems.map(item => ({
+            productId: item.productId,
+            quantity: item.quantity
+          }))),
+        },
+      });
+
+      res.json({ 
+        checkoutUrl: session.url,
+        sessionId: session.id 
+      });
+    } catch (error: any) {
+      console.error("Error creating cart checkout session:", error);
+      res.status(500).json({ 
+        message: "Error creating cart checkout session", 
+        error: error.message 
+      });
+    }
+  });
+
+  // Process sale webhook from Stripe (when payment succeeds)
+  app.post("/api/stripe-webhook", async (req, res) => {
+    try {
+      const session = req.body;
+      
+      if (session.payment_status === 'paid') {
+        const { productId, isDeposit, cartCheckout, cartSessionId, cartItemsData } = session.metadata || {};
+        
+        if (cartCheckout === 'true' && cartItemsData) {
+          // Cart purchase - process all items
+          try {
+            const cartItems = JSON.parse(cartItemsData);
+            const totalAmount = session.amount_total / 100; // Convert from cents
+            
+            // Process each cart item
+            for (const cartItem of cartItems) {
+              await storage.processSaleAndUpdateInventory(
+                cartItem.productId, 
+                cartItem.quantity, 
+                totalAmount / cartItems.length, // Distribute total amount across items
+                session.id
+              );
+            }
+            
+            // Clear the cart after successful payment
+            if (cartSessionId) {
+              await storage.clearCart(cartSessionId);
+            }
+            
+            console.log(`Successfully processed cart checkout for session ${session.id}`);
+          } catch (error) {
+            console.error("Error processing cart items:", error);
+          }
+        } else if (productId) {
+          // Single product purchase
+          const amount = session.amount_total / 100; // Convert from cents
+          await storage.processSaleAndUpdateInventory(productId, 1, amount, session.id);
+          console.log(`Successfully processed single product checkout for session ${session.id}`);
+        }
+      }
+      
+      res.status(200).send('OK');
+    } catch (error: any) {
+      console.error("Error processing Stripe webhook:", error);
+      res.status(500).json({ message: "Webhook processing failed" });
+    }
+  });
+
+  // Get sales data for owner dashboard
+  app.get("/api/sales", requireAuth, async (req, res) => {
+    try {
+      const sales = await storage.getAllSales();
+      const totalSales = await storage.getTotalSales();
+      
+      res.json({
+        sales: sales,
+        totalSalesCount: totalSales,
+        totalRevenue: sales.reduce((sum, sale) => sum + parseFloat(sale.salePrice), 0)
+      });
+    } catch (error) {
+      console.error("Error fetching sales:", error);
+      res.status(500).json({ message: "Failed to fetch sales" });
     }
   });
 

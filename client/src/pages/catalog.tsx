@@ -126,23 +126,43 @@ export default function Catalog() {
                       </label>
                       <label className="flex items-center">
                         <Checkbox
-                          checked={filters.category === "parts"}
+                          checked={filters.category === "oem parts"}
                           onCheckedChange={(checked) => 
-                            handleFilterChange("category", checked ? "parts" : undefined)
+                            handleFilterChange("category", checked ? "oem parts" : undefined)
                           }
-                          data-testid="checkbox-parts"
+                          data-testid="checkbox-oem-parts"
                         />
-                        <span className="ml-2">Parts</span>
+                        <span className="ml-2">OEM Parts</span>
                       </label>
                       <label className="flex items-center">
                         <Checkbox
-                          checked={filters.category === "accessories"}
+                          checked={filters.category === "used parts"}
                           onCheckedChange={(checked) => 
-                            handleFilterChange("category", checked ? "accessories" : undefined)
+                            handleFilterChange("category", checked ? "used parts" : undefined)
                           }
-                          data-testid="checkbox-accessories"
+                          data-testid="checkbox-used-parts"
                         />
-                        <span className="ml-2">Accessories</span>
+                        <span className="ml-2">Used Parts</span>
+                      </label>
+                      <label className="flex items-center">
+                        <Checkbox
+                          checked={filters.category === "custom wheels"}
+                          onCheckedChange={(checked) => 
+                            handleFilterChange("category", checked ? "custom wheels" : undefined)
+                          }
+                          data-testid="checkbox-custom-wheels"
+                        />
+                        <span className="ml-2">Custom Wheels</span>
+                      </label>
+                      <label className="flex items-center">
+                        <Checkbox
+                          checked={filters.category === "tires"}
+                          onCheckedChange={(checked) => 
+                            handleFilterChange("category", checked ? "tires" : undefined)
+                          }
+                          data-testid="checkbox-tires"
+                        />
+                        <span className="ml-2">Tires</span>
                       </label>
                     </div>
                   </div>

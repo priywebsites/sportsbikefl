@@ -116,6 +116,29 @@ export type Service = typeof services.$inferSelect;
 export type InsertBooking = z.infer<typeof insertBookingSchema>;
 export type Booking = typeof bookings.$inferSelect;
 
+export const sales = pgTable("sales", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  productId: varchar("product_id").notNull().references(() => products.id),
+  quantity: integer("quantity").notNull().default(1),
+  salePrice: decimal("sale_price", { precision: 10, scale: 2 }).notNull(),
+  paymentIntentId: text("payment_intent_id"),
+  stripeSessionId: text("stripe_session_id"),
+  customerEmail: text("customer_email"),
+  saleDate: timestamp("sale_date").defaultNow(),
+}, (table) => ({
+  productIdx: index("sale_product_idx").on(table.productId),
+  dateIdx: index("sale_date_idx").on(table.saleDate),
+  paymentIdx: index("sale_payment_idx").on(table.paymentIntentId),
+}));
+
+export const insertSaleSchema = createInsertSchema(sales).omit({
+  id: true,
+  saleDate: true,
+});
+
+export type InsertSale = z.infer<typeof insertSaleSchema>;
+export type Sale = typeof sales.$inferSelect;
+
 // Additional types for frontend
 export type CartItemWithProduct = CartItem & {
   product: Product;
@@ -123,6 +146,10 @@ export type CartItemWithProduct = CartItem & {
 
 export type ProductWithDiscount = Product & {
   discountedPrice?: number;
+};
+
+export type SaleWithProduct = Sale & {
+  product: Product;
 };
 
 export type BookingWithService = Booking & {

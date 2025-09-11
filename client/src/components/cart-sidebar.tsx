@@ -156,7 +156,35 @@ export function CartSidebar({ open, onOpenChange }: CartSidebarProps) {
               <Button 
                 className="w-full" 
                 size="lg"
-                onClick={() => onOpenChange(false)}
+                onClick={async () => {
+                  try {
+                    // Create checkout session for cart items
+                    const response = await fetch("/api/create-cart-checkout-session", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        cartItems: items.map(item => ({
+                          productId: item.product.id,
+                          quantity: item.quantity,
+                          price: parseFloat(item.product.price)
+                        }))
+                      }),
+                    });
+
+                    const data = await response.json();
+                    
+                    if (response.ok && data.checkoutUrl) {
+                      // Redirect to Stripe hosted checkout
+                      window.location.href = data.checkoutUrl;
+                    } else {
+                      console.error("Failed to create checkout session:", data.message);
+                    }
+                  } catch (error) {
+                    console.error("Failed to initiate cart checkout:", error);
+                  }
+                }}
                 data-testid="button-checkout"
               >
                 Proceed to Checkout
