@@ -53,8 +53,8 @@ const sendSMS = async (to: string, body: string) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Health check route - respond to health checks before setting up other routes
-  app.get("/", (req, res) => {
+  // Health check route at /health to not interfere with frontend
+  app.get("/health", (req, res) => {
     res.status(200).json({ status: "ok", message: "Server is running" });
   });
 
