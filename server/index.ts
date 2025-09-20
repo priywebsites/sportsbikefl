@@ -3,26 +3,52 @@ import session from "express-session";
 import MemoryStore from "memorystore";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
+import { seedDatabase } from "./seed";
 
 const app = express();
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
 
-// Session configuration
-const MemStoreSession = MemoryStore(session);
-app.use(session({
-  secret: process.env.SESSION_SECRET || 'sportbikefl-secret-key',
-  resave: false,
-  saveUninitialized: true,
-  store: new MemStoreSession({
-    checkPeriod: 86400000 // prune expired entries every 24h
-  }),
-  cookie: {
-    secure: false, // Set to false for development
-    httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000 // 24 hours
-  }
-}));
+// Session configuration - Use different stores for development vs deployment
+const isProduction = process.env.NODE_ENV === 'production' || process.env.REPLIT_DEPLOYMENT === '1';
+
+if (isProduction) {
+  // Use database-backed session store for deployment
+  const connectPgSimple = require('connect-pg-simple');
+  const pgSession = connectPgSimple(session);
+  
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'sportbikefl-secret-key',
+    resave: false,
+    saveUninitialized: false,
+    store: new pgSession({
+      conString: process.env.DATABASE_URL,
+      tableName: 'session',
+      createTableIfMissing: true
+    }),
+    cookie: {
+      secure: true, // Use secure cookies in production
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+  }));
+} else {
+  // Use memory store for development
+  const MemStoreSession = MemoryStore(session);
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'sportbikefl-secret-key',
+    resave: false,
+    saveUninitialized: true,
+    store: new MemStoreSession({
+      checkPeriod: 86400000 // prune expired entries every 24h
+    }),
+    cookie: {
+      secure: false, // Set to false for development
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+  }));
+}
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -55,6 +81,15 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Initialize database in deployment
+  if (isProduction) {
+    try {
+      await seedDatabase();
+    } catch (error) {
+      console.error("Failed to seed database:", error);
+    }
+  }
+
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
