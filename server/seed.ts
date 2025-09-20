@@ -199,11 +199,17 @@ DEPOSIT POLICY:
   }
 }
 
-// Run if called directly
+// Run if called directly  
 if (import.meta.url === `file://${process.argv[1]}`) {
   seedDatabase()
-    .then(() => process.exit(0))
-    .catch(() => process.exit(1));
+    .then(() => {
+      console.log("Database seeding completed successfully");
+      process.exit(0);
+    })
+    .catch((error) => {
+      console.error("Database seeding failed:", error);
+      process.exit(1);
+    });
 }
 
 export { seedDatabase };

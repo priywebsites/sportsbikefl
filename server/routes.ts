@@ -36,6 +36,11 @@ const sendSMS = async (to: string, body: string) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
+  // Health check route - respond to health checks before setting up other routes
+  app.get("/", (req, res) => {
+    res.status(200).json({ status: "ok", message: "Server is running" });
+  });
+
   // Authentication middleware
   const requireAuth = (req: any, res: any, next: any) => {
     if (!(req.session as any)?.userId) {

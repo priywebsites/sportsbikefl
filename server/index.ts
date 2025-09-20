@@ -82,15 +82,6 @@ app.use((req, res, next) => {
     }));
   }
 
-  // Initialize database in deployment
-  if (isProduction) {
-    try {
-      await seedDatabase();
-    } catch (error) {
-      console.error("Failed to seed database:", error);
-    }
-  }
-
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -119,7 +110,17 @@ app.use((req, res, next) => {
     port,
     host: "0.0.0.0",
     reusePort: true,
-  }, () => {
+  }, async () => {
     log(`serving on port ${port}`);
+    
+    // Initialize database after server starts listening
+    if (isProduction) {
+      try {
+        await seedDatabase();
+        log("Database seeding completed");
+      } catch (error) {
+        console.error("Failed to seed database:", error);
+      }
+    }
   });
 })();
