@@ -1,0 +1,140 @@
+025-09-20 17:07:22.88
+cc70b6d4
+System
+starting up user application
+2025-09-20 17:07:23.13
+cc70b6d4
+System
+forwarding local port 5000 to external port 80 (mapped as 1104)
+2025-09-20 17:07:24.74
+cc70b6d4
+User
+> rest-express@1.0.0 start
+2025-09-20 17:07:24.74
+cc70b6d4
+User
+> NODE_ENV=production node dist/index.js
+2025-09-20 17:07:26.65
+cc70b6d4
+User
+🌱 Seeding database...
+2025-09-20 17:07:26.87
+cc70b6d4
+User
+10:07:26 PM [express] Using PostgreSQL session store
+2025-09-20 17:07:26.87
+cc70b6d4
+User
+10:07:26 PM [express] serving on port 5000
+2025-09-20 17:07:26.88
+cc70b6d4
+User
+10:07:26 PM [express] Starting database seeding...
+2025-09-20 17:07:26.88
+cc70b6d4
+User
+🌱 Seeding database...
+2025-09-20 17:07:31.88
+cc70b6d4
+User
+✅ Database seeded successfully!
+2025-09-20 17:07:31.88
+cc70b6d4
+User
+Database seeding completed successfully
+2025-09-20 17:07:38.58
+cc70b6d4
+User
+npm notice
+2025-09-20 17:07:38.58
+cc70b6d4
+User
+npm notice New major version of npm available! 10.8.2 -> 11.6.0
+2025-09-20 17:07:38.58
+cc70b6d4
+User
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v11.6.0
+2025-09-20 17:07:38.58
+cc70b6d4
+User
+npm notice To update run: npm install -g npm@11.6.0
+2025-09-20 17:07:38.58
+cc70b6d4
+User
+npm notice
+2025-09-20 17:07:39.68
+cc70b6d4
+System
+command finished successfully with exit code 0
+2025-09-20 17:07:39.68
+cc70b6d4
+System
+main done, exiting
+2025-09-20 17:07:42.78
+cc70b6d4
+System
+starting up user application
+2025-09-20 17:07:42.90
+cc70b6d4
+System
+forwarding local port 5000 to external port 80 (mapped as 1104)
+2025-09-20 17:07:43.75
+cc70b6d4
+User
+> rest-express@1.0.0 start
+2025-09-20 17:07:43.75
+cc70b6d4
+User
+> NODE_ENV=production node dist/index.js
+2025-09-20 17:07:45.16
+cc70b6d4
+User
+🌱 Seeding database...
+2025-09-20 17:07:45.30
+cc70b6d4
+User
+10:07:45 PM [express] Using PostgreSQL session store
+2025-09-20 17:07:45.31
+cc70b6d4
+User
+10:07:45 PM [express] serving on port 5000
+2025-09-20 17:07:45.31
+cc70b6d4
+User
+10:07:45 PM [express] Starting database seeding...
+2025-09-20 17:07:45.31
+cc70b6d4
+User
+🌱 Seeding database...
+2025-09-20 17:07:45.59
+cc70b6d4
+User
+✅ Database seeded successfully!
+2025-09-20 17:07:45.59
+cc70b6d4
+User
+10:07:45 PM [express] Database seeding completed
+2025-09-20 17:07:46.17
+cc70b6d4
+User
+error: relation "session" does not exist
+2025-09-20 17:07:46.17
+cc70b6d4
+User
+at /home/runner/workspace/node_modules/pg-pool/index.js:45:11
+2025-09-20 17:07:46.17
+cc70b6d4
+User
+at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2025-09-20 17:07:46.17
+cc70b6d4
+User
+at async PGStore._asyncQuery (/home/runner/workspace/node_modules/connect-pg-simple/index.js:322:21)
+2025-09-20 17:07:46.36
+cc70b6d4
+User
+error: relation "session" does not exist
+2025-09-20 17:07:46.36
+cc70b6d4
+User
+at /home/runner/workspace/node_modules/pg-pool/index.js:45:11

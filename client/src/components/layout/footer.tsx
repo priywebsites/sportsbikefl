@@ -12,7 +12,7 @@ export function Footer() {
               <div className="bg-white/10 backdrop-blur-sm rounded-full p-2 border border-white/20">
                 <img src={logoImage} alt="SportbikeFL Logo" className="w-8 h-8 object-contain" />
               </div>
-              <span className="text-2xl font-bold text-white">Sportbike FL</span>
+              <span className="text-2xl font-bold text-white">SportbikeFL</span>
             </div>
             <p className="text-gray-300 leading-relaxed">
               Your premier destination for high-performance motorcycles and genuine parts in Florida.
@@ -64,7 +64,7 @@ export function Footer() {
         </div>
         
         <div className="border-t border-gray-700 mt-12 pt-8 text-center text-gray-400">
-          <p data-testid="text-copyright">&copy; 2024 Sportbike FL. All rights reserved.</p>
+          <p data-testid="text-copyright">&copy; 2024 SportbikeFL. All rights reserved.</p>
         </div>
       </div>
     </footer>

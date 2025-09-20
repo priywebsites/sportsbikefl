@@ -46,40 +46,77 @@ app.use((req, res, next) => {
   // Session configuration must be set up before routes
   if (isProduction) {
     // Try database-backed session store for deployment, fallback to memory store
+    let usePostgresSession = false;
+    let pool: any = null;
+    
     try {
-      const { default: connectPgSimple } = await import('connect-pg-simple');
-      const pgSession = connectPgSimple(session);
+      // Import pool and test session table creation/access
+      const { pool: dbPool } = await import('./db');
+      pool = dbPool;
       
-      app.use(session({
-        secret: process.env.SESSION_SECRET || 'sportbikefl-secret-key',
-        resave: false,
-        saveUninitialized: false,
-        store: new pgSession({
-          conString: process.env.DATABASE_URL,
-          tableName: 'session',
-          createTableIfMissing: false // Don't block startup on table creation
-        }),
-        cookie: {
-          secure: true, // Use secure cookies in production
-          httpOnly: true,
-          maxAge: 24 * 60 * 60 * 1000 // 24 hours
-        }
-      }));
-      log("Using PostgreSQL session store");
+      log("Creating session table...");
+      await pool.query(`
+        CREATE TABLE IF NOT EXISTS session (
+          sid varchar NOT NULL COLLATE "default",
+          sess json NOT NULL,
+          expire timestamp(6) NOT NULL,
+          PRIMARY KEY (sid)
+        );
+        CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON session (expire);
+      `);
+      
+      // Validate table access
+      log("Validating session table access...");
+      await pool.query('SELECT 1 FROM session LIMIT 1');
+      log("Session table validation successful");
+      
+      usePostgresSession = true;
     } catch (error) {
-      log("Failed to initialize PostgreSQL session store, falling back to memory store:", (error as Error).message || String(error));
+      log("Failed to setup PostgreSQL session table:", (error as Error).message || String(error));
+      usePostgresSession = false;
+    }
+    
+    if (usePostgresSession && pool) {
+      try {
+        const { default: connectPgSimple } = await import('connect-pg-simple');
+        const pgSession = connectPgSimple(session);
+        
+        app.use(session({
+          secret: process.env.SESSION_SECRET || 'sportbikefl-secret-key',
+          resave: false,
+          saveUninitialized: false,
+          store: new pgSession({
+            pool: pool,
+            tableName: 'session',
+            createTableIfMissing: false
+          }),
+          cookie: {
+            secure: true,
+            httpOnly: true,
+            maxAge: 24 * 60 * 60 * 1000
+          }
+        }));
+        log("Using PostgreSQL session store with shared pool");
+      } catch (error) {
+        log("Failed to configure PostgreSQL session store:", (error as Error).message || String(error));
+        usePostgresSession = false;
+      }
+    }
+    
+    if (!usePostgresSession) {
+      log("Falling back to memory session store");
       const MemStoreSession = MemoryStore(session);
       app.use(session({
         secret: process.env.SESSION_SECRET || 'sportbikefl-secret-key',
         resave: false,
         saveUninitialized: false,
         store: new MemStoreSession({
-          checkPeriod: 86400000 // prune expired entries every 24h
+          checkPeriod: 86400000
         }),
         cookie: {
-          secure: true, // Use secure cookies in production
+          secure: true,
           httpOnly: true,
-          maxAge: 24 * 60 * 60 * 1000 // 24 hours
+          maxAge: 24 * 60 * 60 * 1000
         }
       }));
     }
