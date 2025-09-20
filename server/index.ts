@@ -45,25 +45,44 @@ app.use((req, res, next) => {
 (async () => {
   // Session configuration must be set up before routes
   if (isProduction) {
-    // Use database-backed session store for deployment
-    const { default: connectPgSimple } = await import('connect-pg-simple');
-    const pgSession = connectPgSimple(session);
-    
-    app.use(session({
-      secret: process.env.SESSION_SECRET || 'sportbikefl-secret-key',
-      resave: false,
-      saveUninitialized: false,
-      store: new pgSession({
-        conString: process.env.DATABASE_URL,
-        tableName: 'session',
-        createTableIfMissing: true
-      }),
-      cookie: {
-        secure: true, // Use secure cookies in production
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
-      }
-    }));
+    // Try database-backed session store for deployment, fallback to memory store
+    try {
+      const { default: connectPgSimple } = await import('connect-pg-simple');
+      const pgSession = connectPgSimple(session);
+      
+      app.use(session({
+        secret: process.env.SESSION_SECRET || 'sportbikefl-secret-key',
+        resave: false,
+        saveUninitialized: false,
+        store: new pgSession({
+          conString: process.env.DATABASE_URL,
+          tableName: 'session',
+          createTableIfMissing: false // Don't block startup on table creation
+        }),
+        cookie: {
+          secure: true, // Use secure cookies in production
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        }
+      }));
+      log("Using PostgreSQL session store");
+    } catch (error) {
+      log("Failed to initialize PostgreSQL session store, falling back to memory store:", (error as Error).message || String(error));
+      const MemStoreSession = MemoryStore(session);
+      app.use(session({
+        secret: process.env.SESSION_SECRET || 'sportbikefl-secret-key',
+        resave: false,
+        saveUninitialized: false,
+        store: new MemStoreSession({
+          checkPeriod: 86400000 // prune expired entries every 24h
+        }),
+        cookie: {
+          secure: true, // Use secure cookies in production
+          httpOnly: true,
+          maxAge: 24 * 60 * 60 * 1000 // 24 hours
+        }
+      }));
+    }
   } else {
     // Use memory store for development
     const MemStoreSession = MemoryStore(session);
@@ -110,17 +129,21 @@ app.use((req, res, next) => {
     port,
     host: "0.0.0.0",
     reusePort: true,
-  }, async () => {
+  }, () => {
     log(`serving on port ${port}`);
     
-    // Initialize database after server starts listening
+    // Initialize database after server starts listening - run in background to not block health checks
     if (isProduction) {
-      try {
-        await seedDatabase();
-        log("Database seeding completed");
-      } catch (error) {
-        console.error("Failed to seed database:", error);
-      }
+      // Use setImmediate to move seeding to next tick, allowing health checks to work immediately
+      setImmediate(async () => {
+        try {
+          log("Starting database seeding...");
+          await seedDatabase();
+          log("Database seeding completed");
+        } catch (error) {
+          console.error("Failed to seed database:", error);
+        }
+      });
     }
   });
 })();

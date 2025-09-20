@@ -6,23 +6,40 @@ import { randomUUID } from "crypto";
 import Stripe from "stripe";
 import twilio from "twilio";
 
-if (!process.env.STRIPE_SECRET_KEY) {
-  throw new Error('Missing required Stripe secret: STRIPE_SECRET_KEY');
-}
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2024-06-20",
-});
+// Lazy initialize Stripe to avoid startup failures
+let stripe: Stripe | null = null;
+const getStripe = () => {
+  if (!stripe) {
+    if (!process.env.STRIPE_SECRET_KEY) {
+      throw new Error('Stripe not configured: STRIPE_SECRET_KEY missing');
+    }
+    stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+      apiVersion: "2024-06-20" as any, // Use valid API version with type assertion
+    });
+  }
+  return stripe;
+};
 
-// Initialize Twilio
-const twilioClient = twilio(
-  process.env.TWILIO_ACCOUNT_SID,
-  process.env.TWILIO_AUTH_TOKEN
-);
+// Lazy initialize Twilio to avoid startup failures
+let twilioClient: any = null;
+const getTwilio = () => {
+  if (!twilioClient) {
+    if (!process.env.TWILIO_ACCOUNT_SID || !process.env.TWILIO_AUTH_TOKEN) {
+      throw new Error('Twilio not configured: TWILIO_ACCOUNT_SID or TWILIO_AUTH_TOKEN missing');
+    }
+    twilioClient = twilio(
+      process.env.TWILIO_ACCOUNT_SID,
+      process.env.TWILIO_AUTH_TOKEN
+    );
+  }
+  return twilioClient;
+};
 
 // SMS helper functions
 const sendSMS = async (to: string, body: string) => {
   try {
-    const message = await twilioClient.messages.create({
+    const client = getTwilio();
+    const message = await client.messages.create({
       body,
       from: process.env.TWILIO_PHONE_NUMBER,
       to
@@ -84,7 +101,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/auth/me", async (req, res) => {
-    if (!req.session?.userId) {
+    if (!(req.session as any)?.userId) {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
@@ -491,6 +508,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Stripe hosted checkout session
   app.post("/api/create-checkout-session", async (req, res) => {
     try {
+      // Check if Stripe is configured
+      try {
+        getStripe();
+      } catch (error: any) {
+        return res.status(503).json({ message: "Payment service unavailable", error: error.message });
+      }
       const { productId, isDeposit = false } = req.body;
       
       if (!productId) {
@@ -529,7 +552,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         description = `Full payment for ${productTitle}`;
       }
 
-      const session = await stripe.checkout.sessions.create({
+      const stripeClient = getStripe();
+      const session = await stripeClient.checkout.sessions.create({
         payment_method_types: ['card'],
         line_items: [
           {
@@ -571,6 +595,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create checkout session for cart items
   app.post("/api/create-cart-checkout-session", async (req, res) => {
     try {
+      // Check if Stripe is configured
+      try {
+        getStripe();
+      } catch (error: any) {
+        return res.status(503).json({ message: "Payment service unavailable", error: error.message });
+      }
       const { cartItems } = req.body;
       
       if (!cartItems || cartItems.length === 0) {
@@ -611,7 +641,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         totalAmount += productPrice * cartItem.quantity;
       }
 
-      const session = await stripe.checkout.sessions.create({
+      const stripeClient = getStripe();
+      const session = await stripeClient.checkout.sessions.create({
         payment_method_types: ['card'],
         line_items: lineItems,
         mode: 'payment',
@@ -621,7 +652,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           cartCheckout: 'true',
           totalAmount: totalAmount.toString(),
           cartSessionId: getSessionId(req),
-          cartItemsData: JSON.stringify(cartItems.map(item => ({
+          cartItemsData: JSON.stringify(cartItems.map((item: any) => ({
             productId: item.productId,
             quantity: item.quantity
           }))),
@@ -709,7 +740,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get checkout session details (for success page)
   app.get("/api/checkout-session/:sessionId", async (req, res) => {
     try {
-      const session = await stripe.checkout.sessions.retrieve(req.params.sessionId);
+      // Check if Stripe is configured
+      try {
+        getStripe();
+      } catch (error: any) {
+        return res.status(503).json({ message: "Payment service unavailable", error: error.message });
+      }
+      const stripeClient = getStripe();
+      const session = await stripeClient.checkout.sessions.retrieve(req.params.sessionId);
       res.json({
         id: session.id,
         amount_total: session.amount_total ? session.amount_total / 100 : 0,
