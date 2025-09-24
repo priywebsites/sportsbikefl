@@ -1,8 +1,18 @@
 import { createApp } from "../server/app";
 import serverless from "serverless-http";
 
-// Create Express app
-const app = await createApp();
+// Cache app promise to avoid recreation on every request
+let cachedAppPromise: Promise<any> | null = null;
+
+const getApp = () => {
+  if (!cachedAppPromise) {
+    cachedAppPromise = createApp();
+  }
+  return cachedAppPromise;
+};
 
 // Export serverless function handler
-export default serverless(app);
+export default async (req: any, res: any) => {
+  const app = await getApp();
+  return serverless(app)(req, res);
+};

@@ -64,10 +64,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   };
 
   // Session ID helper - iron-session saves automatically
-  const getSessionId = (req: any) => {
+  const getSessionId = async (req: any) => {
     const session = req.session as SessionData;
     if (!session.cartId) {
       session.cartId = randomUUID();
+      await session.save();
     }
     return session.cartId;
   };
@@ -84,6 +85,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const session = req.session as SessionData;
       session.userId = user.id;
+      await session.save();
       
       res.json({ user: { id: user.id, username: user.username } });
     } catch (error) {
@@ -96,6 +98,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const session = req.session as SessionData;
       session.userId = undefined;
       session.cartId = undefined;
+      await session.save();
       res.json({ message: "Logged out successfully" });
     } catch (error) {
       res.status(500).json({ message: "Logout failed" });
@@ -210,7 +213,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Cart routes
   app.get("/api/cart", async (req, res) => {
     try {
-      const sessionId = getSessionId(req);
+      const sessionId = await getSessionId(req);
       const cartItems = await storage.getCartItems(sessionId);
       res.json(cartItems);
     } catch (error) {
@@ -221,7 +224,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Checkout route - reduces stock when items are purchased
   app.post("/api/checkout", async (req, res) => {
     try {
-      const sessionId = getSessionId(req);
+      const sessionId = await getSessionId(req);
       const cartItems = await storage.getCartItems(sessionId);
       
       // Process each cart item and reduce stock
@@ -250,7 +253,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/cart", async (req, res) => {
     try {
-      const sessionId = getSessionId(req);
+      const sessionId = await getSessionId(req);
       const cartItemData = insertCartItemSchema.parse({
         ...req.body,
         sessionId,
@@ -292,7 +295,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/cart", async (req, res) => {
     try {
-      const sessionId = getSessionId(req);
+      const sessionId = await getSessionId(req);
       await storage.clearCart(sessionId);
       res.json({ message: "Cart cleared" });
     } catch (error) {
@@ -654,7 +657,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         metadata: {
           cartCheckout: 'true',
           totalAmount: totalAmount.toString(),
-          cartSessionId: getSessionId(req),
+          cartSessionId: await getSessionId(req),
           cartItemsData: JSON.stringify(cartItems.map((item: any) => ({
             productId: item.productId,
             quantity: item.quantity

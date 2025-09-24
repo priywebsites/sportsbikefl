@@ -9,13 +9,18 @@ export interface SessionData {
   cartId?: string;
 }
 
+// Validate required session password in production
+if (process.env.NODE_ENV === 'production' && !process.env.IRON_SESSION_PASSWORD && !process.env.SESSION_SECRET) {
+  throw new Error('IRON_SESSION_PASSWORD or SESSION_SECRET is required in production');
+}
+
 const sessionOptions = {
   password: process.env.IRON_SESSION_PASSWORD || process.env.SESSION_SECRET || 'sportbikefl-secret-key-must-be-at-least-32-characters-long',
   cookieName: "sportbikefl-session",
   cookieOptions: {
     secure: process.env.NODE_ENV === 'production',
     httpOnly: true,
-    maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    maxAge: 24 * 60 * 60, // 24 hours in seconds (not milliseconds)
   },
 };
 

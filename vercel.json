@@ -20,12 +20,9 @@
     },
     {
       "src": "/(.*)",
-      "dest": "/dist/index.html"
+      "dest": "/dist/public/index.html"
     }
   ],
-  "env": {
-    "NODE_ENV": "production"
-  },
   "functions": {
     "api/index.ts": {
       "maxDuration": 30
