@@ -7,8 +7,6 @@ import { log } from "./vite";
 export interface SessionData {
   userId?: string;
   cartId?: string;
-  save(): Promise<void>;
-  destroy(): void;
 }
 
 // Extend Express Request to include session
