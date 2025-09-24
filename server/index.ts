@@ -43,100 +43,21 @@ app.use((req, res, next) => {
 });
 
 (async () => {
-  // Session configuration must be set up before routes
-  if (isProduction) {
-    // Try database-backed session store for deployment, fallback to memory store
-    let usePostgresSession = false;
-    let pool: any = null;
-    
-    try {
-      // Import pool and test session table creation/access
-      const { pool: dbPool } = await import('./db');
-      pool = dbPool;
-      
-      log("Creating session table...");
-      await pool.query(`
-        CREATE TABLE IF NOT EXISTS session (
-          sid varchar NOT NULL COLLATE "default",
-          sess json NOT NULL,
-          expire timestamp(6) NOT NULL,
-          PRIMARY KEY (sid)
-        );
-        CREATE INDEX IF NOT EXISTS "IDX_session_expire" ON session (expire);
-      `);
-      
-      // Validate table access
-      log("Validating session table access...");
-      await pool.query('SELECT 1 FROM session LIMIT 1');
-      log("Session table validation successful");
-      
-      usePostgresSession = true;
-    } catch (error) {
-      log("Failed to setup PostgreSQL session table:", (error as Error).message || String(error));
-      usePostgresSession = false;
+  // Use simple memory store for sessions to not block startup  
+  const MemStoreSession = MemoryStore(session);
+  app.use(session({
+    secret: process.env.SESSION_SECRET || 'sportbikefl-secret-key',
+    resave: false,
+    saveUninitialized: !isProduction,
+    store: new MemStoreSession({
+      checkPeriod: 86400000 // prune expired entries every 24h
+    }),
+    cookie: {
+      secure: isProduction, 
+      httpOnly: true,
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
     }
-    
-    if (usePostgresSession && pool) {
-      try {
-        const { default: connectPgSimple } = await import('connect-pg-simple');
-        const pgSession = connectPgSimple(session);
-        
-        app.use(session({
-          secret: process.env.SESSION_SECRET || 'sportbikefl-secret-key',
-          resave: false,
-          saveUninitialized: false,
-          store: new pgSession({
-            pool: pool,
-            tableName: 'session',
-            createTableIfMissing: false
-          }),
-          cookie: {
-            secure: true,
-            httpOnly: true,
-            maxAge: 24 * 60 * 60 * 1000
-          }
-        }));
-        log("Using PostgreSQL session store with shared pool");
-      } catch (error) {
-        log("Failed to configure PostgreSQL session store:", (error as Error).message || String(error));
-        usePostgresSession = false;
-      }
-    }
-    
-    if (!usePostgresSession) {
-      log("Falling back to memory session store");
-      const MemStoreSession = MemoryStore(session);
-      app.use(session({
-        secret: process.env.SESSION_SECRET || 'sportbikefl-secret-key',
-        resave: false,
-        saveUninitialized: false,
-        store: new MemStoreSession({
-          checkPeriod: 86400000
-        }),
-        cookie: {
-          secure: true,
-          httpOnly: true,
-          maxAge: 24 * 60 * 60 * 1000
-        }
-      }));
-    }
-  } else {
-    // Use memory store for development
-    const MemStoreSession = MemoryStore(session);
-    app.use(session({
-      secret: process.env.SESSION_SECRET || 'sportbikefl-secret-key',
-      resave: false,
-      saveUninitialized: true,
-      store: new MemStoreSession({
-        checkPeriod: 86400000 // prune expired entries every 24h
-      }),
-      cookie: {
-        secure: false, // Set to false for development
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
-      }
-    }));
-  }
+  }));
 
   const server = await registerRoutes(app);
 
