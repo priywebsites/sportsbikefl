@@ -42,6 +42,24 @@ app.use((req, res, next) => {
   next();
 });
 
+// Health check endpoints BEFORE any other routes - respond immediately
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "healthy", timestamp: Date.now() });
+});
+
+app.get("/healthz", (req, res) => {
+  res.status(200).json({ status: "healthy", timestamp: Date.now() });
+});
+
+// Also handle root for health checks
+app.get("/", (req, res, next) => {
+  // Check if this looks like a health check (simple heuristics)
+  if (req.headers.accept === '*/*' && !req.headers.referer) {
+    return res.status(200).json({ status: "healthy", timestamp: Date.now() });
+  }
+  next();
+});
+
 (async () => {
   // Use simple memory store for sessions to not block startup  
   const MemStoreSession = MemoryStore(session);

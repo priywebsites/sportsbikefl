@@ -53,10 +53,6 @@ const sendSMS = async (to: string, body: string) => {
 };
 
 export async function registerRoutes(app: Express): Promise<Server> {
-  // Simple health check for deployment platform  
-  app.get("/healthz", (req, res) => {
-    res.status(200).json({ status: "healthy" });
-  });
 
   // Authentication middleware
   const requireAuth = (req: any, res: any, next: any) => {
