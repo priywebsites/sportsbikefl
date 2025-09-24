@@ -5,6 +5,7 @@ import { insertProductSchema, updateProductSchema, insertCartItemSchema, insertS
 import { randomUUID } from "crypto";
 import Stripe from "stripe";
 import twilio from "twilio";
+import type { SessionData } from "./app";
 
 // Lazy initialize Stripe to avoid startup failures
 let stripe: Stripe | null = null;
@@ -56,18 +57,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Authentication middleware
   const requireAuth = (req: any, res: any, next: any) => {
-    if (!(req.session as any)?.userId) {
+    if (!(req.session as SessionData)?.userId) {
       return res.status(401).json({ message: "Authentication required" });
     }
     next();
   };
 
-  // Session ID helper
+  // Session ID helper - iron-session saves automatically
   const getSessionId = (req: any) => {
-    if (!req.session.cartId) {
-      req.session.cartId = randomUUID();
+    const session = req.session as SessionData;
+    if (!session.cartId) {
+      session.cartId = randomUUID();
     }
-    return req.session.cartId;
+    return session.cartId;
   };
 
   // Auth routes
@@ -80,28 +82,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-      (req.session as any).userId = user.id;
+      const session = req.session as SessionData;
+      session.userId = user.id;
+      
       res.json({ user: { id: user.id, username: user.username } });
     } catch (error) {
       res.status(500).json({ message: "Login failed" });
     }
   });
 
-  app.post("/api/auth/logout", (req, res) => {
-    req.session.destroy((err) => {
-      if (err) {
-        return res.status(500).json({ message: "Logout failed" });
-      }
+  app.post("/api/auth/logout", async (req, res) => {
+    try {
+      const session = req.session as SessionData;
+      session.userId = undefined;
+      session.cartId = undefined;
       res.json({ message: "Logged out successfully" });
-    });
+    } catch (error) {
+      res.status(500).json({ message: "Logout failed" });
+    }
   });
 
   app.get("/api/auth/me", async (req, res) => {
-    if (!(req.session as any)?.userId) {
+    const session = req.session as SessionData;
+    if (!session?.userId) {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    const user = await storage.getUser((req.session as any).userId);
+    const user = await storage.getUser(session.userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -214,7 +221,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Checkout route - reduces stock when items are purchased
   app.post("/api/checkout", async (req, res) => {
     try {
-      const sessionId = req.session.id;
+      const sessionId = getSessionId(req);
       const cartItems = await storage.getCartItems(sessionId);
       
       // Process each cart item and reduce stock
