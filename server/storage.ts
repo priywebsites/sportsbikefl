@@ -402,7 +402,7 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getProductsByCategory(category: string): Promise<Product[]> {
-    return await db.select().from(products).where(eq(products.category, category)).orderBy(desc(products.createdAt)).limit(50);
+    return await db.select().from(products).where(eq(products.category, category as any)).orderBy(desc(products.createdAt)).limit(50);
   }
 
   async getProduct(id: string): Promise<Product | undefined> {
@@ -432,7 +432,7 @@ export class DatabaseStorage implements IStorage {
   async deleteProduct(id: string): Promise<boolean> {
     const result = await db.delete(products).where(eq(products.id, id));
     this.cache.clear(); // Clear cache when products change
-    return result.rowCount !== undefined && result.rowCount > 0;
+    return (result.rowCount ?? 0) > 0;
   }
 
   async getFeaturedProducts(): Promise<Product[]> {
