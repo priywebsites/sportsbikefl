@@ -1,0 +1,134 @@
+17:35:50.398 Running build in Washington, D.C., USA (East) – iad1
+17:35:50.398 Build machine configuration: 2 cores, 8 GB
+17:35:50.441 Cloning github.com/priywebsites/sportsbikefl (Branch: main, Commit: 9fb3e34)
+17:35:50.653 Previous build caches not available
+17:35:51.322 Cloning completed: 880.000ms
+17:35:51.769 Running "vercel build"
+17:35:52.223 Vercel CLI 48.1.6
+17:35:54.727 Running "install" command: ` npm ci`...
+17:36:00.318 npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+17:36:00.414 npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+17:36:07.109 
+17:36:07.109 added 650 packages, and audited 651 packages in 12s
+17:36:07.110 
+17:36:07.111 79 packages are looking for funding
+17:36:07.111   run `npm fund` for details
+17:36:07.182 
+17:36:07.182 11 vulnerabilities (3 low, 7 moderate, 1 high)
+17:36:07.182 
+17:36:07.182 To address issues that do not require attention, run:
+17:36:07.182   npm audit fix
+17:36:07.182 
+17:36:07.182 To address all issues (including breaking changes), run:
+17:36:07.182   npm audit fix --force
+17:36:07.182 
+17:36:07.183 Run `npm audit` for details.
+17:36:07.705 
+17:36:07.705 > rest-express@1.0.0 db:push
+17:36:07.705 > drizzle-kit push
+17:36:07.705 
+17:36:07.852 No config path provided, using default 'drizzle.config.ts'
+17:36:07.853 Reading config file '/vercel/path0/drizzle.config.ts'
+17:36:08.709 Using 'pg' driver for database querying
+17:36:08.965 [⣷] Pulling schema from database...
+17:36:09.092 [2K[1G[⣯] Pulling schema from database...
+17:36:09.220 [2K[1G[⣟] Pulling schema from database...
+17:36:09.348 [2K[1G[⡿] Pulling schema from database...
+17:36:09.476 [2K[1G[⢿] Pulling schema from database...
+17:36:09.604 [2K[1G[⣻] Pulling schema from database...
+17:36:09.732 [2K[1G[⣽] Pulling schema from database...
+17:36:09.736 [2K[1G[✓] Pulling schema from database...
+17:36:09.768 [✓] Changes applied
+17:36:09.885 
+17:36:09.885 > rest-express@1.0.0 build
+17:36:09.885 > vite build && esbuild server/index.ts --platform=node --packages=external --bundle --format=esm --outdir=dist
+17:36:09.885 
+17:36:10.125 [36mvite v5.4.19 [32mbuilding for production...[36m[39m
+17:36:10.171 transforming...
+17:36:10.424 Browserslist: browsers data (caniuse-lite) is 11 months old. Please run:
+17:36:10.424   npx update-browserslist-db@latest
+17:36:10.424   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+17:36:16.109 [32m✓[39m 2716 modules transformed.
+17:36:16.842 rendering chunks...
+17:36:16.861 computing gzip size...
+17:36:16.882 [2m../dist/public/[22m[32mindex.html                                  [39m[1m[2m    2.20 kB[22m[1m[22m[2m │ gzip:   0.86 kB[22m
+17:36:16.883 [2m../dist/public/[22m[2massets/[22m[32macima_1757177205261-B0kDG5iC.png     [39m[1m[2m   28.06 kB[22m[1m[22m
+17:36:16.883 [2m../dist/public/[22m[2massets/[22m[32mamerican_1757177205261-B0Uoa55H.png  [39m[1m[2m   29.37 kB[22m[1m[22m
+17:36:16.883 [2m../dist/public/[22m[2massets/[22m[32msnap_1757177205261-BLTCq-Ce.png      [39m[1m[2m   42.30 kB[22m[1m[22m
+17:36:16.883 [2m../dist/public/[22m[2massets/[22m[32mhero_1757363647658-DPZRQKT0.jpeg     [39m[1m[2m  104.27 kB[22m[1m[22m
+17:36:16.884 [2m../dist/public/[22m[2massets/[22m[32mbike_1756942189965-D2M5ui_r.png      [39m[1m[2m  736.11 kB[22m[1m[22m
+17:36:16.884 [2m../dist/public/[22m[2massets/[22m[32msl_1756939062038-7oovF-Lv.png        [39m[1m[2m1,440.22 kB[22m[1m[22m
+17:36:16.884 [2m../dist/public/[22m[2massets/[22m[32mservice_1756942841815-ohQOfz04.png   [39m[1m[2m5,756.43 kB[22m[1m[22m
+17:36:16.884 [2m../dist/public/[22m[2massets/[22m[35mindex-CFb8wJ-_.css                   [39m[1m[2m   83.13 kB[22m[1m[22m[2m │ gzip:  14.33 kB[22m
+17:36:16.884 [2m../dist/public/[22m[2massets/[22m[36mindex-BxuBMmIo.js                    [39m[1m[33m  717.57 kB[39m[22m[2m │ gzip: 209.77 kB[22m
+17:36:16.884 [32m✓ built in 6.74s[39m
+17:36:16.885 [33m
+17:36:16.885 (!) Some chunks are larger than 500 kB after minification. Consider:
+17:36:16.885 - Using dynamic import() to code-split the application
+17:36:16.885 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+17:36:16.885 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.[39m
+17:36:16.931 
+17:36:16.932   dist/index.js  68.7kb
+17:36:16.932 
+17:36:16.932 ⚡ Done in 9ms
+17:36:16.977 Installing dependencies...
+17:36:18.016 
+17:36:18.018 up to date in 923ms
+17:36:18.018 
+17:36:18.018 79 packages are looking for funding
+17:36:18.018   run `npm fund` for details
+17:36:18.230 Using TypeScript 5.6.3 (local user-provided)
+17:36:26.075 server/routes.ts(71,21): error TS2339: Property 'save' does not exist on type 'SessionData'.
+17:36:26.075 server/routes.ts(86,27): error TS2339: Property 'session' does not exist on type 'Request<{}, any, any, ParsedQs, Record<string, any>>'.
+17:36:26.075 server/routes.ts(88,21): error TS2339: Property 'save' does not exist on type 'SessionData'.
+17:36:26.075 server/routes.ts(98,27): error TS2339: Property 'session' does not exist on type 'Request<{}, any, any, ParsedQs, Record<string, any>>'.
+17:36:26.076 server/routes.ts(101,21): error TS2339: Property 'save' does not exist on type 'SessionData'.
+17:36:26.076 server/routes.ts(109,25): error TS2339: Property 'session' does not exist on type 'Request<{}, any, any, ParsedQs, Record<string, any>>'.
+17:36:26.076 
+17:36:26.772 server/storage.ts(57,14): error TS2420: Class 'MemStorage' incorrectly implements interface 'IStorage'.
+17:36:26.773   Type 'MemStorage' is missing the following properties from type 'IStorage': getAllServices, getActiveServices, getService, createService, and 17 more.
+17:36:26.773 server/storage.ts(178,13): error TS2322: Type '{ id: `${string}-${string}-${string}-${string}-${string}`; discount: string; discountType: "percentage" | "flat"; stockQuantity: number; stockStatus: "in_stock" | "sold" | "out_of_stock"; createdAt: Date; ... 6 more ...; images?: string[] | undefined; }' is not assignable to type '{ id: string; category: "motorcycles" | "oem parts" | "used parts" | "custom wheels" | "tires"; featured: boolean | null; title: string; description: string; price: string; discount: string | null; ... 5 more ...; createdAt: Date | null; }'.
+17:36:26.773   Types of property 'featured' are incompatible.
+17:36:26.775     Type 'boolean | null | undefined' is not assignable to type 'boolean | null'.
+17:36:26.775       Type 'undefined' is not assignable to type 'boolean | null'.
+17:36:26.776 server/storage.ts(227,11): error TS2322: Type '{ id: `${string}-${string}-${string}-${string}-${string}`; discount: string; discountType: "percentage" | "flat"; stockQuantity: number; stockStatus: "in_stock" | "sold" | "out_of_stock"; createdAt: Date; ... 6 more ...; images?: string[] | undefined; }' is not assignable to type '{ id: string; category: "motorcycles" | "oem parts" | "used parts" | "custom wheels" | "tires"; featured: boolean | null; title: string; description: string; price: string; discount: string | null; ... 5 more ...; createdAt: Date | null; }'.
+17:36:26.776   Types of property 'featured' are incompatible.
+17:36:26.776     Type 'boolean | null | undefined' is not assignable to type 'boolean | null'.
+17:36:26.776       Type 'undefined' is not assignable to type 'boolean | null'.
+17:36:26.776 server/storage.ts(405,51): error TS2769: No overload matches this call.
+17:36:26.776   Overload 1 of 3, '(left: PgColumn<{ name: "category"; tableName: "products"; dataType: "string"; columnType: "PgText"; data: "motorcycles" | "oem parts" | "used parts" | "custom wheels" | "tires"; driverParam: string; ... 8 more ...; generated: undefined; }, {}, {}>, right: SQLWrapper | ... 4 more ... | "tires"): SQL<...>', gave the following error.
+17:36:26.776     Argument of type 'string' is not assignable to parameter of type 'SQLWrapper | "motorcycles" | "oem parts" | "used parts" | "custom wheels" | "tires"'.
+17:36:26.776   Overload 2 of 3, '(left: Aliased<string>, right: string | SQLWrapper): SQL<unknown>', gave the following error.
+17:36:26.776     Argument of type 'PgColumn<{ name: "category"; tableName: "products"; dataType: "string"; columnType: "PgText"; data: "motorcycles" | "oem parts" | "used parts" | "custom wheels" | "tires"; driverParam: string; ... 8 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'Aliased<string>'.
+17:36:26.776       Type 'PgColumn<{ name: "category"; tableName: "products"; dataType: "string"; columnType: "PgText"; data: "motorcycles" | "oem parts" | "used parts" | "custom wheels" | "tires"; driverParam: string; ... 8 more ...; generated: undefined; }, {}, {}>' is missing the following properties from type 'Aliased<string>': sql, fieldAlias
+17:36:26.776   Overload 3 of 3, '(left: never, right: unknown): SQL<unknown>', gave the following error.
+17:36:26.776     Argument of type 'PgColumn<{ name: "category"; tableName: "products"; dataType: "string"; columnType: "PgText"; data: "motorcycles" | "oem parts" | "used parts" | "custom wheels" | "tires"; driverParam: string; ... 8 more ...; generated: undefined; }, {}, {}>' is not assignable to parameter of type 'never'.
+17:36:26.776 server/storage.ts(435,45): error TS18047: 'result.rowCount' is possibly 'null'.
+17:36:26.776 server/storage.ts(524,45): error TS18047: 'result.rowCount' is possibly 'null'.
+17:36:26.776 server/storage.ts(529,45): error TS18047: 'result.rowCount' is possibly 'null'.
+17:36:26.776 server/storage.ts(558,45): error TS18047: 'result.rowCount' is possibly 'null'.
+17:36:26.776 server/storage.ts(582,5): error TS2322: Type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }[]' is not assignable to type 'BookingWithService[]'.
+17:36:26.776   Type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }' is not assignable to type 'BookingWithService'.
+17:36:26.776     Property 'timezone' is missing in type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }' but required in type '{ id: string; serviceId: string; createdAt: Date | null; status: "confirmed" | "cancelled" | "completed" | "no_show" | null; customerName: string; customerEmail: string; customerPhone: string; ... 4 more ...; notes: string | null; }'.
+17:36:26.777 server/storage.ts(609,5): error TS2322: Type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }[]' is not assignable to type 'BookingWithService[]'.
+17:36:26.777   Type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }' is not assignable to type 'BookingWithService'.
+17:36:26.777     Property 'timezone' is missing in type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }' but required in type '{ id: string; serviceId: string; createdAt: Date | null; status: "confirmed" | "cancelled" | "completed" | "no_show" | null; customerName: string; customerEmail: string; customerPhone: string; ... 4 more ...; notes: string | null; }'.
+17:36:26.778 server/storage.ts(636,5): error TS2322: Type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }[]' is not assignable to type 'BookingWithService[]'.
+17:36:26.778   Type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }' is not assignable to type 'BookingWithService'.
+17:36:26.778     Property 'timezone' is missing in type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }' but required in type '{ id: string; serviceId: string; createdAt: Date | null; status: "confirmed" | "cancelled" | "completed" | "no_show" | null; customerName: string; customerEmail: string; customerPhone: string; ... 4 more ...; notes: string | null; }'.
+17:36:26.778 server/storage.ts(663,5): error TS2322: Type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }[]' is not assignable to type 'BookingWithService[]'.
+17:36:26.778   Type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }' is not assignable to type 'BookingWithService'.
+17:36:26.778     Property 'timezone' is missing in type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }' but required in type '{ id: string; serviceId: string; createdAt: Date | null; status: "confirmed" | "cancelled" | "completed" | "no_show" | null; customerName: string; customerEmail: string; customerPhone: string; ... 4 more ...; notes: string | null; }'.
+17:36:26.778 server/storage.ts(692,5): error TS2322: Type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }' is not assignable to type 'BookingWithService'.
+17:36:26.778   Property 'timezone' is missing in type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }' but required in type '{ id: string; serviceId: string; createdAt: Date | null; status: "confirmed" | "cancelled" | "completed" | "no_show" | null; customerName: string; customerEmail: string; customerPhone: string; ... 4 more ...; notes: string | null; }'.
+17:36:26.778 server/storage.ts(710,45): error TS18047: 'result.rowCount' is possibly 'null'.
+17:36:26.778 server/storage.ts(737,5): error TS2322: Type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }[]' is not assignable to type 'BookingWithService[]'.
+17:36:26.778   Type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }' is not assignable to type 'BookingWithService'.
+17:36:26.779     Property 'timezone' is missing in type '{ service: { id: string; name: string; description: string; price: string | null; priceLabel: string | null; durationMinutes: number; isActive: boolean | null; createdAt: Date | null; }; ... 10 more ...; createdAt: Date | null; }' but required in type '{ id: string; serviceId: string; createdAt: Date | null; status: "confirmed" | "cancelled" | "completed" | "no_show" | null; customerName: string; customerEmail: string; customerPhone: string; ... 4 more ...; notes: string | null; }'.
+17:36:26.779 
+17:36:26.846 server/emailService.ts(396,37): error TS18046: 'error' is of type 'unknown'.
+17:36:26.846 
+17:36:40.829 Build Completed in /vercel/output [46s]
+17:36:41.305 Deploying outputs...
+17:36:49.798 Deployment completed
+17:36:50.626 Creating build cache...

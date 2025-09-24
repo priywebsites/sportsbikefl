@@ -57,20 +57,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Authentication middleware
   const requireAuth = (req: any, res: any, next: any) => {
-    if (!(req.session as SessionData)?.userId) {
+    if (!req.session?.userId) {
       return res.status(401).json({ message: "Authentication required" });
     }
     next();
   };
 
   // Session ID helper - iron-session saves automatically
-  const getSessionId = async (req: any) => {
-    const session = req.session as SessionData;
-    if (!session.cartId) {
-      session.cartId = randomUUID();
-      await session.save();
+  const getSessionId = (req: any) => {
+    if (!req.session.cartId) {
+      req.session.cartId = randomUUID();
     }
-    return session.cartId;
+    return req.session.cartId;
   };
 
   // Auth routes
@@ -83,9 +81,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(401).json({ message: "Invalid credentials" });
       }
 
-      const session = req.session as SessionData;
-      session.userId = user.id;
-      await session.save();
+      req.session.userId = user.id;
       
       res.json({ user: { id: user.id, username: user.username } });
     } catch (error) {
@@ -95,10 +91,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/auth/logout", async (req, res) => {
     try {
-      const session = req.session as SessionData;
-      session.userId = undefined;
-      session.cartId = undefined;
-      await session.save();
+      req.session.userId = undefined;
+      req.session.cartId = undefined;
       res.json({ message: "Logged out successfully" });
     } catch (error) {
       res.status(500).json({ message: "Logout failed" });
@@ -106,12 +100,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/auth/me", async (req, res) => {
-    const session = req.session as SessionData;
-    if (!session?.userId) {
+    if (!req.session?.userId) {
       return res.status(401).json({ message: "Not authenticated" });
     }
 
-    const user = await storage.getUser(session.userId);
+    const user = await storage.getUser(req.session.userId);
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -213,7 +206,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Cart routes
   app.get("/api/cart", async (req, res) => {
     try {
-      const sessionId = await getSessionId(req);
+      const sessionId = getSessionId(req);
       const cartItems = await storage.getCartItems(sessionId);
       res.json(cartItems);
     } catch (error) {
@@ -224,7 +217,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Checkout route - reduces stock when items are purchased
   app.post("/api/checkout", async (req, res) => {
     try {
-      const sessionId = await getSessionId(req);
+      const sessionId = getSessionId(req);
       const cartItems = await storage.getCartItems(sessionId);
       
       // Process each cart item and reduce stock
@@ -253,7 +246,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/cart", async (req, res) => {
     try {
-      const sessionId = await getSessionId(req);
+      const sessionId = getSessionId(req);
       const cartItemData = insertCartItemSchema.parse({
         ...req.body,
         sessionId,
@@ -295,7 +288,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.delete("/api/cart", async (req, res) => {
     try {
-      const sessionId = await getSessionId(req);
+      const sessionId = getSessionId(req);
       await storage.clearCart(sessionId);
       res.json({ message: "Cart cleared" });
     } catch (error) {
